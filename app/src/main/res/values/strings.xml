@@ -1,0 +1,8 @@
+<resources>
+    <!-- 2k gcash, lalagyan ko to ng transaltions -->
+    <string name="app_name">IOT Controller</string>
+    <string name="connect_button">CONNECT</string>
+    <string name="manage_button">Manage</string>
+    <string name="dispense">Dispense Food</string>
+    <string name="dispenseWarningMessage">Are you sure you want to manually dispense food or water for your pet?</string>
+</resources>

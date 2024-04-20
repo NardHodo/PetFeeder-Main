@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Di pa siya rounded corners, kung alam mo kung paano edi salamat-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_box_background"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="221dp"
+            android:background="@drawable/upper_dispense_dialog_box">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/bone_2" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/lower_dispense_dialog_box"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/lexend"
+                android:gravity="center_horizontal"
+                android:text="@string/dispenseWarningMessage"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="100dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnCancelDispense"
+                    android:layout_width="140dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/lexend"
+                    android:text="CANCEL" />
+
+                <Button
+                    android:id="@+id/btnContinueDispense"
+                    android:layout_width="133dp"
+                    android:layout_height="70dp"
+                    android:layout_marginStart="50dp"
+                    android:fontFamily="@font/lexend"
+                    android:text="OK"
+                    android:layout_weight="1"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="20dp"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
