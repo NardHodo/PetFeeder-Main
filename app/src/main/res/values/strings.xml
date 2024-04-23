@@ -5,4 +5,21 @@
     <string name="manage_button">Manage</string>
     <string name="dispense">Dispense Food</string>
     <string name="dispenseWarningMessage">Are you sure you want to manually dispense food or water for your pet?</string>
+
+    <!-- Days of the Week -->
+    <string name="Monday">M</string>
+    <string name="Tuesday">T</string>
+    <string name="Wednesday">W</string>
+    <string name="Thursday">T</string>
+    <string name="Friday">F</string>
+    <string name="Saturday">S</string>
+    <string name="Sunday">S</string>
+
+    <!-- AM and PM -->
+    <string-array name="time">
+        <item>AM</item>
+        <item>PM</item>
+    </string-array>
+
+
 </resources>
