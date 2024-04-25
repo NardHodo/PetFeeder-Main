@@ -1,6 +1,6 @@
 <resources>
     <!-- 2k gcash, lalagyan ko to ng transaltions -->
-    <string name="app_name">IOT Controller</string>
+    <string name="app_name">Foodie</string>
     <string name="connect_button">CONNECT</string>
     <string name="manage_button">Manage</string>
     <string name="dispense">Dispense Food</string>

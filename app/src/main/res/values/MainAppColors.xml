@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Yung iba nga dito di nagamit eh :(-->
-    <color name="mainAppColor">#00D5FF</color>
+    <color name="mainAppColor">#E9FAFD</color>
     <color name="connectButton">#68B900</color>
     <color name="secondaryAppColor">#FBFBFB</color>
     <color name="dialog_box_color_1">#FAEEEE</color>

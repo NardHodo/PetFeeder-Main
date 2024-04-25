@@ -83,13 +83,13 @@ public class MainActivity extends AppCompatActivity {
         });
         //endregion
 
-        btnManage.setBackgroundColor(ContextCompat.getColor(this, R.color.manage_button));
-        btnManage.setTextColor(ContextCompat.getColor(this, R.color.black));
+
+        btnConnect.setBackgroundColor(getColor(R.color.connect_button));
 
 
         //region Dialog Box Functionality
         dispenseDialog = new Dialog(MainActivity.this);
-        dispenseDialog.setContentView(R.layout.activity_dispense_dialog_box);
+        dispenseDialog.setContentView(R.layout.activity_dispense_dialog);
         btnCancel = dispenseDialog.findViewById(R.id.btnCancelDispense);
         Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dispenseDialog.setCancelable(false);

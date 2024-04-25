@@ -2,8 +2,7 @@ package com.example.iotcontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
-import android.content.Intent;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,16 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.NumberPicker;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.shawnlin.numberpicker.NumberPicker;
 
-import java.util.Locale;
 
 public class Schedule_View extends AppCompatActivity {
 
     Button btnBack;
     ImageButton addSchedule;
+    String[] time = {"AM","PM"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +53,8 @@ public class Schedule_View extends AppCompatActivity {
 
     }
     public void showAlarmEditor(){
-        NumberPicker hourPicker, minutePicker, timePicker;
-        Button btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday;
+        com.shawnlin.numberpicker.NumberPicker hourPicker, minutePicker, timePicker;
+        Button btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, cancelAlarm, confirmAlarm;
         ImageButton backToManage;
 
         BottomSheetDialog addAlarm = new BottomSheetDialog(this);
@@ -66,30 +65,40 @@ public class Schedule_View extends AppCompatActivity {
 
         addAlarm.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        cancelAlarm = addAlarm.findViewById(R.id.btnCancelAlarm);
+        confirmAlarm = addAlarm.findViewById(R.id.btnAddAlarm);
+
+        cancelAlarm.setBackgroundColor(getColor(R.color.dialog_boxes_button));
+        confirmAlarm.setBackgroundColor(getColor(R.color.dialog_boxes_button));
+
+
         hourPicker = addAlarm.findViewById(R.id.hourPicker);
         hourPicker.setMinValue(01);
         hourPicker.setMaxValue(12);
 
-        minutePicker = addAlarm.findViewById(R.id.minutePicker);
+        minutePicker = addAlarm.findViewById(R.id.minPicker);
         minutePicker.setMinValue(00);
         minutePicker.setMaxValue(59);
 
+        timePicker = addAlarm.findViewById(R.id.AM_PM_Picker);
+        timePicker.setMinValue(1);
+        timePicker.setDisplayedValues(time);
+        timePicker.setContentDescription("AM and PM");
 
         minutePicker.setFormatter(new NumberPicker.Formatter() {
             @Override
             public String format(int value) {
-                // Format single-digit values with leading zero
-                return String.format(Locale.getDefault(), "%02d", value);
+                return String.format("%02d", value);
             }
         });
 
-        String[] time = {"AM","PM"};
-        timePicker = addAlarm.findViewById(R.id.AM_PM_Picker);
-        timePicker.setDisplayedValues(time);
-        timePicker.setWrapSelectorWheel(true);
+        cancelAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addAlarm.dismiss();
+            }
+        });
 
-
-        btnSunday = addAlarm.findViewById(R.id.Sunday);
 
 
 
