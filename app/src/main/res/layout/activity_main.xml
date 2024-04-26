@@ -162,7 +162,7 @@
                    android:layout_height="wrap_content"
                    android:layout_marginTop="12dp"
                    android:fontFamily="@font/lexend"
-                   android:text="0%"
+                   android:text="GOOD"
                    android:textAlignment="center"
                    android:textColor="@color/black"
                    android:textSize="15sp"
@@ -178,7 +178,7 @@
                    android:layout_marginTop="12dp"
                    android:layout_marginBottom="10dp"
                    android:fontFamily="@font/lexend"
-                   android:text="0%"
+                   android:text="GOOD"
                    android:textColor="@color/black"
                    android:textSize="15sp"
                    app:layout_constraintEnd_toEndOf="@+id/textView3"
@@ -315,7 +315,7 @@
         android:padding="5dp">
 
         <Button
-            android:id="@+id/btnGREEN"
+            android:id="@+id/btnLights"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
@@ -329,51 +329,51 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnRED"
+            android:id="@+id/btnManualWater"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginStart="60dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/lexend"
-            android:text="RED"
+            android:text="Drink"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/main_button_drawable"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btnGREEN"
+            app:layout_constraintStart_toEndOf="@+id/btnLights"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnBLUE"
+            android:id="@+id/btnManual"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="27dp"
-            android:text="BLUE"
+            android:text="Feed"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/main_button_drawable"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnGREEN"
+            app:layout_constraintEnd_toEndOf="@+id/btnLights"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnGREEN" />
+            app:layout_constraintTop_toBottomOf="@+id/btnLights" />
 
         <Button
-            android:id="@+id/btnVIEWSCHEDULE"
+            android:id="@+id/btnAutomatic"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            android:text="View Schedule"
+            android:text="Automatic"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:background="@drawable/main_button_drawable"
-            app:layout_constraintEnd_toEndOf="@+id/btnRED"
+            app:layout_constraintEnd_toEndOf="@+id/btnManualWater"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/btnRED"
-            app:layout_constraintTop_toBottomOf="@+id/btnRED" />
+            app:layout_constraintStart_toStartOf="@+id/btnManualWater"
+            app:layout_constraintTop_toBottomOf="@+id/btnManualWater" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
