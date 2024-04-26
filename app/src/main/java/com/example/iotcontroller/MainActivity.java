@@ -192,7 +192,9 @@ public class MainActivity extends AppCompatActivity {
     }
     void checkESP8266Response(String str){
         String[] cont = str.split(",");
-        TextView tv = findViewById(R.id.tvLightStatus);
+        TextView tvLight = findViewById(R.id.tvLightStatus);
+        TextView tvFood = findViewById(R.id.tvFoodPercentage);
+        TextView tvWater = findViewById(R.id.tvWaterPercentage);
         for(int i = 1;i < cont.length;i++){
             switch(cont[i].split(":")[0]){
                 case "Light":
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tv.setText("OFF");
+                                tvLight.setText("OFF");
                                 btnLights.setText("Turn on");
                             }
                         });
@@ -209,13 +211,41 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tv.setText("ON");
+                                tvLight.setText("ON");
                                 btnLights.setText("Turn off");
                             }
                         });
                     }
                     break;
+                case "Food":
+                    String foodContent = cont[i].split(":")[1];
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvFood.setText(foodContent);
+                            if(foodContent.equals("LOW")){
+                                tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                            }else{
+                                tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                            }
+                        }
+                    });
 
+                    break;
+                case "Water":
+                    String waterContent = cont[i].split(":")[1];
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvWater.setText(waterContent);
+                            if(waterContent.equals("LOW")){
+                                tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                            }else{
+                                tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                            }
+                        }
+                    });
+                    break;
             }
         }
     }
