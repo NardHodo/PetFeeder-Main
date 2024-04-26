@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat;
 
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,7 +15,6 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
@@ -25,6 +23,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -32,14 +31,20 @@ import java.util.Objects;
 
 import android.Manifest;
 
+import com.google.android.material.color.ColorResourcesOverride;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button btnGREEN, btnBLUE, btnRED, btnManage, btnCancel, btnConnect;
+    final String WIFI_NAME = "\"Foodie\"";
+    Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog;
+
+
+    Thread receiver;
 
 //    LinearLayout dialog_box;
 
@@ -62,12 +67,17 @@ public class MainActivity extends AppCompatActivity {
         //endregion
 
         //region Declaration
-        btnBLUE = findViewById(R.id.btnBLUE);
-        btnGREEN = findViewById(R.id.btnGREEN);
-        btnRED = findViewById(R.id.btnRED);
+        btnManual = findViewById(R.id.btnManual);
+        btnLights = findViewById(R.id.btnLights);
+        btnManualWater = findViewById(R.id.btnManualWater);
         btnManage = findViewById(R.id.btnManage);
         btnConnect = findViewById(R.id.btnConnect);
+        btnAutomatic = findViewById(R.id.btnAutomatic);
+        //Disable buttons on online
+        enableDisabledButtons(false);
         //endregion
+
+
 
         //region Helps the app to communicate with ESP8266
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -83,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
         });
         //endregion
 
-        btnManage.setBackgroundColor(ContextCompat.getColor(this, R.color.manage_button));
-        btnManage.setTextColor(ContextCompat.getColor(this, R.color.black));
+
+        btnConnect.setBackgroundColor(getColor(R.color.connect_button));
 
 
         //region Dialog Box Functionality
         dispenseDialog = new Dialog(MainActivity.this);
-        dispenseDialog.setContentView(R.layout.activity_dispense_dialog_box);
+        dispenseDialog.setContentView(R.layout.activity_dispense_dialog);
         btnCancel = dispenseDialog.findViewById(R.id.btnCancelDispense);
         Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dispenseDialog.setCancelable(false);
@@ -106,15 +116,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(viewSchedule);
         });
         //region ESP8266 Communication Functions
-        btnRED.setOnClickListener(view -> sendCommand("red"));
-        btnGREEN.setOnClickListener(view -> sendCommand("REPORTSTATUS:"));
-        btnBLUE.setOnClickListener(view -> sendCommand("blue"));
+        btnManualWater.setOnClickListener(view -> sendCommand("red"));
+        btnLights.setOnClickListener(view -> sendCommand("green"));
+        btnManual.setOnClickListener(view -> sendCommand("blue"));
         //endregion
     }
 
     //Communicates with the ESP8266 via Wi-Fi
     public void sendCommand(String cmd) {
-        new Thread(() -> {
+        Thread receiver = new Thread(() -> {
             String command = "http://192.168.4.1/" + cmd;
             Log.d("Command------------------------------------------", command);
             Request request = new Request.Builder().url(command).build();
@@ -130,15 +140,13 @@ public class MainActivity extends AppCompatActivity {
                 cleanResponse.replace("\t", ""); // removes all tab characters
                 cleanResponse.trim();
                 Log.d("Response  = ", cleanResponse);
-
-                runOnUiThread(() -> {
-//                            txtRES.setText(cleanResponse);
-                });
+                checkESP8266Response(cleanResponse);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }).start();
+        });
+        receiver.start();
     }
     //Checks the current network the user is connected and also checks if the user GPS/Location is open
     public void getCurrentWifiSSID(Context context) {
@@ -165,9 +173,11 @@ public class MainActivity extends AppCompatActivity {
             wifiInfo = wifiManager.getConnectionInfo();
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
                 ssid = wifiInfo.getSSID();
-                if(ssid.equals("\"Light Controller 2.0\"")){
+                if(ssid.equals(WIFI_NAME)){
                     btnConnect.setText("Connected");
-                    Toast.makeText(getApplicationContext(), "Currently connected to Light Controller 2.0!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Currently connected to " + ssid.replace("\"", ""), Toast.LENGTH_SHORT).show();
+                    sendCommand("REPORTSTATUS:");
+                    enableDisabledButtons(true);
                 }else{
                     Toast.makeText(getApplicationContext(), "Wifi is not supported", Toast.LENGTH_SHORT).show();
                 }
@@ -175,5 +185,88 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    void isOnline(){
+        if(!receiver.isAlive()){
+            receiver.start();
+        }
+    }
+    void checkESP8266Response(String str){
+        String[] cont = str.split(",");
+        TextView tvLight = findViewById(R.id.tvLightStatus);
+        TextView tvFood = findViewById(R.id.tvFoodPercentage);
+        TextView tvWater = findViewById(R.id.tvWaterPercentage);
+        for(int i = 1;i < cont.length;i++){
+            switch(cont[i].split(":")[0]){
+                case "Light":
+                    if(cont[i].split(":")[1].equals("0")) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvLight.setText("OFF");
+                                btnLights.setText("Turn on");
+                            }
+                        });
 
+                    }else{
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvLight.setText("ON");
+                                btnLights.setText("Turn off");
+                            }
+                        });
+                    }
+                    break;
+                case "Food":
+                    String foodContent = cont[i].split(":")[1];
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvFood.setText(foodContent);
+                            if(foodContent.equals("LOW")){
+                                tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                            }else{
+                                tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                            }
+                        }
+                    });
+
+                    break;
+                case "Water":
+                    String waterContent = cont[i].split(":")[1];
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvWater.setText(waterContent);
+                            if(waterContent.equals("LOW")){
+                                tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                            }else{
+                                tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+                            }
+                        }
+                    });
+                    break;
+            }
+        }
+    }
+    void enableDisabledButtons(boolean bool){
+        btnManual.setEnabled(bool);
+        btnLights.setEnabled(bool);
+        btnManualWater.setEnabled(bool);
+        btnManage.setEnabled(bool);
+        btnAutomatic.setEnabled(bool);
+        if(!bool){
+            btnManual.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
+            btnLights.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
+            btnManualWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
+            btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
+            btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
+        }else{
+            btnManual.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+            btnLights.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+            btnManualWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+            btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+            btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+        }
+    }
 }

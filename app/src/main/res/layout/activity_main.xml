@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@drawable/radial_colors"
-    android:padding="10dp">
+    android:background="@color/mainAppColor"
+    android:paddingHorizontal="20dp">
 
     <TextView
         android:id="@+id/tvStatus"
@@ -21,12 +21,13 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine1"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/black"
+        app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewFeederStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -60,7 +61,6 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="3dp"
-                android:background="@drawable/connect_button"
                 android:fontFamily="@font/lexend"
                 android:text="CONNECT"
                 android:textSize="10sp"
@@ -162,7 +162,7 @@
                    android:layout_height="wrap_content"
                    android:layout_marginTop="12dp"
                    android:fontFamily="@font/lexend"
-                   android:text="0%"
+                   android:text="GOOD"
                    android:textAlignment="center"
                    android:textColor="@color/black"
                    android:textSize="15sp"
@@ -176,8 +176,9 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_marginTop="12dp"
+                   android:layout_marginBottom="10dp"
                    android:fontFamily="@font/lexend"
-                   android:text="0%"
+                   android:text="GOOD"
                    android:textColor="@color/black"
                    android:textSize="15sp"
                    app:layout_constraintEnd_toEndOf="@+id/textView3"
@@ -213,16 +214,16 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine2"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/black"
+        app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        app:cardBackgroundColor="@color/card_view_color"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="15dp"
         app:cardElevation="10dp">
         <RelativeLayout
@@ -259,7 +260,7 @@
                     android:id="@+id/tvUpcomingMealTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="48dp"
+                    android:layout_marginStart="24dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginBottom="18dp"
                     android:fontFamily="@font/lexend"
@@ -279,6 +280,7 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/lexend"
                     android:text="@string/manage_button"
+                    android:background="@drawable/main_button_drawable"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.925"
@@ -301,9 +303,9 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine3"
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="1dp"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/black"
+        app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -313,52 +315,65 @@
         android:padding="5dp">
 
         <Button
-            android:id="@+id/btnGREEN"
+            android:id="@+id/btnLights"
             android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Open Lights"
+            android:fontFamily="@font/lexend"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:background="@drawable/main_button_drawable"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnRED"
+            android:id="@+id/btnManualWater"
             android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_marginStart="60dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/lexend"
-            android:text="RED"
+            android:text="Drink"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/main_button_drawable"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btnGREEN"
+            app:layout_constraintStart_toEndOf="@+id/btnLights"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/btnBLUE"
+            android:id="@+id/btnManual"
             android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="27dp"
-            android:text="BLUE"
+            android:text="Feed"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/main_button_drawable"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnGREEN"
+            app:layout_constraintEnd_toEndOf="@+id/btnLights"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnGREEN" />
+            app:layout_constraintTop_toBottomOf="@+id/btnLights" />
 
         <Button
-            android:id="@+id/btnVIEWSCHEDULE"
+            android:id="@+id/btnAutomatic"
             android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_marginTop="16dp"
-            android:text="View Schedule"
-            app:layout_constraintEnd_toEndOf="@+id/btnRED"
+            android:text="Automatic"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:background="@drawable/main_button_drawable"
+            app:layout_constraintEnd_toEndOf="@+id/btnManualWater"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/btnRED"
-            app:layout_constraintTop_toBottomOf="@+id/btnRED" />
+            app:layout_constraintStart_toStartOf="@+id/btnManualWater"
+            app:layout_constraintTop_toBottomOf="@+id/btnManualWater" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

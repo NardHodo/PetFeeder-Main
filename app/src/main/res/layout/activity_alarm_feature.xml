@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:paddingVertical="40dp"
+    android:background="@drawable/dialog_box_background"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/hourPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:np_dividerColor="@color/white"
+                app:np_textColor="@color/white"
+                app:np_selectedTextColor="@color/white"
+                app:np_textSize="30sp"
+                app:np_min="1"
+                app:np_max="12"/>
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/minPicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                app:np_dividerColor="@color/white"
+                app:np_textColor="@color/white"
+                app:np_selectedTextColor="@color/white"
+                app:np_textSize="30sp"
+                app:np_min="1"
+                app:np_max="59"/>
+            <com.shawnlin.numberpicker.NumberPicker
+                android:id="@+id/AM_PM_Picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                app:np_dividerColor="@color/white"
+                app:np_textColor="@color/white"
+                app:np_selectedTextColor="@color/white"
+                app:np_textSize="30sp"
+                app:np_min="1"
+                app:np_max="2" />
+
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repeat"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/lexend_bold"
+            android:textColor="@color/white"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:padding="5dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/Sunday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Sunday"
+                android:background="@drawable/button_selector"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/Monday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Monday"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/Tueday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Tuesday"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/Wednesday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Wednesday"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/Thursday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Thursday"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/Friday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Friday"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+            <Button
+                android:id="@+id/Saturday"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:text="@string/Saturday"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="20sp"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+
+                <Button
+                    android:id="@+id/btnCancelAlarm"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:text="CANCEL"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnAddAlarm"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:text="CONFIRM"
+                    android:textSize="20sp"
+                    android:layout_marginEnd="40dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@id/btnCancelAlarm"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

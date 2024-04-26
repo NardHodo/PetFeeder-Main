@@ -11,4 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
     </style>
+
+  
+
 </resources>

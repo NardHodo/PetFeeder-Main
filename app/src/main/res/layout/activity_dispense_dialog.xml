@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/dialog_box_background"
+    android:background="@color/mainAppColor"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -16,7 +16,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="221dp"
-            android:background="@drawable/upper_dispense_dialog_box">
+            android:background="@color/card_view_color">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:background="@drawable/lower_dispense_dialog_box"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:backgroundTint="@color/mainAppColor">
 
             <TextView
                 android:layout_width="match_parent"

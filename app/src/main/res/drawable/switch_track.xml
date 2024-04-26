@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Custom track drawable for the Switch -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <size
+        android:width="50dp"
+    android:height="25dp" />
+    <corners android:radius="20dp" />
+    <solid android:color="@color/black" />
+</shape>
