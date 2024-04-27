@@ -96,9 +96,7 @@ public class Schedule_View extends AppCompatActivity {
         btnFriday = addAlarm.findViewById(R.id.btnFriday);
         btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
 
-        btnSunday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnSunday.setOnClickListener(view -> {
                btnSunday.setBackgroundColor(getColor(R.color.black));
                btnMonday.setBackgroundColor(Color.TRANSPARENT);
                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
@@ -106,12 +104,9 @@ public class Schedule_View extends AppCompatActivity {
                btnThursday.setBackgroundColor(Color.TRANSPARENT);
                btnFriday.setBackgroundColor(Color.TRANSPARENT);
                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-            }
         });
 
-        btnMonday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnMonday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(getColor(R.color.black));
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
@@ -119,12 +114,9 @@ public class Schedule_View extends AppCompatActivity {
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-            }
         });
 
-        btnTuesday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnTuesday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(getColor(R.color.black));
@@ -132,12 +124,9 @@ public class Schedule_View extends AppCompatActivity {
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-            }
         });
 
-        btnWednesday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnWednesday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
@@ -145,12 +134,9 @@ public class Schedule_View extends AppCompatActivity {
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-            }
         });
 
-        btnThursday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnThursday.setOnClickListener(view-> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
@@ -158,12 +144,9 @@ public class Schedule_View extends AppCompatActivity {
                 btnThursday.setBackgroundColor(getColor(R.color.black));
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-            }
         });
 
-        btnFriday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnFriday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
@@ -171,12 +154,9 @@ public class Schedule_View extends AppCompatActivity {
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(getColor(R.color.black));
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-            }
         });
 
-        btnSaturday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnSaturday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
@@ -184,7 +164,6 @@ public class Schedule_View extends AppCompatActivity {
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(getColor(R.color.black));
-            }
         });
 
 
