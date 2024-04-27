@@ -31,7 +31,7 @@
             android:text="SCHEDULE"
             android:layout_gravity="center"
             android:fontFamily="@font/lexend_bold"
-            android:textColor="@color/black"
+            android:textColor="@color/darker_blue"
             android:textSize="20dp"/>
     </LinearLayout>
    <LinearLayout
@@ -65,15 +65,15 @@
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:fontFamily="@font/lexend_bold"
-                       android:textColor="@color/black"
-                       android:textSize="25sp"/>
+                       android:textColor="@color/white"
+                       android:textSize="30sp"/>
 
                    <TextView
                        android:layout_width="wrap_content"
                        android:layout_height="wrap_content"
                        android:text="ONCE"
                        android:fontFamily="@font/lexend"
-                       android:textColor="@color/black"/>
+                       android:textColor="@color/white"/>
 
                </LinearLayout>
 
@@ -84,6 +84,7 @@
                    android:layout_height="wrap_content"
                    android:layout_weight="1"
                    android:layout_gravity="end|center_vertical"/>
+
 
            </LinearLayout>
        </androidx.cardview.widget.CardView>

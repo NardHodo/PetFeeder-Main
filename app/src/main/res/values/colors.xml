@@ -14,5 +14,7 @@
     <color name="manage_button">#D9D9D9</color>
     <color name="dialog_boxes_button">#82CEEF</color>
     <color name="disabled_color">#bbbbbe</color>
+    <color name="darker_blue">#002A3C</color>
+    <color name="button_color">#82CEEF</color>
 
 </resources>
