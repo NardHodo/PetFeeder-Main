@@ -15,7 +15,7 @@
         android:layout_marginTop="60dp"
         android:fontFamily="@font/lexend_bold"
         android:text="CONDITION"
-        android:textColor="@color/black"
+        android:textColor="@color/card_view_color"
         android:textSize="20sp"
         />
     <androidx.cardview.widget.CardView
@@ -209,7 +209,7 @@
         android:layout_marginTop="20dp"
         android:text="SCHEDULE"
         android:fontFamily="@font/lexend_bold"
-        android:textColor="@color/black"
+        android:textColor="@color/card_view_color"
         android:textSize="20sp"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine2"
@@ -249,7 +249,7 @@
                     android:layout_marginBottom="18dp"
                     android:fontFamily="@font/lexend"
                     android:text="Upcoming Meal Schedule:"
-                    android:textColor="@color/black"
+                    android:textColor="@color/card_view_color"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -265,7 +265,7 @@
                     android:layout_marginBottom="18dp"
                     android:fontFamily="@font/lexend"
                     android:text="00:00"
-                    android:textColor="@color/black"
+                    android:textColor="@color/card_view_color"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
@@ -298,7 +298,7 @@
         android:layout_marginTop="20dp"
         android:text="ACTION"
         android:fontFamily="@font/lexend_bold"
-        android:textColor="@color/black"
+        android:textColor="@color/card_view_color"
         android:textSize="20sp"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine3"
@@ -323,7 +323,7 @@
             android:text="Open Lights"
             android:fontFamily="@font/lexend"
             android:textSize="15sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:background="@drawable/main_button_drawable"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -337,7 +337,7 @@
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/lexend"
             android:text="Drink"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="15sp"
             android:background="@drawable/main_button_drawable"
             app:layout_constraintEnd_toEndOf="parent"
@@ -353,7 +353,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="27dp"
             android:text="Feed"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="15sp"
             android:background="@drawable/main_button_drawable"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -367,7 +367,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
             android:text="Automatic"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="15sp"
             android:background="@drawable/main_button_drawable"
             app:layout_constraintEnd_toEndOf="@+id/btnManualWater"
