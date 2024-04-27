@@ -39,7 +39,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"Foodie\"";
+    final String WIFI_NAME = "\"SKYfiberBD2F\"";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog;
 

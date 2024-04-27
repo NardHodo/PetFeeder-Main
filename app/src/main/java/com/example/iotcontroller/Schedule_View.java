@@ -3,6 +3,7 @@ package com.example.iotcontroller;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.shawnlin.numberpicker.NumberPicker;
 
 
@@ -54,8 +56,9 @@ public class Schedule_View extends AppCompatActivity {
     }
     public void showAlarmEditor(){
         com.shawnlin.numberpicker.NumberPicker hourPicker, minutePicker, timePicker;
-        Button btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, cancelAlarm, confirmAlarm;
+        Button cancelAlarm, confirmAlarm;
         ImageButton backToManage;
+        MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday;
 
         BottomSheetDialog addAlarm = new BottomSheetDialog(this);
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_alarm_feature, null);
@@ -85,6 +88,108 @@ public class Schedule_View extends AppCompatActivity {
         timePicker.setDisplayedValues(time);
         timePicker.setContentDescription("AM and PM");
 
+        btnSunday = addAlarm.findViewById(R.id.Sunday);
+        btnMonday = addAlarm.findViewById(R.id.btnMonday);
+        btnTuesday = addAlarm.findViewById(R.id.btnTuesday);
+        btnWednesday = addAlarm.findViewById(R.id.btnWednesday);
+        btnThursday = addAlarm.findViewById(R.id.btnThursday);
+        btnFriday = addAlarm.findViewById(R.id.btnFriday);
+        btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
+
+        btnSunday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               btnSunday.setBackgroundColor(getColor(R.color.black));
+               btnMonday.setBackgroundColor(Color.TRANSPARENT);
+               btnTuesday.setBackgroundColor(Color.TRANSPARENT);
+               btnWednesday.setBackgroundColor(Color.TRANSPARENT);
+               btnThursday.setBackgroundColor(Color.TRANSPARENT);
+               btnFriday.setBackgroundColor(Color.TRANSPARENT);
+               btnSaturday.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
+
+        btnMonday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSunday.setBackgroundColor(Color.TRANSPARENT);
+                btnMonday.setBackgroundColor(getColor(R.color.black));
+                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
+                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
+                btnThursday.setBackgroundColor(Color.TRANSPARENT);
+                btnFriday.setBackgroundColor(Color.TRANSPARENT);
+                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
+
+        btnTuesday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSunday.setBackgroundColor(Color.TRANSPARENT);
+                btnMonday.setBackgroundColor(Color.TRANSPARENT);
+                btnTuesday.setBackgroundColor(getColor(R.color.black));
+                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
+                btnThursday.setBackgroundColor(Color.TRANSPARENT);
+                btnFriday.setBackgroundColor(Color.TRANSPARENT);
+                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
+
+        btnWednesday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSunday.setBackgroundColor(Color.TRANSPARENT);
+                btnMonday.setBackgroundColor(Color.TRANSPARENT);
+                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
+                btnWednesday.setBackgroundColor(getColor(R.color.black));
+                btnThursday.setBackgroundColor(Color.TRANSPARENT);
+                btnFriday.setBackgroundColor(Color.TRANSPARENT);
+                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
+
+        btnThursday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSunday.setBackgroundColor(Color.TRANSPARENT);
+                btnMonday.setBackgroundColor(Color.TRANSPARENT);
+                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
+                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
+                btnThursday.setBackgroundColor(getColor(R.color.black));
+                btnFriday.setBackgroundColor(Color.TRANSPARENT);
+                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
+
+        btnFriday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSunday.setBackgroundColor(Color.TRANSPARENT);
+                btnMonday.setBackgroundColor(Color.TRANSPARENT);
+                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
+                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
+                btnThursday.setBackgroundColor(Color.TRANSPARENT);
+                btnFriday.setBackgroundColor(getColor(R.color.black));
+                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
+            }
+        });
+
+        btnSaturday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnSunday.setBackgroundColor(Color.TRANSPARENT);
+                btnMonday.setBackgroundColor(Color.TRANSPARENT);
+                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
+                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
+                btnThursday.setBackgroundColor(Color.TRANSPARENT);
+                btnFriday.setBackgroundColor(Color.TRANSPARENT);
+                btnSaturday.setBackgroundColor(getColor(R.color.black));
+            }
+        });
+
+
+
+
         minutePicker.setFormatter(new NumberPicker.Formatter() {
             @Override
             public String format(int value) {
@@ -111,6 +216,8 @@ public class Schedule_View extends AppCompatActivity {
         }
         addAlarm.show();
     }
+
+
 
 
 }
