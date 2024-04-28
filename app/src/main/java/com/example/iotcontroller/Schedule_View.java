@@ -31,7 +31,7 @@ public class Schedule_View extends AppCompatActivity {
 
         //Button Function Declaration
         btnBack = findViewById(R.id.btnBackButton);
-        addSchedule = findViewById(R.id.btnAddSchedule);
+        addSchedule = findViewById(R.id.btnAddAlarm);
         //Back Button Function
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,12 +43,15 @@ public class Schedule_View extends AppCompatActivity {
         });
 
         //Redirect to Add Schedule Activity
+
         addSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAlarmEditor();
             }
         });
+
+
 
 
 

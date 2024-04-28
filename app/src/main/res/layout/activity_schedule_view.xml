@@ -33,13 +33,17 @@
             android:fontFamily="@font/lexend_bold"
             android:textColor="@color/card_view_color"
             android:textSize="20sp"/>
+
         <ImageButton
-            android:contentDescription="Add a Alarm Schedule"
-            android:src="@drawable/add_schedule"
             android:id="@+id/btnAddAlarm"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_gravity=""/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_marginEnd="1dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="Add a Alarm Schedule"
+            android:src="@drawable/plus" />
     </LinearLayout>
    <LinearLayout
        android:layout_width="match_parent"
