@@ -17,4 +17,10 @@
     <color name="darker_blue">#002A3C</color>
     <color name="button_color">#82CEEF</color>
 
+    <color name="day_selected">#82CEEF</color>
+    <color name="unchecked_thumb">#2F94BF</color>
+    <color name="checked_thumb">#FFFFFF</color>
+    <color name="unchecked_track">#FFFFFF</color>
+    <color name="checked_track">#1184B6</color>
+
 </resources>

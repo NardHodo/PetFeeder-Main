@@ -3,5 +3,6 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/lexend</item>
         <item>@font/lexend_bold</item>
+        <item>@font/lexend_deca</item>
     </array>
 </resources>

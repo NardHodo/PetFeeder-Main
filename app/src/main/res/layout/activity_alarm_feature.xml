@@ -111,7 +111,7 @@
                 android:textSize="20sp"
                 android:id="@+id/btnWednesday"/>
             <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
+                android:layout_width="60dp"
                 android:layout_height="48dp"
                 android:text="@string/Thursday"
                 android:id="@+id/btnThursday"
@@ -121,7 +121,7 @@
                 android:layout_height="48dp"
                 android:text="@string/Friday"
                 android:id="@+id/btnFriday"
-                android:textSize="20sp"/>
+                android:textSize="18sp"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"

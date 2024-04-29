@@ -100,7 +100,7 @@ public class Schedule_View extends AppCompatActivity {
         btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
 
         btnSunday.setOnClickListener(view -> {
-               btnSunday.setBackgroundColor(getColor(R.color.black));
+               btnSunday.setBackgroundColor(getColor(R.color.day_selected));
                btnMonday.setBackgroundColor(Color.TRANSPARENT);
                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
@@ -111,7 +111,7 @@ public class Schedule_View extends AppCompatActivity {
 
         btnMonday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(getColor(R.color.black));
+                btnMonday.setBackgroundColor(getColor(R.color.day_selected));
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
                 btnWednesday.setBackgroundColor(Color.TRANSPARENT);
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
@@ -122,7 +122,7 @@ public class Schedule_View extends AppCompatActivity {
         btnTuesday.setOnClickListener(view -> {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
-                btnTuesday.setBackgroundColor(getColor(R.color.black));
+                btnTuesday.setBackgroundColor(getColor(R.color.day_selected));
                 btnWednesday.setBackgroundColor(Color.TRANSPARENT);
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
@@ -133,7 +133,7 @@ public class Schedule_View extends AppCompatActivity {
                 btnSunday.setBackgroundColor(Color.TRANSPARENT);
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-                btnWednesday.setBackgroundColor(getColor(R.color.black));
+                btnWednesday.setBackgroundColor(getColor(R.color.day_selected));
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
@@ -144,7 +144,7 @@ public class Schedule_View extends AppCompatActivity {
                 btnMonday.setBackgroundColor(Color.TRANSPARENT);
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
                 btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-                btnThursday.setBackgroundColor(getColor(R.color.black));
+                btnThursday.setBackgroundColor(getColor(R.color.day_selected));
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
         });
@@ -155,7 +155,7 @@ public class Schedule_View extends AppCompatActivity {
                 btnTuesday.setBackgroundColor(Color.TRANSPARENT);
                 btnWednesday.setBackgroundColor(Color.TRANSPARENT);
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
-                btnFriday.setBackgroundColor(getColor(R.color.black));
+                btnFriday.setBackgroundColor(getColor(R.color.day_selected));
                 btnSaturday.setBackgroundColor(Color.TRANSPARENT);
         });
 
@@ -166,7 +166,7 @@ public class Schedule_View extends AppCompatActivity {
                 btnWednesday.setBackgroundColor(Color.TRANSPARENT);
                 btnThursday.setBackgroundColor(Color.TRANSPARENT);
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
-                btnSaturday.setBackgroundColor(getColor(R.color.black));
+                btnSaturday.setBackgroundColor(getColor(R.color.day_selected));
         });
 
 
