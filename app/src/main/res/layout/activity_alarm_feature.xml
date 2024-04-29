@@ -6,16 +6,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:paddingVertical="40dp"
-    android:background="@color/card_view_color"
+    android:background="@drawable/dialog_box_background"
+    android:paddingHorizontal="15dp"
     >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
+        android:layout_gravity="center"
         android:fontFamily="@font/lexend_bold"
-        android:text="Add an alarm"
-        android:layout_marginLeft="20dp"
+        android:text="ADD AN ALARM"
+        android:textFontWeight="1000"
         android:textColor="@color/white"
         android:textSize="20sp" />
 
@@ -91,43 +92,50 @@
                 android:layout_height="48dp"
                 android:text="@string/Sunday"
                 android:textSize="20sp"
-                android:id="@+id/Sunday"/>
+                android:id="@+id/Sunday"
+                style="@style/DayButtonBackground"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Monday"
                 android:id="@+id/btnMonday"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                style="@style/DayButtonBackground"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Tuesday"
                 android:id="@+id/btnTuesday"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                style="@style/DayButtonBackground"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Wednesday"
                 android:textSize="20sp"
-                android:id="@+id/btnWednesday"/>
+                android:id="@+id/btnWednesday"
+                style="@style/DayButtonBackground"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="60dp"
                 android:layout_height="48dp"
                 android:text="@string/Thursday"
                 android:id="@+id/btnThursday"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                style="@style/DayButtonBackground"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Friday"
                 android:id="@+id/btnFriday"
-                android:textSize="18sp"/>
+                android:textSize="18sp"
+                style="@style/DayButtonBackground"/>
             <com.google.android.material.button.MaterialButton
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Saturday"
                 android:id="@+id/btnSaturday"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                style="@style/DayButtonBackground"/>
 
 
 
@@ -136,45 +144,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:gravity="center">
+            android:paddingHorizontal="20dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCancelAlarm"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:text="CANCEL"
-                    android:textSize="20sp"
-                    app:backgroundTint="@color/button_color"
-                    app:cornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.137"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnAddAlarm"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:text="CONFIRM"
-                    android:textSize="20sp"
-                    app:cornerRadius="10dp"
-                    app:backgroundTint="@color/button_color"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.877"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelAlarm"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
+                android:text="CANCEL"
+                android:textSize="20sp"
+                app:backgroundTint="@color/button_color"
+                app:cornerRadius="10dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddAlarm"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:text="CONFIRM"
+                android:textSize="20sp"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/button_color" />
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </RelativeLayout>
 
 

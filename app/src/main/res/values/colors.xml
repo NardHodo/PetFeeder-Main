@@ -22,5 +22,6 @@
     <color name="checked_thumb">#FFFFFF</color>
     <color name="unchecked_track">#FFFFFF</color>
     <color name="checked_track">#1184B6</color>
+    <color name="cancel_buttons">#EC1616</color>
 
 </resources>

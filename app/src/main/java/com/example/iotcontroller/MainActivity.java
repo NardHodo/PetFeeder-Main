@@ -39,9 +39,11 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"TP-Link_2892\"";
+    final String WIFI_NAME = "\"SKYfiberBD2F\"";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
-    Dialog dispenseDialog;
+    Dialog dispenseDialog, warningDialog, connectedDialog;
+
+    TextView connectedWifi;
 
 
     Thread receiver;
@@ -103,7 +105,22 @@ public class MainActivity extends AppCompatActivity {
         btnCancel = dispenseDialog.findViewById(R.id.btnCancelDispense);
         Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dispenseDialog.setCancelable(false);
+
+
+        warningDialog = new Dialog(MainActivity.this);
+        warningDialog.setContentView(R.layout.activity_warning_dialog);
+        warningDialog.setCancelable(true);
+        warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dispenseDialog.setCancelable(true);
+
+        connectedDialog = new Dialog(MainActivity.this);
+        connectedDialog.setContentView(R.layout.connected_wifi_dialog);
+        connectedDialog.setCancelable(true);
+        connectedDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        connectedWifi = connectedDialog.findViewById(R.id.tvCurrentlyConnectedWifi);
+
         //endregion
+
 
 
         btnConnect.setOnClickListener(view -> getCurrentWifiSSID(this));
@@ -112,8 +129,10 @@ public class MainActivity extends AppCompatActivity {
 
         btnManage.setOnClickListener(view ->
         {
+
             Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
             startActivity(viewSchedule);
+
         });
         //region ESP8266 Communication Functions
         btnManualWater.setOnClickListener(view -> sendCommand("red"));
@@ -175,7 +194,9 @@ public class MainActivity extends AppCompatActivity {
                 ssid = wifiInfo.getSSID();
                 if(ssid.equals(WIFI_NAME)){
                     btnConnect.setText("Connected");
-                    Toast.makeText(getApplicationContext(), "Currently connected to " + ssid.replace("\"", ""), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Currently connected to " + ssid.replace("\"", ""), Toast.LENGTH_SHORT).show();
+                    connectedDialog.show();
+                    connectedWifi.setText(ssid.replace("\"", ""));
                     sendCommand("REPORTSTATUS:");
                     enableDisabledButtons(true);
                 }else{

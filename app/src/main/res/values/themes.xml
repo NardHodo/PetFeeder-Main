@@ -12,6 +12,11 @@
         <!-- Status bar color. -->
     </style>
 
+    <style name="DayButtonBackground" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:backgroundTint">@color/card_view_color</item>
+        <item name="android:stateListAnimator">@null</item> <!-- Disable the default ripple effect -->
+    </style>
+
   
 
 </resources>
