@@ -21,6 +21,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 import android.Manifest;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.ColorResourcesOverride;
 
 import okhttp3.OkHttpClient;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     final String WIFI_NAME = "\"SKYfiberBD2F\"";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
+
+    MaterialButton btnCloseConnectionInfo, btnDisconnect;
 
     TextView connectedWifi;
 
@@ -119,9 +123,17 @@ public class MainActivity extends AppCompatActivity {
         connectedDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         connectedWifi = connectedDialog.findViewById(R.id.tvCurrentlyConnectedWifi);
 
+        //Connection Dialog Buttons
+        btnCloseConnectionInfo = connectedDialog.findViewById(R.id.btnCloseDisconnect);
+        btnDisconnect = connectedDialog.findViewById(R.id.btnDisconnect);
+
+        btnCloseConnectionInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                connectedDialog.dismiss();
+            }
+        });
         //endregion
-
-
 
         btnConnect.setOnClickListener(view -> getCurrentWifiSSID(this));
 

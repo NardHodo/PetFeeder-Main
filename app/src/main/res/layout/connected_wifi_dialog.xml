@@ -55,21 +55,24 @@
             android:layout_marginHorizontal="40dp">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancelDisconnect"
+                android:id="@+id/btnCloseDisconnect"
                 android:layout_width="120dp"
                 android:layout_height="60dp"
                 app:backgroundTint="@color/card_view_color"
                 app:cornerRadius="15dp"
-                android:text="@string/cancel_button"
+                android:text="Close"
+                android:textAllCaps="false"
                 android:layout_alignParentStart="true"/>
 
             <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="60dp"
                 android:layout_alignParentEnd="true"
                 app:cornerRadius="15dp"
                 app:backgroundTint="@color/cancel_buttons"
-                android:text="Disconnect"/>
+                android:text="Disconnect"
+                android:textAllCaps="false"
+                android:id="@+id/btnDisconnect"/>
         </RelativeLayout>
     </LinearLayout>
 

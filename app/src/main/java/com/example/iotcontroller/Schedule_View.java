@@ -1,6 +1,7 @@
 package com.example.iotcontroller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 
 import android.graphics.Color;
@@ -11,10 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.shawnlin.numberpicker.NumberPicker;
+
+import org.w3c.dom.Text;
 
 
 public class Schedule_View extends AppCompatActivity {
@@ -22,6 +26,13 @@ public class Schedule_View extends AppCompatActivity {
     Button btnBack;
     ImageButton addSchedule;
     String[] time = {"AM","PM"};
+    com.shawnlin.numberpicker.NumberPicker hourPicker, minutePicker, timePicker;
+    Button cancelAlarm, confirmAlarm;
+    ImageButton backToManage;
+    MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm;
+    CardView alarm;
+    int alarmCount = 0;
+    TextView alarmTime, repeat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +69,6 @@ public class Schedule_View extends AppCompatActivity {
 
     }
     public void showAlarmEditor(){
-        com.shawnlin.numberpicker.NumberPicker hourPicker, minutePicker, timePicker;
-        Button cancelAlarm, confirmAlarm;
-        ImageButton backToManage;
-        MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday;
-
         BottomSheetDialog addAlarm = new BottomSheetDialog(this);
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_alarm_feature, null);
         addAlarm.setContentView(contentView);
@@ -98,6 +104,7 @@ public class Schedule_View extends AppCompatActivity {
         btnThursday = addAlarm.findViewById(R.id.btnThursday);
         btnFriday = addAlarm.findViewById(R.id.btnFriday);
         btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
+        btnAddAlarm = addAlarm.findViewById(R.id.btnAddAlarm);
 
         btnSunday.setOnClickListener(view -> {
                btnSunday.setBackgroundColor(getColor(R.color.day_selected));
@@ -168,9 +175,15 @@ public class Schedule_View extends AppCompatActivity {
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(getColor(R.color.day_selected));
         });
+        btnAddAlarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewAlarm();
+                addAlarm.dismiss();
+            }
+        });
 
-
-
+        //backToManage.setOnClickListener(v -> finish());
 
         minutePicker.setFormatter(new NumberPicker.Formatter() {
             @Override
@@ -197,6 +210,28 @@ public class Schedule_View extends AppCompatActivity {
             }
         }
         addAlarm.show();
+    }
+
+    public void addNewAlarm(){
+
+        alarm = findViewById(R.id.cvAlarmSchedule);
+        alarmTime = alarm.findViewById(R.id.tvAssignedTime);
+        repeat = alarm.findViewById(R.id.tvAlarmRepeat);
+
+        CardView nextAlarmBox = new CardView(getApplicationContext());
+        TextView nextAlarmTime = new TextView(getApplicationContext());
+        TextView repeat = new TextView(getApplicationContext());
+
+        nextAlarmBox.setLayoutParams(alarm.getLayoutParams());
+        nextAlarmBox.setCardBackgroundColor(alarm.getCardBackgroundColor());
+        nextAlarmBox.setRadius(alarm.getRadius());
+        nextAlarmBox.setId(alarmCount++);
+
+
+        ViewGroup parentLayout = (ViewGroup) alarm.getParent();
+        int index = parentLayout.indexOfChild(alarm);
+        parentLayout.addView(nextAlarmBox, index + 1);
+
     }
 
 

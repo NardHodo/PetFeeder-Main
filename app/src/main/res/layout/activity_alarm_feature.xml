@@ -91,6 +91,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Sunday"
+                app:cornerRadius="30dp"
                 android:textSize="20sp"
                 android:id="@+id/Sunday"
                 style="@style/DayButtonBackground"/>
@@ -98,6 +99,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Monday"
+                app:cornerRadius="30dp"
                 android:id="@+id/btnMonday"
                 android:textSize="20sp"
                 style="@style/DayButtonBackground"/>
@@ -105,6 +107,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Tuesday"
+                app:cornerRadius="30dp"
                 android:id="@+id/btnTuesday"
                 android:textSize="20sp"
                 style="@style/DayButtonBackground"/>
@@ -112,6 +115,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Wednesday"
+                app:cornerRadius="30dp"
                 android:textSize="20sp"
                 android:id="@+id/btnWednesday"
                 style="@style/DayButtonBackground"/>
@@ -119,6 +123,7 @@
                 android:layout_width="60dp"
                 android:layout_height="48dp"
                 android:text="@string/Thursday"
+                app:cornerRadius="30dp"
                 android:id="@+id/btnThursday"
                 android:textSize="20sp"
                 style="@style/DayButtonBackground"/>
@@ -126,6 +131,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Friday"
+                app:cornerRadius="30dp"
                 android:id="@+id/btnFriday"
                 android:textSize="18sp"
                 style="@style/DayButtonBackground"/>
@@ -133,6 +139,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="@string/Saturday"
+                app:cornerRadius="30dp"
                 android:id="@+id/btnSaturday"
                 android:textSize="20sp"
                 style="@style/DayButtonBackground"/>
