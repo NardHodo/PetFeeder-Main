@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Paano lagyan ng putang inang function yang switch?? -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@color/mainAppColor"
     android:scrollbars="vertical">
 
@@ -13,87 +11,99 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:layout_alignParentTop="true"
+        android:id="@+id/scheduleHeader">
 
         <Button
-            android:contentDescription="Back to Dashboard"
             android:id="@+id/btnBackButton"
             android:layout_width="54dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:background="@android:color/transparent"
+            android:contentDescription="Back to Dashboard"
             android:drawableLeft="@drawable/back_arrow" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="SCHEDULE"
             android:layout_gravity="center"
             android:fontFamily="@font/lexend_bold"
+            android:padding="10dp"
+            android:text="SCHEDULE"
             android:textColor="@color/card_view_color"
-            android:textSize="20sp"/>
-        <ImageButton
-            android:contentDescription="Add a Alarm Schedule"
-            android:src="@drawable/add_schedule"
-            android:id="@+id/btnAddAlarm"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity=""/>
+            android:textSize="20sp" />
     </LinearLayout>
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="vertical">
-       <androidx.cardview.widget.CardView
-           android:id="@+id/cvScheduleItem"
-           android:layout_width="match_parent"
-           android:layout_height="90dp"
-           android:layout_margin="20dp"
-           app:cardBackgroundColor="@color/card_view_color"
-           app:cardCornerRadius="20dp"
-           android:elevation="10dp">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scheduleHeader">
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:padding="10dp"
-               android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-               <!-- Left side container -->
-               <LinearLayout
-                   android:layout_width="150dp"
-                   android:layout_height="match_parent"
-                   android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvAlarmSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_margin="10dp"
+                android:elevation="10dp"
+                app:cardBackgroundColor="@color/card_view_color"
+                app:cardCornerRadius="20dp">
 
-                   <TextView
-                       android:id="@+id/cvAssignedTime"
-                       android:text="00:00"
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:fontFamily="@font/lexend_bold"
-                       android:textColor="@color/black"
-                       android:textSize="25sp"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
 
-                   <TextView
-                       android:layout_width="wrap_content"
-                       android:layout_height="wrap_content"
-                       android:text="ONCE"
-                       android:fontFamily="@font/lexend"
-                       android:textColor="@color/black"/>
+                    <TextView
+                        android:id="@+id/tvAssignedTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lexend"
+                        android:text="00:00"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
+                    <TextView
+                        android:id="@+id/tvAlarmRepeat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lexend_deca"
+                        android:text="ONCE"
+                        android:textColor="@color/white"
+                        android:layout_below="@id/tvAssignedTime"/>
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/scheduleSwitch"
+                        android:layout_width="167dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:thumb="@drawable/thumb"
+                        app:track="@drawable/track"
+                        android:layout_alignParentEnd="true"/>
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+    <ImageButton
+        android:id="@+id/btnAddAlarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:contentDescription="Add a Alarm Schedule"
+        android:src="@drawable/add_schedule"
+        android:background="@null"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        />
 
-               </LinearLayout>
-
-               <!-- Right side: Switch positioned at the end -->
-               <Switch
-                   android:id="@+id/scheduleSwitch"
-                   android:layout_width="0dp"
-                   android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:layout_gravity="end|center_vertical"/>
 
 
-           </LinearLayout>
-       </androidx.cardview.widget.CardView>
-   </LinearLayout>
-</LinearLayout>
+
+
+
+</RelativeLayout>
