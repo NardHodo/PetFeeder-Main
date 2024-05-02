@@ -15,8 +15,8 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/wifi"
-            android:contentDescription="WIFI"/>
+            android:contentDescription="@string/wifi_icon"
+            android:src="@drawable/wifi" />
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,13 +29,14 @@
             android:id="@+id/tvDispenseWarningMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
-            android:text="Currently Connected To:"
+            android:fontFamily="@font/lexend"
+            android:text="@string/connection_message"
             android:textColor="@color/black"
-            android:layout_gravity="center"
-            android:textSize="20sp"
-            android:fontFamily="@font/lexend"/>
+            android:textSize="20sp" />
+
         <TextView
             android:id="@+id/tvCurrentlyConnectedWifi"
             android:layout_width="wrap_content"
@@ -60,7 +61,7 @@
                 android:layout_height="60dp"
                 app:backgroundTint="@color/card_view_color"
                 app:cornerRadius="15dp"
-                android:text="Close"
+                android:text="@string/close"
                 android:textAllCaps="false"
                 android:layout_alignParentStart="true"/>
 
@@ -70,7 +71,7 @@
                 android:layout_alignParentEnd="true"
                 app:cornerRadius="15dp"
                 app:backgroundTint="@color/cancel_buttons"
-                android:text="Disconnect"
+                android:text="@string/disconnect"
                 android:textAllCaps="false"
                 android:id="@+id/btnDisconnect"/>
         </RelativeLayout>

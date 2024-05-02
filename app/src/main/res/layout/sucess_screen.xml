@@ -15,12 +15,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:contentDescription="@string/success_icon"
             android:src="@drawable/success" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ivSucessIcon"
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
@@ -33,12 +32,6 @@
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
             app:cornerRadius="20dp"
-            android:text="Back to Dashboard"/>
-
-
-
-
+            android:text="@string/back_to_dashboard"/>
     </LinearLayout>
-
-
 </RelativeLayout>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:fontFamily="@font/lexend_bold"
-        android:text="CONDITION"
+        android:text="@string/condition"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"
         />
@@ -59,7 +59,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="3dp"
                     android:fontFamily="@font/lexend"
-                    android:text="CONNECT"
+                    android:text="@string/connect_button"
                     android:textSize="10sp"
                     android:layout_alignParentEnd="true"/>
             </RelativeLayout>
@@ -85,7 +85,7 @@
                         android:layout_marginEnd="10dp"
                         android:src="@drawable/final_food_icon" />
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/tvFoodLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lexend"
@@ -104,7 +104,7 @@
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="15sp"
-                        android:layout_below="@+id/textView2"
+                        android:layout_below="@+id/tvFoodLevel"
                         android:layout_centerHorizontal="true"/>
                 </RelativeLayout>
                 <View
@@ -124,7 +124,7 @@
                         android:layout_marginEnd="10dp"
                         android:src="@drawable/water" />
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/tvWaterLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lexend"
@@ -143,7 +143,7 @@
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="15sp"
-                        android:layout_below="@+id/textView3"
+                        android:layout_below="@+id/tvWaterLevel"
                         android:layout_centerHorizontal="true"/>
                 </RelativeLayout>
                 <View
@@ -163,7 +163,7 @@
                         android:layout_marginEnd="10dp"
                         android:src="@drawable/bulb" />
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/tvLightsLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/lexend"
@@ -182,7 +182,7 @@
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="15sp"
-                        android:layout_below="@+id/textView4"
+                        android:layout_below="@+id/tvLightsLabel"
                         android:layout_centerHorizontal="true"/>
                 </RelativeLayout>
             </LinearLayout>
@@ -193,7 +193,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="SCHEDULE"
+        android:text="@string/schedule"
         android:fontFamily="@font/lexend_bold"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"/>
@@ -234,7 +234,7 @@
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="18dp"
                     android:fontFamily="@font/lexend"
-                    android:text="Upcoming Meal Schedule:"
+                    android:text="@string/upcoming"
                     android:textColor="@color/card_view_color"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -309,7 +309,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/main_button_drawable"
             android:fontFamily="@font/lexend"
-            android:text="Open Lights"
+            android:text="@string/open_lights"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"
@@ -325,7 +325,7 @@
             android:layout_marginEnd="16dp"
             android:background="@drawable/main_button_drawable"
             android:fontFamily="@font/lexend"
-            android:text="Drink"
+            android:text="@string/drink"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textIsSelectable="true"
@@ -343,7 +343,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="27dp"
             android:background="@drawable/main_button_drawable"
-            android:text="Feed"
+            android:text="@string/dispense"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"
@@ -358,7 +358,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/main_button_drawable"
-            android:text="Automatic"
+            android:text="@string/automatic"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"

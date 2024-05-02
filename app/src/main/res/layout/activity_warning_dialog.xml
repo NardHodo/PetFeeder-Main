@@ -10,12 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:background="@drawable/dialog_box_background">
-        
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:src="@drawable/warning"
-            android:layout_centerInParent="true"/>
+            android:contentDescription="@string/warning_icon"/>
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,7 +44,7 @@
             app:cornerRadius="15dp"
             app:backgroundTint="@color/cancel_buttons"
             android:layout_marginTop="10dp"
-            android:text="Confirm"
+            android:text="@string/confirm_button"
             android:textAlignment="center"/>
 
     </LinearLayout>
