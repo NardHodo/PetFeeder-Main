@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class Schedule_View extends AppCompatActivity {
     ImageButton backToManage;
     MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm;
     CardView alarm;
+    String alarmContent;
     int alarmCount = 0;
     String alarmId = "cvNewAlarm", switchID="swNewAlarm";
     int finalAlarmID, finalSwitchID;
@@ -46,6 +48,10 @@ public class Schedule_View extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_view);
 
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            alarmContent = extras.getString("Alarm");
+        }
 
         //Button Function Declaration
         btnBack = findViewById(R.id.btnBackButton);
@@ -62,18 +68,9 @@ public class Schedule_View extends AppCompatActivity {
 
         //Redirect to Add Schedule Activity
 
-        addSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        addSchedule.setOnClickListener(view -> {
                 showAlarmEditor();
-            }
         });
-
-
-
-
-
-
     }
     public void showAlarmEditor(){
         BottomSheetDialog addAlarm = new BottomSheetDialog(this);
@@ -186,6 +183,7 @@ public class Schedule_View extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addNewAlarm();
+                Log.d("Black", minutePicker.getValue() + "");
                 addAlarm.dismiss();
             }
         });
