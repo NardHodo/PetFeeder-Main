@@ -17,13 +17,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.shawnlin.numberpicker.NumberPicker;
 
-import org.w3c.dom.Text;
 
 
 public class Schedule_View extends AppCompatActivity {
@@ -32,14 +32,11 @@ public class Schedule_View extends AppCompatActivity {
     ImageButton addSchedule;
     String[] time = {"AM","PM"};
     com.shawnlin.numberpicker.NumberPicker hourPicker, minutePicker, timePicker;
-    Button cancelAlarm, confirmAlarm;
     ImageButton backToManage;
-    MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm;
-    CardView alarm;
+    MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm,  cancelAlarm, confirmAlarm;
     String alarmContent;
     int alarmCount = 0, finalAlarmID, finalSwitchID;
-    String alarmId = "cvNewAlarm", switchID="swNewAlarm";
-    TextView alarmTime, repeat;
+    TextView alarmDay;
 
     SwitchCompat scheduleSetter;
 
@@ -68,8 +65,11 @@ public class Schedule_View extends AppCompatActivity {
 
         //Redirect to Add Schedule Activity
 
-        addSchedule.setOnClickListener(view -> {
+        addSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 showAlarmEditor();
+            }
         });
     }
     public void showAlarmEditor(){
@@ -77,8 +77,6 @@ public class Schedule_View extends AppCompatActivity {
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_alarm_feature, null);
         addAlarm.setContentView(contentView);
         addAlarm.setCancelable(true);
-
-
         addAlarm.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         cancelAlarm = addAlarm.findViewById(R.id.btnCancelAlarm);
@@ -179,16 +177,18 @@ public class Schedule_View extends AppCompatActivity {
                 btnFriday.setBackgroundColor(Color.TRANSPARENT);
                 btnSaturday.setBackgroundColor(getColor(R.color.day_selected));
         });
-        btnAddAlarm.setOnClickListener(new View.OnClickListener() {
+        confirmAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addNewAlarm();
-                Log.d("Black", minutePicker.getValue() + "");
+                /*
+                Log.d("Black", minutePicker.getValue() + ""); //Commented Out for Debuging Purposes */
                 addAlarm.dismiss();
+
             }
         });
 
-        //backToManage.setOnClickListener(v -> finish());
+        //cancelAlarm.setOnClickListener(v -> finish()); //Commented Out for Debuging Purposes
 
         minutePicker.setFormatter(new NumberPicker.Formatter() {
             @Override
@@ -222,6 +222,7 @@ public class Schedule_View extends AppCompatActivity {
         //Get Parent Elements
         CardView alarm = findViewById(R.id.cvAlarmSchedule);
         TextView alarmTime = alarm.findViewById(R.id.tvAssignedTime);
+        alarmDay = findViewById(R.id.tvAssignedDay);
         SwitchCompat scheduleSetter = alarm.findViewById(R.id.scheduleSwitch);
         RelativeLayout alarmContainer = alarm.findViewById(R.id.rlAlarmContainer);
 
@@ -230,23 +231,42 @@ public class Schedule_View extends AppCompatActivity {
         RelativeLayout newAlarmContainer = new RelativeLayout(this);
         TextView nextAlarmTime = new TextView(this);
         SwitchCompat newSwitch = new SwitchCompat(this);
-
+        TextView nextAlarmDay = new TextView(this);
 
         //Set new Element's Unique ID (I think.....)
         finalAlarmID = View.generateViewId();
         finalSwitchID = View.generateViewId();
+
+        //Layout Params for Time and Day TextViews
+        RelativeLayout.LayoutParams newDayParams = (RelativeLayout.LayoutParams) alarmDay.getLayoutParams();
+        newDayParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, nextAlarmTime.getId());
+        newDayParams.setMargins(0,0,0, 40);
+
+        RelativeLayout.LayoutParams newTimeParams = (RelativeLayout.LayoutParams) alarmTime.getLayoutParams();
+        newTimeParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, nextAlarmTime.getId());
+        newTimeParams.setMargins(0, 40, 0, 0);
 
 
         // Copy properties from existing views
         nextAlarmBox.setLayoutParams(alarm.getLayoutParams());
         nextAlarmBox.setCardBackgroundColor(alarm.getCardBackgroundColor());
         nextAlarmBox.setRadius(alarm.getRadius());
-        nextAlarmTime.setLayoutParams(alarmTime.getLayoutParams());
-        nextAlarmTime.setTextColor(alarmTime.getTextColors());
+
+
         //Sample Time
+        nextAlarmTime.setLayoutParams(newTimeParams);
+        nextAlarmTime.setTextColor(alarmTime.getTextColors());
         nextAlarmTime.setText("00:00");
         nextAlarmTime.setTextSize(30);
         nextAlarmTime.setTypeface(alarmTime.getTypeface());
+
+        //Sample Day
+        nextAlarmDay.setLayoutParams(newDayParams);
+        nextAlarmDay.setText("Monday");
+        nextAlarmDay.setTextSize(15);
+        nextAlarmDay.setTypeface(alarmDay.getTypeface());
+        nextAlarmDay.setTextColor(alarmDay.getTextColors());
+
 
         //Relative Layout inside the Cardview
         newAlarmContainer.setLayoutParams(alarmContainer.getLayoutParams());
@@ -279,6 +299,7 @@ public class Schedule_View extends AppCompatActivity {
         int index = parentLayout.indexOfChild(alarm);
         newAlarmContainer.addView(nextAlarmTime);
         newAlarmContainer.addView(newSwitch);
+        newAlarmContainer.addView(nextAlarmDay);
         nextAlarmBox.addView(newAlarmContainer);
         nextAlarmBox.setId(finalAlarmID);
         Log.d("IDCHECKER", finalSwitchID + "");

@@ -41,7 +41,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"Foodie\"";
+    final String WIFI_NAME = "\"SKYfiberBD2F\"";
     String alarmContent = "C";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
@@ -143,7 +143,9 @@ public class MainActivity extends AppCompatActivity {
         btnManage.setOnClickListener(view ->
         {
 
-            sendCommand("alarm");
+            //sendCommand("alarm");
+            Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
+            startActivity(viewSchedule);
 
 
         });
