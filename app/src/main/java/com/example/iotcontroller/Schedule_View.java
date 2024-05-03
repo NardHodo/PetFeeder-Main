@@ -6,6 +6,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,9 +37,8 @@ public class Schedule_View extends AppCompatActivity {
     MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm;
     CardView alarm;
     String alarmContent;
-    int alarmCount = 0;
+    int alarmCount = 0, finalAlarmID, finalSwitchID;
     String alarmId = "cvNewAlarm", switchID="swNewAlarm";
-    int finalAlarmID, finalSwitchID;
     TextView alarmTime, repeat;
 
     SwitchCompat scheduleSetter;
@@ -233,8 +233,8 @@ public class Schedule_View extends AppCompatActivity {
 
 
         //Set new Element's Unique ID (I think.....)
-        finalAlarmID = getResources().getIdentifier(alarmId, "string", getPackageName());
-        finalSwitchID = getResources().getIdentifier(switchID, "string", getPackageName());
+        finalAlarmID = View.generateViewId();
+        finalSwitchID = View.generateViewId();
 
 
         // Copy properties from existing views
@@ -254,6 +254,19 @@ public class Schedule_View extends AppCompatActivity {
 
         //Switch
         newSwitch.setLayoutParams(scheduleSetter.getLayoutParams());
+        SwitchAction switchOption = new SwitchAction(getApplicationContext());
+        newSwitch.setOnClickListener(view -> {
+            Log.d("MYID", finalSwitchID + "MU");
+
+            Log.d("ISOPEN",switchOption.getSwitchStatus() + "");
+            if(switchOption.getSwitchStatus()){
+                Log.d("ISOPEN", finalSwitchID + " YES");
+                switchOption.setSwitchStatus();
+            }else{
+                switchOption.setSwitchStatus();
+//                Log.d("ISOPEN", finalSwitchID + "  NO");
+            }
+        });
 
         //Set switch drawables to context only to prevent change of color with other switches
         newSwitch.setThumbDrawable(ContextCompat.getDrawable(this, R.drawable.thumb));
@@ -261,20 +274,32 @@ public class Schedule_View extends AppCompatActivity {
 
         // Add views to their respective parent
         alarmCount++;
-        newSwitch.setId(finalSwitchID + alarmCount);
+        newSwitch.setId(finalSwitchID);
         ViewGroup parentLayout = (ViewGroup) alarm.getParent();
         int index = parentLayout.indexOfChild(alarm);
         newAlarmContainer.addView(nextAlarmTime);
         newAlarmContainer.addView(newSwitch);
         nextAlarmBox.addView(newAlarmContainer);
-        nextAlarmBox.setId(finalAlarmID + alarmCount);
+        nextAlarmBox.setId(finalAlarmID);
+        Log.d("IDCHECKER", finalSwitchID + "");
         parentLayout.addView(nextAlarmBox, index + 1);
 
 
 
     }
+}
 
+class SwitchAction extends View{
+    boolean isOpen = true;
+    public SwitchAction(Context context){
+        super(context);
+    }
+    boolean getSwitchStatus(){
+        return isOpen;
+    }
 
-
-
+    void setSwitchStatus(){
+        isOpen = !isOpen;
+        invalidate();
+    }
 }
