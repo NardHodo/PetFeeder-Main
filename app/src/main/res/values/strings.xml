@@ -38,6 +38,7 @@
     <string name="success_icon">Dispensing Success</string>
     <string name="dog_food_icon">Dispense Food</string>
     <string name="alarm_header">ADD AN ALARM</string>
+    <string name="alarm_editor_header">Alarm Settings</string>
 
     <!-- Cardview Elements-->
     <string name="upcoming">Upcoming Meal Schedule:</string>

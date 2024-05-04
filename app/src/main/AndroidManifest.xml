@@ -20,7 +20,9 @@
         android:theme="@style/Theme.PetFeederApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".Alarm_Settings"
+            android:exported="false" />
         <activity
             android:name=".Dispense_Loading_Activity"
             android:exported="false" />

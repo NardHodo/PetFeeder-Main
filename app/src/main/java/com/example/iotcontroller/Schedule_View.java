@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -307,6 +307,7 @@ public class Schedule_View extends AppCompatActivity {
 
 
 
+
     }
 }
 
@@ -324,3 +325,53 @@ class SwitchAction extends View{
         invalidate();
     }
 }
+
+/*
+class EditAlarm extends View {
+
+    private Schedule_View newAlarm;
+
+    long touchStart = 0;
+    long holdTime = 1000;
+
+    public EditAlarm(CardView nextAlarmBox){
+        newAlarm = new (new)
+    }
+
+    nextAlarmBox.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+
+                }
+                return false;
+            }
+        });
+}
+
+ */
+
+/*
+
+class AlarmBox extends CardView{
+
+    private CardView alarmBox;
+    public AlarmBox(Context context){
+        this(context, null);
+        int idNum;
+        String idName;
+
+    }
+
+   public AlarmBox(Context context, AttributeSet attrs){
+        this(context, attrs);
+   }
+
+    public void initialize(CardView Alarmbox){
+
+    }
+
+}
+
+ */
