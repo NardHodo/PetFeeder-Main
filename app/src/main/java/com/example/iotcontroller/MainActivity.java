@@ -41,7 +41,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"VMW 5Grams\"";
+    final String WIFI_NAME = "\"SKYfiberBD2F\"";
     String alarmContent = "C";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;

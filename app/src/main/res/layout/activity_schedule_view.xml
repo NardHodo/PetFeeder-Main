@@ -6,11 +6,10 @@
     android:background="@color/mainAppColor"
     android:scrollbars="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:orientation="horizontal"
-        android:padding="5dp"
+        android:gravity="center_vertical"
         android:layout_alignParentTop="true"
         android:id="@+id/scheduleHeader">
 
@@ -31,8 +30,16 @@
             android:padding="10dp"
             android:text="@string/schedule_header"
             android:textColor="@color/card_view_color"
-            android:textSize="20sp" />
-    </LinearLayout>
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/btnBackButton"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="20dp"
+            android:src="@drawable/list_check"/>
+    </RelativeLayout>
     <ScrollView
         android:id="@+id/svAlarmScrollable"
         android:layout_width="match_parent"
@@ -53,8 +60,7 @@
                 android:elevation="10dp"
                 android:layout_marginBottom="20dp"
                 app:cardBackgroundColor="@color/card_view_color"
-                app:cardCornerRadius="20dp"
-                android:visibility="gone">
+                app:cardCornerRadius="20dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -78,10 +84,17 @@
                         android:layout_below="@+id/tvAssignedTime"
                         android:text="Day Indicated"
                         android:textSize="15sp"/>
+                    <CheckBox
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:button="@drawable/pet_feeder_checkbox"
+                        android:layout_toLeftOf="@+id/scheduleSwitch"
+                        android:layout_centerVertical="true"
+                        android:layout_marginHorizontal="10dp"/>
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/scheduleSwitch"
-                        android:layout_width="167dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"

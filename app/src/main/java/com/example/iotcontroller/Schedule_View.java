@@ -7,9 +7,11 @@ import androidx.core.content.ContextCompat;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +37,7 @@ public class Schedule_View extends AppCompatActivity {
     ImageButton backToManage;
     MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm,  cancelAlarm, confirmAlarm;
     String alarmContent;
+    int selectedCardview = 123;
     int alarmCount = 0, finalAlarmID, finalSwitchID;
     TextView alarmDay;
 
@@ -302,12 +305,9 @@ public class Schedule_View extends AppCompatActivity {
         newAlarmContainer.addView(nextAlarmDay);
         nextAlarmBox.addView(newAlarmContainer);
         nextAlarmBox.setId(finalAlarmID);
+        nextAlarmBox.setClickable(true);
         Log.d("IDCHECKER", finalSwitchID + "");
         parentLayout.addView(nextAlarmBox, index + 1);
-
-
-
-
     }
 }
 
@@ -327,51 +327,27 @@ class SwitchAction extends View{
 }
 
 /*
-class EditAlarm extends View {
+class Alarmbox extends CardView {
+    private CardView alarmItem;
+    private  ViewGroup.LayoutParams layoutParams;
 
-    private Schedule_View newAlarm;
-
-    long touchStart = 0;
-    long holdTime = 1000;
-
-    public EditAlarm(CardView nextAlarmBox){
-        newAlarm = new (new)
+    public Alarmbox(CardView alarmItem, ViewGroup.LayoutParams layoutParams){
+        super(alarmItem.getContext());
+        this.alarmItem = alarmItem;
+        this.setLayoutParams(layoutParams);
     }
 
-    nextAlarmBox.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
+    public void setAlarmItem(CardView alarmItem){
+        this.alarmItem = alarmItem;
+    }
 
-                }
-                return false;
-            }
-        });
+    public CardView getAlarmItem(){
+        return alarmItem;
+    }
+
+    public void setLayoutParams(ViewGroup.LayoutParams layoutParams){
+        this.layoutParams = layoutParams;
+        this.setLayoutParams(layoutParams);
+    }
 }
-
- */
-
-/*
-
-class AlarmBox extends CardView{
-
-    private CardView alarmBox;
-    public AlarmBox(Context context){
-        this(context, null);
-        int idNum;
-        String idName;
-
-    }
-
-   public AlarmBox(Context context, AttributeSet attrs){
-        this(context, attrs);
-   }
-
-    public void initialize(CardView Alarmbox){
-
-    }
-
-}
-
- */
+*/
