@@ -1,17 +1,28 @@
 package com.example.iotcontroller;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -23,218 +34,169 @@ import org.w3c.dom.Text;
 
 public class Schedule_View extends AppCompatActivity {
 
-    Button btnBack;
-    ImageButton addSchedule;
-    String[] time = {"AM","PM"};
-    com.shawnlin.numberpicker.NumberPicker hourPicker, minutePicker, timePicker;
-    Button cancelAlarm, confirmAlarm;
-    ImageButton backToManage;
-    MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday, btnAddAlarm;
-    CardView alarm;
-    int alarmCount = 0;
-    TextView alarmTime, repeat;
-
+    private BottomSheetDialog addAlarm;
+    private Button btnCancelAlarmAdd, btnConfirmAlarmAdd;
+    private NumberPicker hourPicker, minPicker, amORpmPicker;
+    private int selectedHour = 0, selectedMinute = 0;
+    ImageButton  btnAddAlarm;
+    String[] time = {"AM", "PM"};
+    Button btnBacktoManage;
+    CardView alarmBox;
+    TextView alarmTime, alarmDay;
+    SwitchCompat alarmSwitch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_view);
+        initalizeElements();
+    }
 
 
-        //Button Function Declaration
-        btnBack = findViewById(R.id.btnBackButton);
-        addSchedule = findViewById(R.id.btnAddAlarm);
-        //Back Button Function
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overridePendingTransition(R.anim.exit_anim, R.anim.no_animation); // Use a blank no_animation for the entering activity
-
-                finish();
-            }
-        });
-
-        //Redirect to Add Schedule Activity
-
-        addSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showAlarmEditor();
-            }
-        });
-
-
-
+    public void initalizeElements(){
+        alarmBox = findViewById(R.id.cvAlarmSchedule);
+        alarmTime = findViewById(R.id.tvAssignedTime);
+        alarmDay = findViewById(R.id.tvAssignedDay);
+        alarmSwitch = findViewById(R.id.scheduleSwitch);
+        btnBacktoManage = findViewById(R.id.btnBackButton);
+        btnAddAlarm = findViewById(R.id.btnAddAlarm);
+        btnAddAlarm.setOnClickListener(v -> displayAlarmEditor());
+        btnBacktoManage.setOnClickListener(v -> finish());
+        addAlarm = new BottomSheetDialog(this);
 
 
 
     }
-    public void showAlarmEditor(){
-        BottomSheetDialog addAlarm = new BottomSheetDialog(this);
+
+    void displayAlarmEditor(){
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_alarm_feature, null);
         addAlarm.setContentView(contentView);
         addAlarm.setCancelable(true);
-
-
         addAlarm.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        cancelAlarm = addAlarm.findViewById(R.id.btnCancelAlarm);
-        confirmAlarm = addAlarm.findViewById(R.id.btnAddAlarm);
-
-        cancelAlarm.setBackgroundColor(getColor(R.color.dialog_boxes_button));
-        confirmAlarm.setBackgroundColor(getColor(R.color.dialog_boxes_button));
-
-
-        hourPicker = addAlarm.findViewById(R.id.hourPicker);
-        hourPicker.setMinValue(01);
-        hourPicker.setMaxValue(12);
-
-        minutePicker = addAlarm.findViewById(R.id.minPicker);
-        minutePicker.setMinValue(00);
-        minutePicker.setMaxValue(59);
-
-        timePicker = addAlarm.findViewById(R.id.AM_PM_Picker);
-        timePicker.setMinValue(1);
-        timePicker.setDisplayedValues(time);
-        timePicker.setContentDescription("AM and PM");
-
-        btnSunday = addAlarm.findViewById(R.id.Sunday);
-        btnMonday = addAlarm.findViewById(R.id.btnMonday);
-        btnTuesday = addAlarm.findViewById(R.id.btnTuesday);
-        btnWednesday = addAlarm.findViewById(R.id.btnWednesday);
-        btnThursday = addAlarm.findViewById(R.id.btnThursday);
-        btnFriday = addAlarm.findViewById(R.id.btnFriday);
-        btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
-        btnAddAlarm = addAlarm.findViewById(R.id.btnAddAlarm);
-
-        btnSunday.setOnClickListener(view -> {
-               btnSunday.setBackgroundColor(getColor(R.color.day_selected));
-               btnMonday.setBackgroundColor(Color.TRANSPARENT);
-               btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-               btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-               btnThursday.setBackgroundColor(Color.TRANSPARENT);
-               btnFriday.setBackgroundColor(Color.TRANSPARENT);
-               btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-        });
-
-        btnMonday.setOnClickListener(view -> {
-                btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(getColor(R.color.day_selected));
-                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-                btnThursday.setBackgroundColor(Color.TRANSPARENT);
-                btnFriday.setBackgroundColor(Color.TRANSPARENT);
-                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-        });
-
-        btnTuesday.setOnClickListener(view -> {
-                btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(Color.TRANSPARENT);
-                btnTuesday.setBackgroundColor(getColor(R.color.day_selected));
-                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-                btnThursday.setBackgroundColor(Color.TRANSPARENT);
-                btnFriday.setBackgroundColor(Color.TRANSPARENT);
-                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-        });
-
-        btnWednesday.setOnClickListener(view -> {
-                btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(Color.TRANSPARENT);
-                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-                btnWednesday.setBackgroundColor(getColor(R.color.day_selected));
-                btnThursday.setBackgroundColor(Color.TRANSPARENT);
-                btnFriday.setBackgroundColor(Color.TRANSPARENT);
-                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-        });
-
-        btnThursday.setOnClickListener(view-> {
-                btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(Color.TRANSPARENT);
-                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-                btnThursday.setBackgroundColor(getColor(R.color.day_selected));
-                btnFriday.setBackgroundColor(Color.TRANSPARENT);
-                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-        });
-
-        btnFriday.setOnClickListener(view -> {
-                btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(Color.TRANSPARENT);
-                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-                btnThursday.setBackgroundColor(Color.TRANSPARENT);
-                btnFriday.setBackgroundColor(getColor(R.color.day_selected));
-                btnSaturday.setBackgroundColor(Color.TRANSPARENT);
-        });
-
-        btnSaturday.setOnClickListener(view -> {
-                btnSunday.setBackgroundColor(Color.TRANSPARENT);
-                btnMonday.setBackgroundColor(Color.TRANSPARENT);
-                btnTuesday.setBackgroundColor(Color.TRANSPARENT);
-                btnWednesday.setBackgroundColor(Color.TRANSPARENT);
-                btnThursday.setBackgroundColor(Color.TRANSPARENT);
-                btnFriday.setBackgroundColor(Color.TRANSPARENT);
-                btnSaturday.setBackgroundColor(getColor(R.color.day_selected));
-        });
-        btnAddAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewAlarm();
-                addAlarm.dismiss();
-            }
-        });
-
-        //backToManage.setOnClickListener(v -> finish());
-
-        minutePicker.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int value) {
-                return String.format("%02d", value);
-            }
-        });
-
-        cancelAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addAlarm.dismiss();
-            }
-        });
-
-
-
-
-        if(hourPicker != null && minutePicker != null && timePicker != null){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                hourPicker.setTextColor(R.style.NumberPickerStyle);
-                minutePicker.setTextColor(R.style.NumberPickerStyle);
-                timePicker.setTextColor(R.style.NumberPickerStyle);
-            }
-        }
         addAlarm.show();
-    }
-
-    public void addNewAlarm(){
-
-        alarm = findViewById(R.id.cvAlarmSchedule);
-        alarmTime = alarm.findViewById(R.id.tvAssignedTime);
-        repeat = alarm.findViewById(R.id.tvAlarmRepeat);
-
-        CardView nextAlarmBox = new CardView(getApplicationContext());
-        TextView nextAlarmTime = new TextView(getApplicationContext());
-        TextView repeat = new TextView(getApplicationContext());
-
-        nextAlarmBox.setLayoutParams(alarm.getLayoutParams());
-        nextAlarmBox.setCardBackgroundColor(alarm.getCardBackgroundColor());
-        nextAlarmBox.setRadius(alarm.getRadius());
-        nextAlarmBox.setId(alarmCount++);
-
-
-        ViewGroup parentLayout = (ViewGroup) alarm.getParent();
-        int index = parentLayout.indexOfChild(alarm);
-        parentLayout.addView(nextAlarmBox, index + 1);
-
+        initializeAddAlarmElements(addAlarm);
     }
 
 
+    void initializeAddAlarmElements(BottomSheetDialog addAlarm) {
+        if (addAlarm != null) {
+            hourPicker = addAlarm.findViewById(R.id.hourPicker);
+            minPicker = addAlarm.findViewById(R.id.minPicker);
+            amORpmPicker = addAlarm.findViewById(R.id.AM_PM_Picker);
+            btnCancelAlarmAdd = addAlarm.findViewById(R.id.btnCancelAlarm);
+            btnConfirmAlarmAdd = addAlarm.findViewById(R.id.btnAddAlarm);
 
+            btnCancelAlarmAdd.setOnClickListener(v -> addAlarm.dismiss());
+
+            hourPicker.setMinValue(1);
+            hourPicker.setMaxValue(12);
+            hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        selectedHour = newVal;
+                }
+            });
+
+            minPicker = addAlarm.findViewById(R.id.minPicker);
+            minPicker.setMinValue(00);
+            minPicker.setMaxValue(59);
+            minPicker.setFormatter(new NumberPicker.Formatter() {
+                @Override
+                public String format(int value) {
+                    return String.format("%02d", value);
+                }
+            });
+            minPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                        selectedMinute = newVal;
+                }
+            });
+
+            amORpmPicker = addAlarm.findViewById(R.id.AM_PM_Picker);
+            amORpmPicker.setMinValue(0);
+            amORpmPicker.setMaxValue(time.length - 1);
+            amORpmPicker.setDisplayedValues(time);
+
+            btnConfirmAlarmAdd.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addNewAlarm();
+                }
+            });
+
+        }
+    }
+    void addNewAlarm() {
+        RelativeLayout scheduleLayout = findViewById(R.id.scheduleParent);
+        LinearLayout alarmScrollable = scheduleLayout.findViewById(R.id.svAlarmScrollable);
+        CardView parent = alarmScrollable.findViewById(R.id.cvAlarmSchedule);
+
+        // Create a new instance of the NewAlarmBox class
+        newAlarmBox newAlarm = new newAlarmBox(parent.getContext(), null, alarmScrollable);
+
+        // Set the time and switch state for the new alarm
+        newAlarm.setTime(getSelectedHour(), getMinute());
+        newAlarm.setNewSwitch(false);
+
+        // Add the new alarm box to the LinearLayout
+        alarmScrollable.addView(newAlarm);
+
+        // Dismiss the addAlarm dialog or any other action you want to take
+        addAlarm.dismiss();
+    }
+    public String getMinute() {
+        String finalMinute = String.format("%02d", selectedMinute);
+        return finalMinute;
+    }
+
+    public String getSelectedHour(){
+        String finalHour = String.format("%02d", selectedHour);
+        return finalHour;
+    }
+
+
+}
+
+class newAlarmBox extends CardView {
+
+    private TextView newAlarmTime;
+    private TextView newAlarmDay;
+    private SwitchCompat newSwitch;
+
+    public newAlarmBox(Context context, LinearLayout parentLayout) {
+        super(context);
+        initializeCardView(context, parentLayout);
+    }
+
+    public newAlarmBox(Context context, @Nullable AttributeSet attrs, LinearLayout parentLayout) {
+        super(context, attrs);
+        initializeCardView(context, parentLayout);
+    }
+
+    public newAlarmBox(Context context, @Nullable AttributeSet attrs, int defStyleAttr, LinearLayout parentLayout) {
+        super(context, attrs, defStyleAttr);
+        initializeCardView(context, parentLayout);
+    }
+
+    private void initializeCardView(Context context, LinearLayout parentLayout) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.activity_schedule_view, this, true);
+
+        newAlarmTime = findViewById(R.id.tvAssignedTime);
+        newAlarmDay = findViewById(R.id.tvAssignedDay);
+        newSwitch = findViewById(R.id.scheduleSwitch);
+    }
+
+    public void setTime(String hour, String minute) {
+        newAlarmTime.setText(hour + ":" + minute);
+    }
+
+    public void setDay(String day) {
+        newAlarmDay.setText(day);
+    }
+
+    public void setNewSwitch(boolean state) {
+        newSwitch.setChecked(state);
+    }
 
 }

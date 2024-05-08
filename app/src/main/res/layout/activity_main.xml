@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:fontFamily="@font/lexend_bold"
-        android:text="CONDITION"
+        android:text="@string/condition"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"
         />
@@ -34,203 +33,167 @@
         app:cardBackgroundColor="@color/card_view_color"
         android:elevation="10dp"
         app:cardCornerRadius="20dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp">
-
-            <TextView
-                android:id="@+id/tvFeederStatus"
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:fontFamily="@font/lexend"
+                android:id="@+id/conditionCardViewHeader">
+
+                <TextView
+                    android:id="@+id/tvFeederStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/lexend"
+                    android:padding="15dp"
+                    android:text="FEEDER STATUS"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"/>
+                <Button
+                    android:id="@+id/btnConnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="3dp"
+                    android:fontFamily="@font/lexend"
+                    android:text="@string/connect_button"
+                    android:textSize="10sp"
+                    android:layout_alignParentEnd="true"/>
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
                 android:padding="10dp"
-                android:text="FEEDER STATUS"
-                android:textColor="@color/white"
-                android:textSize="17sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_below="@+id/conditionCardViewHeader">
 
-            <Button
-                android:id="@+id/btnConnect"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="3dp"
-                android:fontFamily="@font/lexend"
-                android:text="CONNECT"
-                android:textSize="10sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/tvFeederStatus"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:padding="5dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="69dp"
-                    android:layout_height="62dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="40dp"
-                    android:src="@drawable/final_food_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView2"
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/lexend"
-                    android:text="Food Level"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView"
-                    app:layout_constraintStart_toStartOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tvFoodPercentage"
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="69dp"
+                        android:layout_height="62dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/final_food_icon" />
+                    <TextView
+                        android:id="@+id/tvFoodLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lexend"
+                        android:text="Food Level"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/imageView1"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:id="@+id/tvFoodPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/lexend"
+                        android:text="GOOD"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/tvFoodLevel"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"/>
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/lexend"
-                    android:text="GOOD"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textView2"
-                    app:layout_constraintHorizontal_bias="0.517"
-                    app:layout_constraintStart_toStartOf="@+id/textView2"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="20dp">
-
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="69dp"
-                    android:layout_height="62dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="41dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/water"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView3"
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="69dp"
+                        android:layout_height="62dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/water" />
+                    <TextView
+                        android:id="@+id/tvWaterLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lexend"
+                        android:text="Water Level"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/imageView2"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:id="@+id/tvWaterPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/lexend"
+                        android:text="GOOD"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/tvWaterLevel"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="match_parent"/>
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/lexend"
-                    android:text="Water Level"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView2"
-                    app:layout_constraintHorizontal_bias="0.347"
-                    app:layout_constraintStart_toStartOf="@+id/imageView2"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/tvWaterPercentage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/lexend"
-                    android:text="GOOD"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textView3"
-                    app:layout_constraintHorizontal_bias="0.415"
-                    app:layout_constraintStart_toStartOf="@+id/textView3"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="69dp"
-                    android:layout_height="62dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:src="@drawable/bulb"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/lexend"
-                    android:text="Lights"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/imageView3"
-                    app:layout_constraintHorizontal_bias="0.526"
-                    app:layout_constraintStart_toStartOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-                <TextView
-                    android:id="@+id/tvLightStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/lexend"
-                    android:text="ON"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textView4"
-                    app:layout_constraintHorizontal_bias="0.428"
-                    app:layout_constraintStart_toStartOf="@+id/textView4"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
+                    <ImageView
+                        android:id="@+id/imageView3"
+                        android:layout_width="69dp"
+                        android:layout_height="62dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/bulb" />
+                    <TextView
+                        android:id="@+id/tvLightsLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lexend"
+                        android:text="Lights"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/imageView3"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:id="@+id/tvLightStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/lexend"
+                        android:text="ON"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+                        android:layout_below="@+id/tvLightsLabel"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="SCHEDULE"
+        android:text="@string/schedule"
         android:fontFamily="@font/lexend_bold"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"/>
@@ -271,7 +234,7 @@
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="18dp"
                     android:fontFamily="@font/lexend"
-                    android:text="Upcoming Meal Schedule:"
+                    android:text="@string/upcoming"
                     android:textColor="@color/card_view_color"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -346,7 +309,7 @@
             android:layout_marginTop="16dp"
             android:background="@drawable/main_button_drawable"
             android:fontFamily="@font/lexend"
-            android:text="Open Lights"
+            android:text="@string/open_lights"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"
@@ -362,7 +325,7 @@
             android:layout_marginEnd="16dp"
             android:background="@drawable/main_button_drawable"
             android:fontFamily="@font/lexend"
-            android:text="Drink"
+            android:text="@string/drink"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textIsSelectable="true"
@@ -380,7 +343,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="27dp"
             android:background="@drawable/main_button_drawable"
-            android:text="Feed"
+            android:text="@string/dispense"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"
@@ -395,7 +358,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/main_button_drawable"
-            android:text="Automatic"
+            android:text="@string/automatic"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp"

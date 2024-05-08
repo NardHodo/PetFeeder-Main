@@ -42,6 +42,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     final String WIFI_NAME = "\"SKYfiberBD2F\"";
+    String alarmContent = "C";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
 
@@ -142,8 +143,10 @@ public class MainActivity extends AppCompatActivity {
         btnManage.setOnClickListener(view ->
         {
 
+            //sendCommand("alarm");
             Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
             startActivity(viewSchedule);
+
 
         });
         //region ESP8266 Communication Functions
@@ -228,57 +231,65 @@ public class MainActivity extends AppCompatActivity {
         TextView tvLight = findViewById(R.id.tvLightStatus);
         TextView tvFood = findViewById(R.id.tvFoodPercentage);
         TextView tvWater = findViewById(R.id.tvWaterPercentage);
+        Log.d("CONTS", cont[0]);
         for(int i = 1;i < cont.length;i++){
-            switch(cont[i].split(":")[0]){
-                case "Light":
-                    if(cont[i].split(":")[1].equals("0")) {
+            if(cont[0].equals("REPORTSTATUS:")) {
+                switch (cont[i].split(":")[0]) {
+                    case "Light":
+                        if (cont[i].split(":")[1].equals("0")) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvLight.setText("OFF");
+                                    btnLights.setText("Turn on");
+                                }
+                            });
+
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvLight.setText("ON");
+                                    btnLights.setText("Turn off");
+                                }
+                            });
+                        }
+                        break;
+                    case "Food":
+                        String foodContent = cont[i].split(":")[1];
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvLight.setText("OFF");
-                                btnLights.setText("Turn on");
+                                tvFood.setText(foodContent);
+                                if (foodContent.equals("LOW")) {
+                                    tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                                } else {
+                                    tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                                }
                             }
                         });
 
-                    }else{
+                        break;
+                    case "Water":
+                        String waterContent = cont[i].split(":")[1];
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                tvLight.setText("ON");
-                                btnLights.setText("Turn off");
+                                tvWater.setText(waterContent);
+                                if (waterContent.equals("LOW")) {
+                                    tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                                } else {
+                                    tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                                }
                             }
                         });
-                    }
-                    break;
-                case "Food":
-                    String foodContent = cont[i].split(":")[1];
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvFood.setText(foodContent);
-                            if(foodContent.equals("LOW")){
-                                tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                            }else{
-                                tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-                            }
-                        }
-                    });
-
-                    break;
-                case "Water":
-                    String waterContent = cont[i].split(":")[1];
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvWater.setText(waterContent);
-                            if(waterContent.equals("LOW")){
-                                tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                            }else{
-                                tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-                            }
-                        }
-                    });
-                    break;
+                        break;
+                }
+            }else if(cont[0].equals("ALARM:")){
+                alarmContent = cont[1];
+                Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
+                viewSchedule.putExtra("Alarm", alarmContent);
+                startActivity(viewSchedule);
             }
         }
     }
@@ -295,11 +306,11 @@ public class MainActivity extends AppCompatActivity {
             btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
             btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
         }else{
-            btnManual.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-            btnLights.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-            btnManualWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-            btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
-            btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.black));
+            btnManual.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+            btnLights.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+            btnManualWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+            btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+            btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
         }
     }
 }
