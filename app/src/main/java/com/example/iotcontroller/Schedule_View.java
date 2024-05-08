@@ -121,8 +121,12 @@ public class Schedule_View extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardViewLayout = inflater.inflate(R.layout.cardview_copy, null);
+        //Get the textview from the duplicate
         TextView duplicate = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
+
         duplicate.setText(getSelectedHour() + ":" + getMinute() + " " + ((amORpmPicker.getValue() == 0)?"AM":"PM"));
+
+        //Add the cardview to the layout
         LinearLayout alarmScrollable = findViewById(R.id.svAlarmScrollable);
         alarmScrollable.addView(cardViewLayout);
 
