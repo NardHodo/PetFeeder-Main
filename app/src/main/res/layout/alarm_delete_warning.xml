@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:id="@+id/containerFirstHalf"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/dialog_box_background">
+
+        <ImageView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/wifi_icon"
+            android:src="@drawable/wifi" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@id/containerFirstHalf"
+        android:background="@drawable/lower_dispense_dialog_box"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDispenseWarningMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/lexend"
+            android:text="@string/connection_message"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tvCurrentlyConnectedWifi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="5dp"
+            android:text="WIFI NETWORK"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:fontFamily="@font/lexend"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="40dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCloseDisconnect"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                app:backgroundTint="@color/card_view_color"
+                app:cornerRadius="15dp"
+                android:text="@string/close"
+                android:textAllCaps="false"
+                android:layout_alignParentStart="true"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:layout_alignParentEnd="true"
+                app:cornerRadius="15dp"
+                app:backgroundTint="@color/cancel_buttons"
+                android:text="@string/disconnect"
+                android:textAllCaps="false"
+                android:id="@+id/btnDisconnect"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

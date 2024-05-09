@@ -33,15 +33,13 @@ import java.util.Objects;
 import android.Manifest;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.color.ColorResourcesOverride;
-
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"Foodie\"";
+    final String WIFI_NAME = "\"SKYfiberBD2F\"";
     String alarmContent = "C";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
@@ -209,9 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 ssid = wifiInfo.getSSID();
                 if(ssid.equals(WIFI_NAME)){
                     btnConnect.setText("Connected");
-                    //Toast.makeText(getApplicationContext(), "Currently connected to " + ssid.replace("\"", ""), Toast.LENGTH_SHORT).show();
-                    connectedDialog.show();
-                    connectedWifi.setText(ssid.replace("\"", ""));
+                    Toast.makeText(getApplicationContext(), "Currently connected to " + ssid.replace("\"", ""), Toast.LENGTH_SHORT).show();
                     sendCommand("REPORTSTATUS:");
                     enableDisabledButtons(true);
                 }else{
@@ -306,11 +302,11 @@ public class MainActivity extends AppCompatActivity {
             btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
             btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.disabled_color));
         }else{
-            btnManual.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-            btnLights.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-            btnManualWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-            btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
-            btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+            btnManual.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.main_font_color));
+            btnLights.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.main_font_color));
+            btnManualWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.main_font_color));
+            btnManage.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.main_font_color));
+            btnAutomatic.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.main_font_color));
         }
     }
 }

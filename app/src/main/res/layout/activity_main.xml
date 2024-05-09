@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/mainAppColor"
-    android:paddingHorizontal="20dp">
+    android:paddingHorizontal="15dp">
 
     <TextView
         android:id="@+id/tvStatus"
@@ -20,7 +20,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
@@ -48,27 +48,31 @@
                     android:layout_marginBottom="5dp"
                     android:fontFamily="@font/lexend"
                     android:padding="15dp"
+                    android:layout_centerVertical="true"
                     android:text="FEEDER STATUS"
                     android:textColor="@color/white"
                     android:textSize="17sp"/>
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnConnect"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="3dp"
-                    android:fontFamily="@font/lexend"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginHorizontal="20dp"
                     android:text="@string/connect_button"
-                    android:textSize="10sp"
-                    android:layout_alignParentEnd="true"/>
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/connect_button"
+                    app:cornerRadius="20dp"
+                    app:elevation="10dp"
+                    />
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
+                android:layout_marginHorizontal="20dp"
                 android:padding="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_below="@+id/conditionCardViewHeader">
 
                 <RelativeLayout
@@ -100,9 +104,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:fontFamily="@font/lexend"
-                        android:text="GOOD"
+                        android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/empty"
                         android:textSize="15sp"
                         android:layout_below="@+id/tvFoodLevel"
                         android:layout_centerHorizontal="true"/>
@@ -139,9 +143,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:fontFamily="@font/lexend"
-                        android:text="GOOD"
+                        android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/empty"
                         android:textSize="15sp"
                         android:layout_below="@+id/tvWaterLevel"
                         android:layout_centerHorizontal="true"/>
@@ -178,9 +182,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:fontFamily="@font/lexend"
-                        android:text="ON"
+                        android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/empty"
                         android:textSize="15sp"
                         android:layout_below="@+id/tvLightsLabel"
                         android:layout_centerHorizontal="true"/>
@@ -197,13 +201,15 @@
         android:fontFamily="@font/lexend_bold"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/card_view_color"
-        app:cardCornerRadius="3dp"/>
+        app:cardCornerRadius="3dp" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -290,83 +296,49 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine3"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="5dp">
+        android:padding="10dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLights"
             android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/main_button_drawable"
-            android:fontFamily="@font/lexend"
+            android:layout_height="60dp"
             android:text="@string/open_lights"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:cornerRadius="20dp"/>
 
-        <Button
-            android:id="@+id/btnManualWater"
-            android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/main_button_drawable"
-            android:fontFamily="@font/lexend"
-            android:text="@string/drink"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textIsSelectable="true"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btnLights"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnManual"
             android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="27dp"
-            android:background="@drawable/main_button_drawable"
+            android:layout_height="60dp"
             android:text="@string/dispense"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnLights"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnLights" />
-
-        <Button
+            android:layout_below="@id/btnLights"
+            app:cornerRadius="20dp"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnManualWater"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="@string/drink"
+            android:textAllCaps="false"
+            android:layout_alignParentEnd="true"
+            app:cornerRadius="20dp"/>
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAutomatic"
             android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/main_button_drawable"
+            android:layout_height="60dp"
             android:text="@string/automatic"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="@+id/btnManualWater"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/btnManualWater"
-            app:layout_constraintTop_toBottomOf="@+id/btnManualWater" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_below="@id/btnManualWater"
+            android:layout_alignParentEnd="true"
+            app:cornerRadius="20dp"/>
+    </RelativeLayout>
 
 
 </LinearLayout>
