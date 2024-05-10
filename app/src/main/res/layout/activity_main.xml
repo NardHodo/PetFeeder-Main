@@ -32,7 +32,7 @@
         android:layout_marginTop="10dp"
         app:cardBackgroundColor="@color/card_view_color"
         android:elevation="10dp"
-        app:cardCornerRadius="20dp">
+        app:cardCornerRadius="10dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -71,9 +71,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginHorizontal="10dp"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="5dp"
                 android:layout_below="@+id/conditionCardViewHeader">
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -308,7 +307,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:paddingHorizontal="10dp"
+        android:layout_marginTop="5dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLights"
@@ -316,7 +316,9 @@
             android:layout_height="60dp"
             android:text="@string/open_lights"
             android:textAllCaps="false"
-            app:cornerRadius="20dp"/>
+            android:textAlignment="viewStart"
+            android:drawableRight="@drawable/flashlight"
+            app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnManual"
@@ -325,24 +327,28 @@
             android:text="@string/dispense"
             android:textAllCaps="false"
             android:layout_below="@id/btnLights"
-            app:cornerRadius="20dp"/>
+            android:drawableEnd="@drawable/dispense_food_button"
+            app:cornerRadius="10dp"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnManualWater"
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:text="@string/drink"
+            android:textAlignment="center"
             android:textAllCaps="false"
+            android:drawableEnd="@drawable/wet"
             android:layout_alignParentEnd="true"
-            app:cornerRadius="20dp"/>
+            app:cornerRadius="10dp"/>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAutomatic"
             android:layout_width="150dp"
             android:layout_height="60dp"
             android:text="@string/automatic"
             android:textAllCaps="false"
+            android:drawableEnd="@drawable/back_in_time"
             android:layout_below="@id/btnManualWater"
             android:layout_alignParentEnd="true"
-            app:cornerRadius="20dp"/>
+            app:cornerRadius="10dp"/>
     </RelativeLayout>
 
 

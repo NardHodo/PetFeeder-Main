@@ -27,7 +27,7 @@
     <string name="close">Close</string>
 
     <!-- Layout Labels-->
-    <string name="schedule_header">SCHEDULE</string>
+    <string name="schedule_header">Manage Schedule</string>
     <string name="add_alarm_description">Add an Alarm</string>
     <string name="splash_screen_description">Foodie</string>
     <string name="condition">CONDITION</string>
