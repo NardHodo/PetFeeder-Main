@@ -1,5 +1,9 @@
 package com.example.iotcontroller;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -7,6 +11,7 @@ import androidx.core.content.ContextCompat;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import android.Manifest;
@@ -40,11 +46,13 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     final String WIFI_NAME = "\"SKYfiberBD2F\"";
-    String alarmContent = "C";
+    String alarmContent = "C", alarmsToSendToESP = "";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
 
     MaterialButton btnCloseConnectionInfo, btnDisconnect;
+
+    ArrayList<String> alarmsToSend;
 
     TextView connectedWifi;
 
@@ -79,9 +87,29 @@ public class MainActivity extends AppCompatActivity {
         btnConnect = findViewById(R.id.btnConnect);
         btnAutomatic = findViewById(R.id.btnAutomatic);
         //Disable buttons on online
-        enableDisabledButtons(false);
+        enableDisabledButtons(true);
         //endregion
 
+        //region For running schedule activity
+        ActivityResultLauncher<Intent> intentLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if(result.getResultCode() == Activity.RESULT_OK){
+                            Intent data = result.getData();
+                            assert data != null;
+                            alarmsToSend = data.getStringArrayListExtra("alarms");
+                            for (int i = 0; i < alarmsToSend.size();i++){
+                                Log.d("COCAINE", alarmsToSend.get(i));
+                                alarmsToSendToESP += alarmsToSend.get(i) + "&";
+                            }
+                            Log.d("COCAINE", alarmsToSendToESP);
+                        }
+                    }
+                }
+        );
+        //endregion
 
 
         //region Helps the app to communicate with ESP8266
@@ -140,13 +168,10 @@ public class MainActivity extends AppCompatActivity {
 
         btnManage.setOnClickListener(view ->
         {
-
-            //sendCommand("alarm");
             Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
-            startActivity(viewSchedule);
-
-
+            intentLauncher.launch(viewSchedule);
         });
+
         //region ESP8266 Communication Functions
         btnManualWater.setOnClickListener(view -> sendCommand("red"));
         btnLights.setOnClickListener(view -> sendCommand("green"));

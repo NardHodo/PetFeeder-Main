@@ -5,8 +5,11 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 
 
-
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import com.shawnlin.numberpicker.NumberPicker;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Schedule_View extends AppCompatActivity {
@@ -32,12 +36,13 @@ public class Schedule_View extends AppCompatActivity {
     private Button btnCancelAlarmAdd, btnConfirmAlarmAdd;
     private MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday;
     private NumberPicker hourPicker, minPicker, amORpmPicker;
-    private int selectedHour = 1, selectedMinute = 1;
+    private int selectedHour = 1, selectedMinute = 1, selectedMeridiem = 1;
+
     private RelativeLayout scheduleParent;
-    private ArrayList<String> days;
+    private ArrayList<String> days, alarms = new ArrayList<String>();
     ImageButton  btnAddAlarm, btnDeleteAlarm;
     String[] time = {"AM", "PM"};
-    Button btnBacktoManage;
+    Button btnBackToManage;
     CardView alarmBox;
     TextView alarmTime, alarmDay;
     SwitchCompat alarmSwitch;
@@ -45,19 +50,25 @@ public class Schedule_View extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_view);
-        initalizeElements();
+        initializeElements();
     }
 
 
-    public void initalizeElements(){
+    public void initializeElements(){
+
         alarmBox = findViewById(R.id.cvAlarmSchedule);
-        btnBacktoManage = findViewById(R.id.btnBackButton);
+        btnBackToManage = findViewById(R.id.btnBackButton);
         btnAddAlarm = findViewById(R.id.btnAddAlarm);
-        btnAddAlarm.setOnClickListener(v -> displayAlarmEditor());
-        btnBacktoManage.setOnClickListener(v -> finish());
-        addAlarm = new BottomSheetDialog(this);
         scheduleParent = findViewById(R.id.scheduleParent);
         btnDeleteAlarm = findViewById(R.id.btnDeleteAlarm);
+
+        btnAddAlarm.setOnClickListener(v -> displayAlarmEditor());
+        btnBackToManage.setOnClickListener(v -> {
+            setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", alarms));
+            finish();
+            alarms.removeAll(alarms);
+        });
+        addAlarm = new BottomSheetDialog(this);
         btnDeleteAlarm.setOnClickListener(v -> toggleCheckboxVisibility());
         days = new ArrayList<>();
 
@@ -69,7 +80,7 @@ public class Schedule_View extends AppCompatActivity {
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_alarm_feature, null);
         addAlarm.setContentView(contentView);
         addAlarm.setCancelable(true);
-        addAlarm.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        Objects.requireNonNull(addAlarm.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         addAlarm.show();
         initializeAddAlarmElements(addAlarm);
     }
@@ -114,9 +125,11 @@ public class Schedule_View extends AppCompatActivity {
             });
 
             minPicker = addAlarm.findViewById(R.id.minPicker);
+            assert minPicker != null;
             minPicker.setMinValue(00);
             minPicker.setMaxValue(59);
             minPicker.setFormatter(new NumberPicker.Formatter() {
+                @SuppressLint("DefaultLocale")
                 @Override
                 public String format(int value) {
                     return String.format("%02d", value);
@@ -130,6 +143,7 @@ public class Schedule_View extends AppCompatActivity {
             });
 
             amORpmPicker = addAlarm.findViewById(R.id.AM_PM_Picker);
+            assert amORpmPicker != null;
             amORpmPicker.setMinValue(0);
             amORpmPicker.setMaxValue(time.length - 1);
             amORpmPicker.setDisplayedValues(time);
@@ -144,28 +158,50 @@ public class Schedule_View extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     void addNewAlarm() {
-
+        boolean[] isOn = {false};
         LayoutInflater inflater = LayoutInflater.from(this);
         View cardViewLayout = inflater.inflate(R.layout.cardview_copy, null);
         //Get the textview from the duplicate
         TextView duplicateTime = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
         TextView duplicateDay = cardViewLayout.findViewById(R.id.tvAssignedDayCopy);
+        SwitchCompat switchMe = cardViewLayout.findViewById(R.id.scheduleSwitchCopy);
 
-        duplicateTime.setText(getSelectedHour() + ":" + getMinute() + " " + ((amORpmPicker.getValue() == 0)?"AM":"PM"));
+        switchMe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isOn[0] = !isOn[0];
+                Log.d("Switches", isOn[0] + "");
+                alarms.contains(duplicateTime.getText());
+                String content = duplicateTime.getText() + "";
+                String[] newContent = content.split(" ");
+
+                Log.d("COCAINE", newContent[0]+"-"+(newContent[1].equals("PM")?"1":"0") + "]" + (isOn[0]?"1":"0"));
+            }
+        });
+
+        selectedMeridiem = amORpmPicker.getValue();
+
+        duplicateTime.setText(getSelectedHour() + ":" + getSelectedMinute() + " " + ((selectedMeridiem == 0)?"AM":"PM"));
         duplicateDay.setText(getFormattedDays(days.toArray(new String[0])));
 
         //Add the cardview to the layout
         LinearLayout alarmScrollable = findViewById(R.id.svAlarmScrollable);
 
         // Dismiss the addAlarm dialog or any other action you want to take
-        //addAlarm.dismiss();
-        //days.clear();
-
         if(days.isEmpty()){
             Toast.makeText(Schedule_View.this, "Please Select At Least One Day", Toast.LENGTH_LONG).show();
         } else{
+            for (int i = 0; i < alarms.size();i++){
+                Log.d("COCAINE", alarms.get(i));
+                if(alarms.get(i).equals(getSelectedHour() + ":" + getSelectedMinute()+"-" + selectedMeridiem)){
+                    Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
             alarmScrollable.addView(cardViewLayout);
+            alarms.add((!alarms.isEmpty())?alarms.size():0, getSelectedHour() + ":"+ getSelectedMinute() + "-" + selectedMeridiem);
             addAlarm.dismiss();
             days.clear();
         }
@@ -174,7 +210,7 @@ public class Schedule_View extends AppCompatActivity {
     }
 
 
-    public String getMinute() {
+    public String getSelectedMinute() {
         String finalMinute = String.format("%02d", selectedMinute);
         return finalMinute;
     }
