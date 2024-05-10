@@ -101,13 +101,13 @@ public class Schedule_View extends AppCompatActivity {
             btnFriday = addAlarm.findViewById(R.id.btnFriday);
             btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
 
-            btnSunday.setOnClickListener(v -> addDay("Sunday", btnSunday));
-            btnMonday.setOnClickListener(v -> addDay("Monday", btnMonday));
-            btnTuesday.setOnClickListener(v -> addDay("Tuesday", btnTuesday));
-            btnWednesday.setOnClickListener(v -> addDay("Wednesday", btnWednesday));
-            btnThursday.setOnClickListener(v -> addDay("Thursday", btnThursday));
-            btnFriday.setOnClickListener(v -> addDay("Friday", btnFriday));
-            btnSaturday.setOnClickListener(v -> addDay("Saturday", btnSaturday));
+            btnSunday.setOnClickListener(v -> addDay("Sun", btnSunday));
+            btnMonday.setOnClickListener(v -> addDay("Mon", btnMonday));
+            btnTuesday.setOnClickListener(v -> addDay("Tue", btnTuesday));
+            btnWednesday.setOnClickListener(v -> addDay("Wed", btnWednesday));
+            btnThursday.setOnClickListener(v -> addDay("Thu", btnThursday));
+            btnFriday.setOnClickListener(v -> addDay("Fri", btnFriday));
+            btnSaturday.setOnClickListener(v -> addDay("Sat", btnSaturday));
 
             //
             btnCancelAlarmAdd = addAlarm.findViewById(R.id.btnCancelAlarm);
