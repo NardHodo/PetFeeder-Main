@@ -7,12 +7,14 @@ import androidx.cardview.widget.CardView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -40,7 +42,7 @@ public class Schedule_View extends AppCompatActivity {
 
     private RelativeLayout scheduleParent;
     private ArrayList<String> days, alarms = new ArrayList<String>();
-    ImageButton  btnAddAlarm, btnDeleteAlarm;
+    ImageButton  btnAddAlarm;
     String[] time = {"AM", "PM"};
     Button btnBackToManage;
     CardView alarmBox;
@@ -60,7 +62,6 @@ public class Schedule_View extends AppCompatActivity {
         btnBackToManage = findViewById(R.id.btnBackButton);
         btnAddAlarm = findViewById(R.id.btnAddAlarm);
         scheduleParent = findViewById(R.id.scheduleParent);
-        btnDeleteAlarm = findViewById(R.id.btnDeleteAlarm);
 
         btnAddAlarm.setOnClickListener(v -> displayAlarmEditor());
         btnBackToManage.setOnClickListener(v -> {
@@ -69,7 +70,6 @@ public class Schedule_View extends AppCompatActivity {
             alarms.removeAll(alarms);
         });
         addAlarm = new BottomSheetDialog(this);
-        btnDeleteAlarm.setOnClickListener(v -> toggleCheckboxVisibility());
         days = new ArrayList<>();
 
 
@@ -112,7 +112,6 @@ public class Schedule_View extends AppCompatActivity {
             //
             btnCancelAlarmAdd = addAlarm.findViewById(R.id.btnCancelAlarm);
             btnConfirmAlarmAdd = addAlarm.findViewById(R.id.btnAddAlarm);
-
             btnCancelAlarmAdd.setOnClickListener(v -> addAlarm.dismiss());
 
             hourPicker.setMinValue(1);
@@ -166,8 +165,28 @@ public class Schedule_View extends AppCompatActivity {
         //Get the textview from the duplicate
         TextView duplicateTime = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
         TextView duplicateDay = cardViewLayout.findViewById(R.id.tvAssignedDayCopy);
+        ImageButton duplicateDelete = cardViewLayout.findViewById(R.id.btnDeleteAlarm);
         SwitchCompat switchMe = cardViewLayout.findViewById(R.id.scheduleSwitchCopy);
 
+        //Warning Dialog for Alarm Deletion
+        Dialog alarmWarning = new Dialog(Schedule_View.this);
+        alarmWarning.setContentView(R.layout.alarm_delete_warning);
+        alarmWarning.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        alarmWarning.setCancelable(false);
+
+        //Warning Dialog Buttons
+        Button btnCancelAlarmDeletion = alarmWarning.findViewById(R.id.btnCancelAlarmDeletion);
+        Button btnConfirmAlarmDeletion = alarmWarning.findViewById(R.id.btnConfirmAlarmDeletion);
+
+        duplicateDelete.setOnClickListener(v -> alarmWarning.show());
+        btnCancelAlarmDeletion.setOnClickListener(v -> alarmWarning.dismiss());
+        btnConfirmAlarmDeletion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
+                alarmWarning.dismiss();
+            }
+        });
         switchMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

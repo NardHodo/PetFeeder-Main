@@ -9,10 +9,9 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/E_Yot"
+        android:src="@drawable/the_real_mascot"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"/>
-
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
