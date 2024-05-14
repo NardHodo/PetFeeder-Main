@@ -45,7 +45,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"SKYfiberBD2F\"";
+    final String WIFI_NAME = "\"Foodie\"";
     String alarmContent = "C", alarmsToSendToESP = "";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView connectedWifi;
 
+    ActivityResultLauncher<Intent> intentLauncher;
 
     Thread receiver;
 
@@ -87,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
         btnConnect = findViewById(R.id.btnConnect);
         btnAutomatic = findViewById(R.id.btnAutomatic);
         //Disable buttons on online
-        enableDisabledButtons(true);
+        enableDisabledButtons(false);
         //endregion
 
         //region For running schedule activity
-        ActivityResultLauncher<Intent> intentLauncher = registerForActivityResult(
+        intentLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d("COCAINE", alarmsToSend.get(i));
                                 alarmsToSendToESP += alarmsToSend.get(i) + "&";
                             }
+                            sendCommand("ALLALARMS:" + alarmsToSendToESP);
                             Log.d("COCAINE", alarmsToSendToESP);
                         }
                     }
@@ -168,8 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnManage.setOnClickListener(view ->
         {
-            Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
-            intentLauncher.launch(viewSchedule);
+            sendCommand("GETALARM:");
         });
 
         //region ESP8266 Communication Functions
@@ -253,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tvFood = findViewById(R.id.tvFoodPercentage);
         TextView tvWater = findViewById(R.id.tvWaterPercentage);
         Log.d("CONTS", cont[0]);
+
         for(int i = 1;i < cont.length;i++){
             if(cont[0].equals("REPORTSTATUS:")) {
                 switch (cont[i].split(":")[0]) {
@@ -310,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
                 alarmContent = cont[1];
                 Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
                 viewSchedule.putExtra("Alarm", alarmContent);
-                startActivity(viewSchedule);
+                intentLauncher.launch(viewSchedule);
             }
         }
     }
