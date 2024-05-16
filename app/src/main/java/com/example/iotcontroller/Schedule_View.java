@@ -42,7 +42,7 @@ public class Schedule_View extends AppCompatActivity {
     private int selectedHour = 1, selectedMinute = 1, selectedMeridiem = 1;
 
     private RelativeLayout scheduleParent;
-    private ArrayList<String> days, alarms = new ArrayList<String>();
+    private ArrayList<String> days, alarms = new ArrayList<String>(), alarmsDay = new ArrayList<String>();
     ImageButton  btnAddAlarm;
     String[] time = {"AM", "PM"};
     Button btnBackToManage;
@@ -55,12 +55,18 @@ public class Schedule_View extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_view);
+        alarms.clear();
+        alarmsDay.clear();
         initializeElements();
         Bundle extras = getIntent().getExtras();
         if(extras != null){
+
             alarmDatas = extras.getString("Alarm");
             Log.d("CONTS", alarmDatas);
-            addNewAlarm(true);
+            if(!(alarmDatas.length() < 10)){
+                addNewAlarm(true);
+            }
+
         }
 
     }
@@ -75,15 +81,16 @@ public class Schedule_View extends AppCompatActivity {
 
         btnAddAlarm.setOnClickListener(v -> displayAlarmEditor());
         btnBackToManage.setOnClickListener(v -> {
+            alarms.forEach((x) -> {
+                int ind = alarms.indexOf(x);
+                alarms.set(ind, x + ";" + alarmsDay.get(ind).replace(" ", ""));
+            });
             setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", alarms));
             finish();
-            alarms = new ArrayList<String>();
+
         });
         addAlarm = new BottomSheetDialog(this);
         days = new ArrayList<>();
-
-
-
     }
 
     void displayAlarmEditor(){
@@ -217,6 +224,7 @@ public class Schedule_View extends AppCompatActivity {
                     isOn[0] = !isOn[0];
                     alarms.set(indexOfContent, newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
                     Log.d("COCAINE", newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
+                    Log.d("COCAINE", alarmsDay.get(indexOfContent));
                 }
             });
 
@@ -242,7 +250,10 @@ public class Schedule_View extends AppCompatActivity {
                 }
                 alarmScrollable.addView(cardViewLayout);
                 //Adds data to be sent to ESP8266
-                alarms.add((!alarms.isEmpty()) ? alarms.size() : 0, getSelectedHour() + splitter + getSelectedMinute() + splitter + selectedMeridiem + ";0");
+                int indexForContent = (!alarms.isEmpty()) ? alarms.size() : 0;
+                alarmsDay.add(indexForContent, getFormattedDays(days.toArray(new String[0])));
+                alarms.add(indexForContent, getSelectedHour() + splitter + getSelectedMinute() + splitter + selectedMeridiem + ";0");
+
                 addAlarm.dismiss();
                 days.clear();
             }
@@ -295,7 +306,7 @@ public class Schedule_View extends AppCompatActivity {
                         }
                         alarms.remove(tempoRemover+";1");
                         alarms.remove(tempoRemover+";0");
-                        Log.d("COCAINE", tempoRemover);
+//                        Log.d("COCAINE", tempoRemover);
                         for (String x : alarms) {
 
                             Log.d("COCAINE", x + "ASL");
@@ -315,6 +326,7 @@ public class Schedule_View extends AppCompatActivity {
                         isOn[0] = !isOn[0];
                         alarms.set(indexOfContent, newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
                         Log.d("COCAINE", newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
+                        Log.d("COCAINE", alarmsDay.get(indexOfContent).toString());
                     }
                 });
 
@@ -336,14 +348,13 @@ public class Schedule_View extends AppCompatActivity {
                 }
                 alarmScrollable.addView(cardViewLayout);
                 //Adds data to be sent to ESP8266
-                alarms.add((!alarms.isEmpty()) ? alarms.size() : 0, hourFormatted + splitter + minuteFormatted + splitter + mirediem + ";0");
+                alarms.add((!alarms.isEmpty()) ? alarms.size() : 0, hourFormatted + splitter + minuteFormatted + splitter + mirediem + ";0;"+getFormattedDays(days.toArray(new String[0])));
                 addAlarm.dismiss();
                 days.clear();
 
             }
         }
     }
-
 
     public String getSelectedMinute() {
         String finalMinute = String.format("%02d", selectedMinute);

@@ -107,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             sendCommand("ALLALARMS:" + alarmsToSendToESP);
                             Log.d("COCAINE", alarmsToSendToESP);
+                            alarmsToSendToESP = "";
+
                         }
                     }
                 }
