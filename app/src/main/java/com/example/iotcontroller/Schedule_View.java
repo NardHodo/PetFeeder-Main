@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,400 +26,247 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.shawnlin.numberpicker.NumberPicker;
 
-
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
 
 public class Schedule_View extends AppCompatActivity {
 
-    private BottomSheetDialog addAlarm;
-    private Button btnCancelAlarmAdd, btnConfirmAlarmAdd;
-    private MaterialButton btnSunday, btnMonday, btnTuesday, btnWednesday, btnThursday, btnFriday, btnSaturday;
-    private NumberPicker hourPicker, minPicker, amORpmPicker;
-    private int selectedHour = 1, selectedMinute = 1, selectedMeridiem = 1;
+    private BottomSheetDialog addAlarmDialog;
+    private NumberPicker hourPicker, minPicker, amOrPmPicker;
+    private int selectedHour = 1, selectedMinute = 0, selectedMeridiem = 0;
+    private List<String> days = new ArrayList<>();
+    private List<String> alarms = new ArrayList<>();
+    private List<String> alarmsDay = new ArrayList<>();
 
     private RelativeLayout scheduleParent;
-    private ArrayList<String> days, alarms = new ArrayList<String>(), alarmsDay = new ArrayList<String>();
-    ImageButton  btnAddAlarm;
-    String[] time = {"AM", "PM"};
-    Button btnBackToManage;
-    CardView alarmBox;
-    TextView alarmTime, alarmDay;
-    SwitchCompat alarmSwitch;
-    final String splitter = ";";
-    String alarmDatas = "";
+    private LinearLayout alarmScrollable;
+    private final String[] timePeriods = {"AM", "PM"};
+    private final String splitter = ";";
+    private String alarmData = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_view);
-        alarms.clear();
-        alarmsDay.clear();
         initializeElements();
-        Bundle extras = getIntent().getExtras();
-        if(extras != null){
 
-            alarmDatas = extras.getString("Alarm");
-            Log.d("CONTS", alarmDatas);
-            if(!(alarmDatas.length() < 10)){
-                addNewAlarm(true);
-            }
-
+        alarmData = getIntent().getStringExtra("Alarm");
+        if (alarmData != null && alarmData.length() >= 10) {
+            addNewAlarm(true);
         }
-
     }
 
-
-    public void initializeElements(){
-
-        alarmBox = findViewById(R.id.cvAlarmSchedule);
-        btnBackToManage = findViewById(R.id.btnBackButton);
-        btnAddAlarm = findViewById(R.id.btnAddAlarm);
+    private void initializeElements() {
         scheduleParent = findViewById(R.id.scheduleParent);
+        alarmScrollable = findViewById(R.id.svAlarmScrollable);
 
-        btnAddAlarm.setOnClickListener(v -> displayAlarmEditor());
-        btnBackToManage.setOnClickListener(v -> {
-            alarms.forEach((x) -> {
-                int ind = alarms.indexOf(x);
-                alarms.set(ind, x + ";" + alarmsDay.get(ind).replace(" ", ""));
-            });
-            setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", alarms));
+        findViewById(R.id.btnBackButton).setOnClickListener(v -> {
+            updateAlarmsWithDays();
+            ArrayList<String> formatizeString = new ArrayList<>();
+            if (!alarms.isEmpty()) {
+                for (int i = 0; i < alarms.size(); i++) {
+                    String temporaryHolder = alarms.get(i); //+ ";" + alarmsDay.get(i);
+                    formatizeString.add(temporaryHolder);
+                    Log.d("COCAINE", temporaryHolder + "sda");
+                }
+            }
+            setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", formatizeString));
             finish();
-
         });
-        addAlarm = new BottomSheetDialog(this);
-        days = new ArrayList<>();
+
+        findViewById(R.id.btnAddAlarm).setOnClickListener(v -> displayAlarmEditor());
+
+        addAlarmDialog = new BottomSheetDialog(this);
     }
 
-    void displayAlarmEditor(){
+    private void displayAlarmEditor() {
         View contentView = LayoutInflater.from(this).inflate(R.layout.activity_alarm_feature, null);
-        addAlarm.setContentView(contentView);
-        addAlarm.setCancelable(true);
-        Objects.requireNonNull(addAlarm.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        addAlarm.show();
-        initializeAddAlarmElements(addAlarm);
+        addAlarmDialog.setContentView(contentView);
+        addAlarmDialog.setCancelable(true);
+        Objects.requireNonNull(addAlarmDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addAlarmDialog.show();
+        initializeAddAlarmElements(contentView);
     }
 
+    private void initializeAddAlarmElements(View contentView) {
+        hourPicker = contentView.findViewById(R.id.hourPicker);
+        minPicker = contentView.findViewById(R.id.minPicker);
+        amOrPmPicker = contentView.findViewById(R.id.AM_PM_Picker);
 
-    void initializeAddAlarmElements(BottomSheetDialog addAlarm) {
-        if (addAlarm != null) {
-            hourPicker = addAlarm.findViewById(R.id.hourPicker);
-            minPicker = addAlarm.findViewById(R.id.minPicker);
-            amORpmPicker = addAlarm.findViewById(R.id.AM_PM_Picker);
+        setupDayButtons(contentView);
+        setupPickers();
 
-            //Day Buttons
-            btnSunday = addAlarm.findViewById(R.id.Sunday);
-            btnMonday = addAlarm.findViewById(R.id.btnMonday);
-            btnTuesday = addAlarm.findViewById(R.id.btnTuesday);
-            btnWednesday = addAlarm.findViewById(R.id.btnWednesday);
-            btnThursday= addAlarm.findViewById(R.id.btnThursday);
-            btnFriday = addAlarm.findViewById(R.id.btnFriday);
-            btnSaturday = addAlarm.findViewById(R.id.btnSaturday);
+        contentView.findViewById(R.id.btnCancelAlarm).setOnClickListener(v -> addAlarmDialog.dismiss());
+        contentView.findViewById(R.id.btnAddAlarm).setOnClickListener(v -> addNewAlarm(false));
+    }
 
-            btnSunday.setOnClickListener(v -> addDay("Sun", btnSunday));
-            btnMonday.setOnClickListener(v -> addDay("Mon", btnMonday));
-            btnTuesday.setOnClickListener(v -> addDay("Tue", btnTuesday));
-            btnWednesday.setOnClickListener(v -> addDay("Wed", btnWednesday));
-            btnThursday.setOnClickListener(v -> addDay("Thu", btnThursday));
-            btnFriday.setOnClickListener(v -> addDay("Fri", btnFriday));
-            btnSaturday.setOnClickListener(v -> addDay("Sat", btnSaturday));
+    private void setupDayButtons(View contentView) {
+        MaterialButton[] dayButtons = {
+                contentView.findViewById(R.id.Sunday), contentView.findViewById(R.id.btnMonday), contentView.findViewById(R.id.btnTuesday),
+                contentView.findViewById(R.id.btnWednesday), contentView.findViewById(R.id.btnThursday), contentView.findViewById(R.id.btnFriday),
+                contentView.findViewById(R.id.btnSaturday)
+        };
 
-            //
-            btnCancelAlarmAdd = addAlarm.findViewById(R.id.btnCancelAlarm);
-            btnConfirmAlarmAdd = addAlarm.findViewById(R.id.btnAddAlarm);
-            btnCancelAlarmAdd.setOnClickListener(v -> addAlarm.dismiss());
+        String[] dayNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
-            hourPicker.setMinValue(1);
-            hourPicker.setMaxValue(12);
-            hourPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-                @Override
-                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                        selectedHour = newVal;
-                }
-            });
-
-            minPicker = addAlarm.findViewById(R.id.minPicker);
-            assert minPicker != null;
-            minPicker.setMinValue(00);
-            minPicker.setMaxValue(59);
-            minPicker.setFormatter(new NumberPicker.Formatter() {
-                @SuppressLint("DefaultLocale")
-                @Override
-                public String format(int value) {
-                    return String.format("%02d", value);
-                }
-            });
-            minPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-                @Override
-                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                        selectedMinute = newVal;
-                }
-            });
-
-            amORpmPicker = addAlarm.findViewById(R.id.AM_PM_Picker);
-            assert amORpmPicker != null;
-            amORpmPicker.setMinValue(0);
-            amORpmPicker.setMaxValue(time.length - 1);
-            amORpmPicker.setDisplayedValues(time);
-
-            btnConfirmAlarmAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addNewAlarm(false);
-                }
-            });
-
+        for (int i = 0; i < dayButtons.length; i++) {
+            final int index = i;
+            dayButtons[i].setOnClickListener(v -> toggleDaySelection(dayNames[index], dayButtons[index]));
         }
+    }
+
+    private void setupPickers() {
+        hourPicker.setMinValue(1);
+        hourPicker.setMaxValue(12);
+        hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedHour = newVal);
+
+        minPicker.setMinValue(0);
+        minPicker.setMaxValue(59);
+        minPicker.setValue(0);
+        minPicker.setFormatter(value -> String.format("%02d", value));
+        minPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedMinute = newVal);
+
+        amOrPmPicker.setMinValue(0);
+        amOrPmPicker.setMaxValue(timePeriods.length - 1);
+        amOrPmPicker.setDisplayedValues(timePeriods);
+        amOrPmPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedMeridiem = newVal);
     }
 
     @SuppressLint("SetTextI18n")
-    void addNewAlarm(boolean isTrue) {
-        if(!isTrue) {
-            boolean[] isOn = {false};
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View cardViewLayout = inflater.inflate(R.layout.cardview_copy, null);
-            //Get the textview from the duplicate
-            TextView duplicateTime = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
-            TextView duplicateDay = cardViewLayout.findViewById(R.id.tvAssignedDayCopy);
-            ImageButton duplicateDelete = cardViewLayout.findViewById(R.id.btnDeleteAlarm);
-            SwitchCompat switchMe = cardViewLayout.findViewById(R.id.scheduleSwitchCopy);
-
-            //Warning Dialog for Alarm Deletion
-            Dialog alarmWarning = new Dialog(Schedule_View.this);
-            alarmWarning.setContentView(R.layout.alarm_delete_warning);
-            alarmWarning.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            alarmWarning.setCancelable(false);
-
-            //Warning Dialog Buttons
-            Button btnCancelAlarmDeletion = alarmWarning.findViewById(R.id.btnCancelAlarmDeletion);
-            Button btnConfirmAlarmDeletion = alarmWarning.findViewById(R.id.btnConfirmAlarmDeletion);
-
-            duplicateDelete.setOnClickListener(v -> alarmWarning.show());
-            btnCancelAlarmDeletion.setOnClickListener(v -> alarmWarning.dismiss());
-            //CardView deletion function
-            btnConfirmAlarmDeletion.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
-                    String tempoRemover = duplicateTime.getText().toString();
-                    tempoRemover = tempoRemover.replace(";", ":");
-                    alarms.remove(tempoRemover);
-                    for (String x : alarms) {
-                        Log.d("COCAINE", x);
-                    }
-                    alarmWarning.dismiss();
-                }
-            });
-            //On off listener
-            switchMe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.d("Switches", isOn[0] + "");
-                    alarms.contains(duplicateTime.getText());
-                    String content = duplicateTime.getText() + "";
-                    String[] newContent = content.split(" ");
-                    int indexOfContent = alarms.indexOf(newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
-                    isOn[0] = !isOn[0];
-                    alarms.set(indexOfContent, newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
-                    Log.d("COCAINE", newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
-                    Log.d("COCAINE", alarmsDay.get(indexOfContent));
-                }
-            });
-
-            selectedMeridiem = amORpmPicker.getValue();
-
-            duplicateTime.setText(getSelectedHour() + ":" + getSelectedMinute() + " " + ((selectedMeridiem == 0) ? "AM" : "PM"));
-            duplicateDay.setText(getFormattedDays(days.toArray(new String[0])));
-
-            //Add the cardview to the layout
-            LinearLayout alarmScrollable = findViewById(R.id.svAlarmScrollable);
-
-
+    private void addNewAlarm(boolean fromExistingData) {
+        if (!fromExistingData) {
             if (days.isEmpty()) {
                 Toast.makeText(Schedule_View.this, "Please Select At Least One Day", Toast.LENGTH_LONG).show();
-            } else {
-                for (int i = 0; i < alarms.size(); i++) {
-                    String[] splitContent = alarms.get(i).split(splitter);
-                    String combine = splitContent[0] + splitter + splitContent[1] + splitter + splitContent[2];
-                    if (combine.equals(getSelectedHour() + splitter + getSelectedMinute() + splitter + selectedMeridiem)) {
-                        Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                }
-                alarmScrollable.addView(cardViewLayout);
-                //Adds data to be sent to ESP8266
-                int indexForContent = (!alarms.isEmpty()) ? alarms.size() : 0;
-                alarmsDay.add(indexForContent, getFormattedDays(days.toArray(new String[0])));
-                alarms.add(indexForContent, getSelectedHour() + splitter + getSelectedMinute() + splitter + selectedMeridiem + ";0");
-
-                addAlarm.dismiss();
-                days.clear();
+                return;
             }
 
-        } else if (isTrue && alarmDatas != null) {
-            String[] temporary = alarmDatas.split(">");
-            for (int j = 0; j < temporary.length - 1; j++) {
-                String[] mirediemSplitter = temporary[j].split("-");
-                String[] temporaryContent = mirediemSplitter[0].split(":");
-                Log.d("CONTS", temporaryContent[0]);
+            String alarmTimeString = getSelectedHour() + ":" + getSelectedMinute() + " " + timePeriods[selectedMeridiem];
+            String alarmString = getSelectedHour() + splitter + getSelectedMinute() + splitter + selectedMeridiem + splitter + "0";
 
-                String hourFormatted = (Integer.parseInt(temporaryContent[0]) < 10)?"0"+temporaryContent[0]:temporaryContent[0];
-                String minuteFormatted = temporaryContent[1];
-                int mirediem = (mirediemSplitter[1].equals("PM"))?1:0;
-
-                boolean[] isOn = {false};
-                LayoutInflater inflater = LayoutInflater.from(this);
-                View cardViewLayout = inflater.inflate(R.layout.cardview_copy, null);
-                //Get the textview from the duplicate
-                TextView duplicateTime = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
-                TextView duplicateDay = cardViewLayout.findViewById(R.id.tvAssignedDayCopy);
-                ImageButton duplicateDelete = cardViewLayout.findViewById(R.id.btnDeleteAlarm);
-                SwitchCompat switchMe = cardViewLayout.findViewById(R.id.scheduleSwitchCopy);
-
-                //Warning Dialog for Alarm Deletion
-                Dialog alarmWarning = new Dialog(Schedule_View.this);
-                alarmWarning.setContentView(R.layout.alarm_delete_warning);
-                alarmWarning.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                alarmWarning.setCancelable(false);
-
-                //Warning Dialog Buttons
-                Button btnCancelAlarmDeletion = alarmWarning.findViewById(R.id.btnCancelAlarmDeletion);
-                Button btnConfirmAlarmDeletion = alarmWarning.findViewById(R.id.btnConfirmAlarmDeletion);
-
-                duplicateDelete.setOnClickListener(v -> alarmWarning.show());
-                btnCancelAlarmDeletion.setOnClickListener(v -> alarmWarning.dismiss());
-                //CardView deletion function
-                btnConfirmAlarmDeletion.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
-                        String tempoRemover = duplicateTime.getText().toString();
-                        tempoRemover = tempoRemover.replace(":", ";");
-                        String[] temp = tempoRemover.split(" ");
-                        tempoRemover = temp[0];
-                        if(temp[1].equals("PM")){
-                            tempoRemover += ";1";
-                        }else{
-                            tempoRemover += ";0";
-                        }
-                        alarms.remove(tempoRemover+";1");
-                        alarms.remove(tempoRemover+";0");
-//                        Log.d("COCAINE", tempoRemover);
-                        for (String x : alarms) {
-
-                            Log.d("COCAINE", x + "ASL");
-                        }
-                        alarmWarning.dismiss();
-                    }
-                });
-                //On off listener
-                switchMe.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("Switches", isOn[0] + "");
-                        alarms.contains(duplicateTime.getText());
-                        String content = duplicateTime.getText() + "";
-                        String[] newContent = content.split(" ");
-                        int indexOfContent = alarms.indexOf(newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
-                        isOn[0] = !isOn[0];
-                        alarms.set(indexOfContent, newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
-                        Log.d("COCAINE", newContent[0].replace(":", ";") + splitter + (newContent[1].equals("PM") ? "1" : "0") + splitter + (isOn[0] ? "1" : "0"));
-                        Log.d("COCAINE", alarmsDay.get(indexOfContent).toString());
-                    }
-                });
-
-                duplicateTime.setText(hourFormatted + ":" + minuteFormatted + " " + ((mirediem == 0) ? "AM" : "PM"));
-                duplicateDay.setText(getFormattedDays(days.toArray(new String[0])));
-
-                //Add the cardview to the layout
-                LinearLayout alarmScrollable = findViewById(R.id.svAlarmScrollable);
-
-
-
-                for (int i = 0; i < alarms.size(); i++) {
-                    String[] splitContent = alarms.get(i).split(splitter);
-                    String combine = splitContent[0] + splitter + splitContent[1] + splitter + splitContent[2];
-                    if (combine.equals(hourFormatted + splitter + minuteFormatted + splitter + mirediem)) {
-                        Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                }
-                alarmScrollable.addView(cardViewLayout);
-                //Adds data to be sent to ESP8266
-                alarms.add((!alarms.isEmpty()) ? alarms.size() : 0, hourFormatted + splitter + minuteFormatted + splitter + mirediem + ";0;"+getFormattedDays(days.toArray(new String[0])));
-                addAlarm.dismiss();
-                days.clear();
-
+            if (alarms.contains(alarmString)) {
+                Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
+                return;
             }
-        }
-    }
 
-    public String getSelectedMinute() {
-        String finalMinute = String.format("%02d", selectedMinute);
-        return finalMinute;
-    }
+            alarms.add(alarmString);
+            alarmsDay.add(getFormattedDays(days));
 
-    public String getSelectedHour(){
-        String finalHour = String.format("%02d", selectedHour);
-        return finalHour;
-    }
-
-    public static String getFormattedDays(String[] days){
-        StringBuilder format = new StringBuilder();
-
-        for(int i = 0; i < days.length; i++){
-            format.append(days[i]);
-            if(i < days.length - 1) {
-                format.append(", ");
-            }
-        }
-
-        return format.toString();
-    }
-
-    public void addDay(String dayAssigned, Button selectedDay){
-        boolean toggled = false;
-
-        if (!toggled) {
-            if (!days.contains(dayAssigned)) {
-                days.add(dayAssigned);
-                selectedDay.setBackgroundColor(getColor(R.color.disabled_color));
-
-            }
+            createAlarmCard(alarmTimeString, getFormattedDays(days), alarmString, false);
+            addAlarmDialog.dismiss();
+            days.clear();
         } else {
-            if (days.contains(dayAssigned)) {
-                days.remove(dayAssigned);
-                selectedDay.setBackgroundColor(getColor(R.color.card_view_color));
-            }
-        }
-    }
+            String[] alarmsFromData = alarmData.split(">");
+            for (String alarmDetail : alarmsFromData) {
+                String[] alarmParts = alarmDetail.split(":");
+                if (alarmParts.length < 2) continue;
 
-    private void toggleCheckboxVisibility(){
-        for(int i = 0; i < scheduleParent.getChildCount(); i++){
-            View view = scheduleParent.getChildAt(i);
-            if (view instanceof CardView) {
-                CardView cardView = (CardView) view;
-                toggleCheckboxVisibilityInCardView(cardView);
-            }
-        }
-    }
+                int hour = Integer.parseInt(alarmParts[0]);
+                int minute = Integer.parseInt(alarmParts[1]);
+                int meridiem = alarmParts[2].equals("PM") ? 1 : 0;
+                Log.d("COCAINE",alarmParts[3] + "CHECKING");
+                String[] daysArray = alarmParts[3].split("-");
 
-    private void toggleCheckboxVisibilityInCardView(CardView cardView) {
-        // Find the linear layout within the CardView
-        RelativeLayout linearLayout = cardView.findViewById(R.id.rlAlarmContainer);
+                @SuppressLint("DefaultLocale")
+                String alarmTimeString = String.format("%02d:%02d %s", hour, minute, timePeriods[meridiem]);
+                @SuppressLint("DefaultLocale")
+                String alarmString = String.format("%02d%s%02d%s%d%s%s", hour, splitter, minute, splitter, meridiem, splitter, alarmParts[4]);
 
-        // Iterate through each child view (checkbox) in the linear layout
-        for (int i = 0; i < linearLayout.getChildCount(); i++) {
-            View view = linearLayout.getChildAt(i);
-            if (view instanceof CheckBox) {
-                CheckBox checkBox = (CheckBox) view;
-                // Toggle visibility of checkboxes
-                if (checkBox.getVisibility() == View.VISIBLE) {
-                    checkBox.setVisibility(View.INVISIBLE);
-                } else {
-                    checkBox.setVisibility(View.VISIBLE);
+                String formattedDays = String.join("-", daysArray);
+
+                if (!alarms.contains(alarmString)) {
+                    alarms.add(alarmString);
+                    alarmsDay.add(formattedDays);
+                    createAlarmCard(alarmTimeString, formattedDays, alarmString, alarmParts[4] == "0");
                 }
             }
         }
+    }
+
+    private void createAlarmCard(String time, String day, String alarmString, boolean isOn) {
+        View cardViewLayout = LayoutInflater.from(this).inflate(R.layout.cardview_copy, null);
+
+        TextView duplicateTime = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
+        TextView duplicateDay = cardViewLayout.findViewById(R.id.tvAssignedDayCopy);
+        ImageButton duplicateDelete = cardViewLayout.findViewById(R.id.btnDeleteAlarm);
+        SwitchCompat switchCompat = cardViewLayout.findViewById(R.id.scheduleSwitchCopy);
+
+        duplicateTime.setText(time);
+        duplicateDay.setText(day);
+
+        Dialog alarmWarning = createAlarmWarningDialog(cardViewLayout, alarmString, day);
+
+        duplicateDelete.setOnClickListener(v -> alarmWarning.show());
+
+        switchCompat.setChecked(isOn);
+
+        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int index = alarms.indexOf(alarmString);
+            if (index != -1) {
+                String[] parts = alarms.get(index).split(splitter);
+                alarms.set(index, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + (isChecked ? "1" : "0"));
+            }
+        });
+
+        alarmScrollable.addView(cardViewLayout);
+    }
+
+    private Dialog createAlarmWarningDialog(View cardViewLayout, String alarmString, String day) {
+        Dialog alarmWarning = new Dialog(Schedule_View.this);
+        alarmWarning.setContentView(R.layout.alarm_delete_warning);
+        alarmWarning.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        alarmWarning.setCancelable(false);
+
+        Button yesButton = alarmWarning.findViewById(R.id.btnConfirmAlarmDeletion);
+        Button noButton = alarmWarning.findViewById(R.id.btnCancelAlarmDeletion);
+
+        yesButton.setOnClickListener(v -> {
+            ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
+            alarmWarning.dismiss();
+            Log.d("COCAINE", "DELETE");
+            int index = alarms.indexOf(alarmString);
+            if (index != -1) {
+                Log.d("COCAINE", "DELETEINSIDE");
+                alarms.remove(index);
+                alarmsDay.remove(day);
+            }
+        });
+
+        noButton.setOnClickListener(v -> alarmWarning.dismiss());
+
+        return alarmWarning;
+    }
+
+    private void toggleDaySelection(String day, MaterialButton dayButton) {
+        if (days.contains(day)) {
+            days.remove(day);
+            dayButton.setBackgroundColor(getResources().getColor(R.color.button_color));
+        } else {
+            days.add(day);
+            dayButton.setBackgroundColor(getResources().getColor(R.color.teal_200));
+        }
+    }
+
+    private String getFormattedDays(List<String> days) {
+        return String.join("-", days);
+    }
+
+    private void updateAlarmsWithDays() {
+        for (int i = 0; i < alarms.size(); i++) {
+            String[] parts = alarms.get(i).split(splitter);
+            alarms.set(i, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + parts[3] + splitter + alarmsDay.get(i));
+        }
+    }
+
+    private String getSelectedHour() {
+        String temp = String.format("%02d", selectedHour);
+        Log.d("COCAINE", temp + "CHECK FOR ERROR");
+        return temp;
+    }
+
+    private String getSelectedMinute() {
+        String temp =  String.format("%02d", selectedMinute);
+        Log.d("COCAINE", temp + "CHECK FOR ERROR");
+        return temp;
     }
 }
