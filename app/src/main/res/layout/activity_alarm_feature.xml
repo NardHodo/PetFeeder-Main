@@ -49,20 +49,19 @@
                 app:np_dividerColor="@color/white"
                 app:np_textColor="@color/white"
                 app:np_selectedTextColor="@color/white"
-                app:np_textSize="30sp"
-                app:np_min="1"
-                app:np_max="59"/>
+                app:np_textSize="30sp" />
+
             <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/AM_PM_Picker"
-                android:layout_width="wrap_content"
+                android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 app:np_dividerColor="@color/white"
-                app:np_textColor="@color/white"
-                app:np_selectedTextColor="@color/white"
-                app:np_textSize="30sp"
+                app:np_max="2"
                 app:np_min="1"
-                app:np_max="2" />
+                app:np_selectedTextColor="@color/white"
+                app:np_textColor="@color/white"
+                app:np_textSize="30sp" />
 
         </LinearLayout>
 
@@ -150,7 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:paddingHorizontal="20dp">
+            android:paddingHorizontal="15dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnCancelAlarm"
