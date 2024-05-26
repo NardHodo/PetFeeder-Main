@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 import android.Manifest;
@@ -44,7 +46,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"Foodie\"";
+    final String WIFI_NAME = "\"Foodiee\"";
     String alarmContent = "", alarmsToSendToESP = "";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> alarmsToSend;
 
-    TextView connectedWifi;
+    TextView connectedWifi, tvUpcomingMealTime;
 
     ActivityResultLauncher<Intent> intentLauncher;
 
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         btnManage = findViewById(R.id.btnManage);
         btnConnect = findViewById(R.id.btnConnect);
         btnAutomatic = findViewById(R.id.btnAutomatic);
+        tvUpcomingMealTime = findViewById(R.id.tvUpcomingMealTime);
         enableDisabledButtons(false);
 
         intentLauncher = registerForActivityResult(
@@ -97,10 +100,13 @@ public class MainActivity extends AppCompatActivity {
                             sendCommand("ALLALARMS:" + alarmsToSendToESP);
                             Log.d("ALARM", alarmsToSendToESP);
                             alarmsToSendToESP = "";
+                            updateUpcomingMealTime();
                         }
                     }
                 }
         );
+
+
 
         // Set up network request for ESP8266 communication
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -128,6 +134,63 @@ public class MainActivity extends AppCompatActivity {
         btnLights.setOnClickListener(view -> sendCommand("green"));
         btnManual.setOnClickListener(view -> sendCommand("blue"));
     }
+
+    private void updateUpcomingMealTime() {
+        if (alarmsToSend != null && !alarmsToSend.isEmpty()) {
+            for (String alarm : alarmsToSend) {
+                String[] parts = alarm.split(";");
+                if (parts.length > 3 && "1".equals(parts[3])) {
+                    String time = String.format("%02d:%02d %s", Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2].equals("0") ? "AM" : "PM");
+                    tvUpcomingMealTime.setText(time);
+                    return;
+                }
+            }
+        } else {
+            tvUpcomingMealTime.setText("No alarms yet");
+        }
+    }
+
+    private String findClosestAlarm(List<String> alarms) {
+        Calendar now = Calendar.getInstance();
+        Calendar closestAlarm = null;
+        String closestAlarmString = null;
+
+        for (String alarm : alarms) {
+            String[] parts = alarm.split(";");
+            if (parts.length >= 4) {
+                int hour = Integer.parseInt(parts[0]);
+                int minute = Integer.parseInt(parts[1]);
+                int amOrPm = Integer.parseInt(parts[2]);
+                int isActive = Integer.parseInt(parts[3]);
+
+                if (isActive == 1) {
+                    if (amOrPm == 1 && hour != 12) {
+                        hour += 12; // Convert PM to 24-hour format
+                    } else if (amOrPm == 0 && hour == 12) {
+                        hour = 0; // Handle 12 AM case
+                    }
+
+                    Calendar alarmTime = Calendar.getInstance();
+                    alarmTime.set(Calendar.HOUR_OF_DAY, hour);
+                    alarmTime.set(Calendar.MINUTE, minute);
+                    alarmTime.set(Calendar.SECOND, 0);
+                    alarmTime.set(Calendar.MILLISECOND, 0);
+
+                    if (alarmTime.before(now)) {
+                        alarmTime.add(Calendar.DAY_OF_MONTH, 1); // Set for the next day if time is in the past
+                    }
+
+                    if (closestAlarm == null || alarmTime.before(closestAlarm)) {
+                        closestAlarm = alarmTime;
+                        closestAlarmString = String.format("%02d:%02d %s", (hour % 12 == 0) ? 12 : hour % 12, minute, amOrPm == 0 ? "AM" : "PM");
+                    }
+                }
+            }
+        }
+
+        return closestAlarmString != null ? closestAlarmString : "No alarms yet";
+    }
+
 
     private void setupDialogs() {
         dispenseDialog = new Dialog(MainActivity.this);
