@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,6 +45,8 @@ public class Schedule_View extends AppCompatActivity {
     private final String[] timePeriods = {"AM", "PM"};
     private final String splitter = ";";
     private String alarmData = "";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +119,13 @@ public class Schedule_View extends AppCompatActivity {
         }
     }
 
+    private void saveSwitchState(boolean isChecked) {
+        SharedPreferences.Editor editor = getSharedPreferences("SwitchState", MODE_PRIVATE).edit();
+        editor.putBoolean("isChecked", isChecked);
+        editor.apply();
+    }
+
+
     private void setupPickers() {
         hourPicker.setMinValue(1);
         hourPicker.setMaxValue(12);
@@ -152,7 +162,7 @@ public class Schedule_View extends AppCompatActivity {
             alarms.add(alarmString);
             alarmsDay.add(getFormattedDays(days));
 
-            createAlarmCard(alarmTimeString, getFormattedDays(days), alarmString, false);
+            createAlarmCard(alarmTimeString, getFormattedDays(days), alarmString, true);
             addAlarmDialog.dismiss();
             days.clear();
         } else {
@@ -198,13 +208,22 @@ public class Schedule_View extends AppCompatActivity {
 
         duplicateDelete.setOnClickListener(v -> alarmWarning.show());
 
-        switchCompat.setChecked(isOn);
+        switchCompat.setChecked(true);
 
         switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            int index = alarms.indexOf(alarmString);
-            if (index != -1) {
-                String[] parts = alarms.get(index).split(splitter);
-                alarms.set(index, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + (isChecked ? "1" : "0"));
+            if (!isChecked) {
+                // The switch is toggled off
+                // Update the alarm status
+                int index = alarms.indexOf(alarmString);
+                if (index != -1) {
+                    String[] parts = alarms.get(index).split(splitter);
+                    alarms.set(index, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + "0");
+                }
+            } else {
+                // The switch is toggled on
+                // Optionally perform some action when the switch is turned on
+                // For example, display a message
+                Toast.makeText(Schedule_View.this, "Alarm is active", Toast.LENGTH_SHORT).show();
             }
         });
 

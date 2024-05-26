@@ -94,11 +94,9 @@ public class MainActivity extends AppCompatActivity {
                             assert data != null;
                             alarmsToSend = data.getStringArrayListExtra("alarms");
                             for (String alarm : alarmsToSend) {
-                                Log.d("ALARMAGAIN", alarm);
                                 alarmsToSendToESP += alarm + "&";
                             }
                             sendCommand("ALLALARMS:" + alarmsToSendToESP);
-                            Log.d("ALARM", alarmsToSendToESP);
                             alarmsToSendToESP = "";
                             updateUpcomingMealTime();
                         }
@@ -137,18 +135,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUpcomingMealTime() {
         if (alarmsToSend != null && !alarmsToSend.isEmpty()) {
-            for (String alarm : alarmsToSend) {
-                String[] parts = alarm.split(";");
-                if (parts.length > 3 && "1".equals(parts[3])) {
-                    String time = String.format("%02d:%02d %s", Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2].equals("0") ? "AM" : "PM");
-                    tvUpcomingMealTime.setText(time);
-                    return;
-                }
-            }
+            String closestAlarm = findClosestAlarm(alarmsToSend);
+            tvUpcomingMealTime.setText(closestAlarm);
         } else {
             tvUpcomingMealTime.setText("No alarms yet");
         }
     }
+
 
     private String findClosestAlarm(List<String> alarms) {
         Calendar now = Calendar.getInstance();
@@ -190,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         return closestAlarmString != null ? closestAlarmString : "No alarms yet";
     }
+
 
 
     private void setupDialogs() {
