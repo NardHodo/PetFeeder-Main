@@ -37,6 +37,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+
 import android.Manifest;
 
 import com.google.android.material.button.MaterialButton;
@@ -104,8 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-
-
         // Set up network request for ESP8266 communication
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkRequest.Builder builder = new NetworkRequest.Builder();
@@ -133,57 +136,21 @@ public class MainActivity extends AppCompatActivity {
         btnManual.setOnClickListener(view -> sendCommand("blue"));
     }
 
+    //Updates the upcoming meal time in the dashboard
     private void updateUpcomingMealTime() {
         if (alarmsToSend != null && !alarmsToSend.isEmpty()) {
-            String closestAlarm = findClosestAlarm(alarmsToSend);
-            tvUpcomingMealTime.setText(closestAlarm);
+            for (String alarm : alarmsToSend) {
+                String[] parts = alarm.split(";");
+                if (parts.length > 3 && "1".equals(parts[3])) {
+                    String time = String.format("%02d:%02d %s", Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2].equals("0") ? "AM" : "PM");
+                    tvUpcomingMealTime.setText(time);
+                    return;
+                }
+            }
         } else {
             tvUpcomingMealTime.setText("No alarms yet");
         }
     }
-
-
-    private String findClosestAlarm(List<String> alarms) {
-        Calendar now = Calendar.getInstance();
-        Calendar closestAlarm = null;
-        String closestAlarmString = null;
-
-        for (String alarm : alarms) {
-            String[] parts = alarm.split(";");
-            if (parts.length >= 4) {
-                int hour = Integer.parseInt(parts[0]);
-                int minute = Integer.parseInt(parts[1]);
-                int amOrPm = Integer.parseInt(parts[2]);
-                int isActive = Integer.parseInt(parts[3]);
-
-                if (isActive == 1) {
-                    if (amOrPm == 1 && hour != 12) {
-                        hour += 12; // Convert PM to 24-hour format
-                    } else if (amOrPm == 0 && hour == 12) {
-                        hour = 0; // Handle 12 AM case
-                    }
-
-                    Calendar alarmTime = Calendar.getInstance();
-                    alarmTime.set(Calendar.HOUR_OF_DAY, hour);
-                    alarmTime.set(Calendar.MINUTE, minute);
-                    alarmTime.set(Calendar.SECOND, 0);
-                    alarmTime.set(Calendar.MILLISECOND, 0);
-
-                    if (alarmTime.before(now)) {
-                        alarmTime.add(Calendar.DAY_OF_MONTH, 1); // Set for the next day if time is in the past
-                    }
-
-                    if (closestAlarm == null || alarmTime.before(closestAlarm)) {
-                        closestAlarm = alarmTime;
-                        closestAlarmString = String.format("%02d:%02d %s", (hour % 12 == 0) ? 12 : hour % 12, minute, amOrPm == 0 ? "AM" : "PM");
-                    }
-                }
-            }
-        }
-
-        return closestAlarmString != null ? closestAlarmString : "No alarms yet";
-    }
-
 
 
     private void setupDialogs() {
@@ -214,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Sends Command to ESP8266 like Alarms, Data Gathering.
     public void sendCommand(String cmd) {
         Thread receiver = new Thread(() -> {
             String command = "http://192.168.4.1/" + cmd;
@@ -241,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
         receiver.start();
     }
 
+    //Checks the WiFi connection of the phone if it is the correct WiFi SSID
     public void getCurrentWifiSSID(Context context) {
         String ssid = "";
         LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -278,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Checks the response of ESP8266 and breaks down the data received
     void checkESP8266Response(String str) {
         String[] cont = str.split(",");
         TextView tvLight = findViewById(R.id.tvLightStatus);
@@ -325,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Disables dashboard buttons if the phone is not connected to the correct WiFi and vice versa
     void enableDisabledButtons(boolean enabled) {
         btnManual.setEnabled(enabled);
         btnLights.setEnabled(enabled);

@@ -60,6 +60,7 @@ public class Schedule_View extends AppCompatActivity {
         }
     }
 
+    //region Initialization of different elements
     private void initializeElements() {
         scheduleParent = findViewById(R.id.scheduleParent);
         alarmScrollable = findViewById(R.id.svAlarmScrollable);
@@ -125,7 +126,7 @@ public class Schedule_View extends AppCompatActivity {
         editor.apply();
     }
 
-
+    //Initialize the alarm picker value
     private void setupPickers() {
         hourPicker.setMinValue(1);
         hourPicker.setMaxValue(12);
@@ -142,8 +143,10 @@ public class Schedule_View extends AppCompatActivity {
         amOrPmPicker.setDisplayedValues(timePeriods);
         amOrPmPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedMeridiem = newVal);
     }
+    //endregion
 
     @SuppressLint("SetTextI18n")
+    //This checks method checks the ESP8266 wether there is an existing alarm or not.
     private void addNewAlarm(boolean fromExistingData) {
         if (!fromExistingData) {
             if (days.isEmpty()) {
@@ -192,7 +195,7 @@ public class Schedule_View extends AppCompatActivity {
             }
         }
     }
-
+    // Creates an alarm card everytime a user adds an alarm
     private void createAlarmCard(String time, String day, String alarmString, boolean isOn) {
         View cardViewLayout = LayoutInflater.from(this).inflate(R.layout.cardview_copy, null);
 
@@ -220,16 +223,13 @@ public class Schedule_View extends AppCompatActivity {
                     alarms.set(index, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + "0");
                 }
             } else {
-                // The switch is toggled on
-                // Optionally perform some action when the switch is turned on
-                // For example, display a message
                 Toast.makeText(Schedule_View.this, "Alarm is active", Toast.LENGTH_SHORT).show();
             }
         });
 
         alarmScrollable.addView(cardViewLayout);
     }
-
+    //Creates a dialog box anytime the user wants to delete an alarm.
     private Dialog createAlarmWarningDialog(View cardViewLayout, String alarmString, String day) {
         Dialog alarmWarning = new Dialog(Schedule_View.this);
         alarmWarning.setContentView(R.layout.alarm_delete_warning);
@@ -256,6 +256,7 @@ public class Schedule_View extends AppCompatActivity {
         return alarmWarning;
     }
 
+    //Change the data in the ArrayList to check wether the switch is on or off.
     private void toggleDaySelection(String day, MaterialButton dayButton) {
         if (days.contains(day)) {
             days.remove(day);
@@ -270,19 +271,20 @@ public class Schedule_View extends AppCompatActivity {
         return String.join("-", days);
     }
 
+    //Updates the ArrayList before sending it to the MainActivity
     private void updateAlarmsWithDays() {
         for (int i = 0; i < alarms.size(); i++) {
             String[] parts = alarms.get(i).split(splitter);
             alarms.set(i, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + parts[3] + splitter + alarmsDay.get(i));
         }
     }
-
+    //returns the formatted value of hour
     private String getSelectedHour() {
         String temp = String.format("%02d", selectedHour);
         Log.d("COCAINE", temp + "CHECK FOR ERROR");
         return temp;
     }
-
+    //returns the formatted value of minute
     private String getSelectedMinute() {
         String temp =  String.format("%02d", selectedMinute);
         Log.d("COCAINE", temp + "CHECK FOR ERROR");
