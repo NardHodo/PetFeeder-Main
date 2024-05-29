@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import java.time.*;
+
 public class Schedule_View extends AppCompatActivity {
 
     private BottomSheetDialog addAlarmDialog;
@@ -67,15 +69,14 @@ public class Schedule_View extends AppCompatActivity {
 
         findViewById(R.id.btnBackButton).setOnClickListener(v -> {
             updateAlarmsWithDays();
-            ArrayList<String> formatizeString = new ArrayList<>();
+            ArrayList<String> formattedAlarms = new ArrayList<>();
             if (!alarms.isEmpty()) {
                 for (int i = 0; i < alarms.size(); i++) {
-                    String temporaryHolder = alarms.get(i); //+ ";" + alarmsDay.get(i);
-                    formatizeString.add(temporaryHolder);
-                    Log.d("COCAINE", temporaryHolder + "sda");
+                    String alarm = alarms.get(i) + ";" + alarmsDay.get(i);
+                    formattedAlarms.add(alarm);
                 }
             }
-            setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", formatizeString));
+            setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", formattedAlarms));
             finish();
         });
 
