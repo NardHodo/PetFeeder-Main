@@ -280,6 +280,7 @@ public class Schedule_View extends AppCompatActivity {
             String[] parts = alarms.get(i).split(splitter);
             alarms.set(i, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + parts[3] + splitter + alarmsDay.get(i));
         }
+        getAlarmTimes(alarmScrollable);
     }
     //returns the formatted value of hour
     private String getSelectedHour() {
@@ -312,7 +313,7 @@ public class Schedule_View extends AppCompatActivity {
                     List<String> days = Arrays.asList(dayString.split(","));
                     alarmValues.add(new AlarmInfo(finalTime, days));
 
-                    Log.d(finalTime, days.toString());
+                    Log.d("NIGGA", finalTime+days);
                 }
             }
         }
