@@ -96,18 +96,23 @@ public class MainActivity extends AppCompatActivity {
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Intent data = result.getData();
-                            assert data != null;
-                            alarmsToSend = data.getStringArrayListExtra("alarms");
-                            for (String alarm : alarmsToSend) {
-                                alarmsToSendToESP += alarm + "&";
+                            if (data != null) {
+                                alarmsToSend = data.getStringArrayListExtra("alarms");
+                                if (alarmsToSend != null) {
+                                    for (String alarm : alarmsToSend) {
+                                        alarmsToSendToESP += alarm + "&";
+                                    }
+                                    sendCommand("ALLALARMS:" + alarmsToSendToESP);
+                                    alarmsToSendToESP = "";
+                                    updateUpcomingMealTime();
+                                }
                             }
-                            sendCommand("ALLALARMS:" + alarmsToSendToESP);
-                            alarmsToSendToESP = "";
-                            updateUpcomingMealTime();
                         }
                     }
                 }
         );
+
+
 
         // Set up network request for ESP8266 communication
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -139,19 +144,53 @@ public class MainActivity extends AppCompatActivity {
     //Updates the upcoming meal time in the dashboard
     private void updateUpcomingMealTime() {
         if (alarmsToSend != null && !alarmsToSend.isEmpty()) {
+            long currentTimeMillis = System.currentTimeMillis();
+            long upcomingAlarmTimeMillis = Long.MAX_VALUE;
+            String upcomingAlarmTimeString = "";
+
             for (String alarm : alarmsToSend) {
                 String[] parts = alarm.split(";");
                 if (parts.length > 3 && "1".equals(parts[3])) {
-                    String time = String.format("%02d:%02d %s", Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2].equals("0") ? "AM" : "PM");
-                    tvUpcomingMealTime.setText(time);
-                    return;
+                    // Convert alarm time to milliseconds
+                    int hourOfDay = Integer.parseInt(parts[0]);
+                    int minute = Integer.parseInt(parts[1]);
+                    Calendar alarmTime = Calendar.getInstance();
+                    alarmTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    alarmTime.set(Calendar.MINUTE, minute);
+                    alarmTime.set(Calendar.SECOND, 0);
+                    alarmTime.set(Calendar.MILLISECOND, 0);
+
+                    // Check if alarm time is in the future and update upcomingAlarmTimeMillis
+                    long alarmTimeMillis = alarmTime.getTimeInMillis();
+                    if (alarmTimeMillis > currentTimeMillis && alarmTimeMillis < upcomingAlarmTimeMillis) {
+                        upcomingAlarmTimeMillis = alarmTimeMillis;
+                        upcomingAlarmTimeString = String.format(Locale.getDefault(), "%02d:%02d %s",
+                                hourOfDay > 12 ? hourOfDay - 12 : hourOfDay,
+                                minute,
+                                hourOfDay < 12 ? "AM" : "PM");
+                    }
                 }
             }
+
+            if (!upcomingAlarmTimeString.isEmpty()) {
+                // Display the upcoming alarm time
+                tvUpcomingMealTime.setText(upcomingAlarmTimeString);
+            } else {
+                // No upcoming alarm found
+                tvUpcomingMealTime.setText("No upcoming alarms");
+            }
         } else {
-            tvUpcomingMealTime.setText("No alarms yet");
+            // No alarms set
+            tvUpcomingMealTime.setText("No alarms set");
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update the displayed upcoming meal time when the activity resumes
+        updateUpcomingMealTime();
+    }
 
     private void setupDialogs() {
         dispenseDialog = new Dialog(MainActivity.this);
