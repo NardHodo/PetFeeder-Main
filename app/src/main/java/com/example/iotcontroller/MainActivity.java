@@ -51,7 +51,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"Foodie\"";
+    final String WIFI_NAME = "\"Foodiee\"";
     String alarmContent = "", alarmsToSendToESP = "";
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
@@ -177,11 +177,11 @@ public class MainActivity extends AppCompatActivity {
                 tvUpcomingMealTime.setText(upcomingAlarmTimeString);
             } else {
                 // No upcoming alarm found
-                tvUpcomingMealTime.setText("No upcoming alarms");
+                tvUpcomingMealTime.setText("None");
             }
         } else {
             // No alarms set
-            tvUpcomingMealTime.setText("No alarms set");
+            tvUpcomingMealTime.setText("None");
         }
     }
 

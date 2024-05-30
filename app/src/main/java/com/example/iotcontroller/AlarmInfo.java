@@ -18,4 +18,8 @@ public class AlarmInfo {
     public List<String> getAssignedDays(){
         return assignedDays;
     }
+
+    public String toString(){
+        return "Alarm: " + assignedTime + " " + assignedDays;
+    }
 }

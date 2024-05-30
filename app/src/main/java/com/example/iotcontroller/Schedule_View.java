@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewManager;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -49,6 +50,13 @@ public class Schedule_View extends AppCompatActivity {
     private final String splitter = ";";
     private String alarmData = "";
     private ArrayList<AlarmInfo> alarmValues;
+    private String[] dayNames;
+
+    List<String> alarmDays = Arrays.asList("Sun", "Mon", "Tues");
+
+    AlarmInfo nigga = new AlarmInfo("10:30", alarmDays);
+    AlarmInfo nigga2 = new AlarmInfo("11:00", alarmDays);
+
 
 
 
@@ -62,6 +70,7 @@ public class Schedule_View extends AppCompatActivity {
         if (alarmData != null && alarmData.length() >= 10) {
             addNewAlarm(true);
         }
+        setupLayoutChangeListener(scheduleParent);
     }
 
     //region Initialization of different elements
@@ -116,7 +125,7 @@ public class Schedule_View extends AppCompatActivity {
                 contentView.findViewById(R.id.btnSaturday)
         };
 
-        String[] dayNames = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+        dayNames = new String[]{"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
         for (int i = 0; i < dayButtons.length; i++) {
             final int index = i;
@@ -168,10 +177,13 @@ public class Schedule_View extends AppCompatActivity {
 
             alarms.add(alarmString);
             alarmsDay.add(getFormattedDays(days));
-
             createAlarmCard(alarmTimeString, getFormattedDays(days), alarmString, true);
             addAlarmDialog.dismiss();
             days.clear();
+            AlarmInfo newAlarm = new AlarmInfo(alarmString, days);
+            Log.d("NIGGA", newAlarm.getAssignedTime() + days);
+
+
         } else {
             String[] alarmsFromData = alarmData.split(">");
             for (String alarmDetail : alarmsFromData) {
@@ -244,7 +256,6 @@ public class Schedule_View extends AppCompatActivity {
         Button noButton = alarmWarning.findViewById(R.id.btnCancelAlarmDeletion);
 
         yesButton.setOnClickListener(v -> {
-            ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
             alarmWarning.dismiss();
             Log.d("COCAINE", "DELETE");
             int index = alarms.indexOf(alarmString);
@@ -253,11 +264,21 @@ public class Schedule_View extends AppCompatActivity {
                 alarms.remove(index);
                 alarmsDay.remove(day);
             }
+            ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
         });
 
         noButton.setOnClickListener(v -> alarmWarning.dismiss());
 
         return alarmWarning;
+    }
+
+    private void setupLayoutChangeListener(final RelativeLayout scheduleParent){
+        scheduleParent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                getAlarmTimes(scheduleParent);
+            }
+        });
     }
 
     //Change the data in the ArrayList to check wether the switch is on or off.
@@ -281,7 +302,7 @@ public class Schedule_View extends AppCompatActivity {
             String[] parts = alarms.get(i).split(splitter);
             alarms.set(i, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + parts[3] + splitter + alarmsDay.get(i));
         }
-        getAlarmTimes(alarmScrollable);
+        getAlarmTimes(scheduleParent);
     }
     //returns the formatted value of hour
     private String getSelectedHour() {
@@ -296,25 +317,25 @@ public class Schedule_View extends AppCompatActivity {
         return temp;
     }
 
-    private void getAlarmTimes(LinearLayout parentLayout){
+    private void getAlarmTimes(RelativeLayout scheduleParent){
+        List<String> alarmTimes = new ArrayList<>();
 
-        alarmValues = new ArrayList<>();
+        for (int i = 0; i < scheduleParent.getChildCount(); i++){
+            View alarmItem = scheduleParent.getChildAt(i);
 
-        for (int i = 0; i< parentLayout.getChildCount(); i++){
-            View alarmItem = parentLayout.getChildAt(i);
+            if (alarmItem instanceof CardView){
+                CardView cardView = (CardView) alarmItem;
+                TextView alarmTimeView = cardView.findViewById(R.id.tvAssignedTimeCopy);
+                TextView alarmDayView = cardView.findViewById(R.id.tvAssignedDayCopy);
 
-            if(alarmItem instanceof CardView){
-                CardView cardview = (CardView) alarmItem;
-                TextView alarmTime = cardview.findViewById(R.id.tvAssignedTimeCopy);
-                TextView alarmDay = cardview.findViewById(R.id.tvAssignedDayCopy);
-
-                if(alarmTime != null && alarmDay !=null){
-                    String finalTime = alarmTime.getText().toString();
-                    String dayString = alarmDay.getText().toString();
+                if (alarmTimeView != null && alarmDayView != null){
+                    String alarmTime = alarmTimeView.getText().toString();
+                    String dayString = alarmDayView.getText().toString();
                     List<String> days = Arrays.asList(dayString.split(","));
-                    alarmValues.add(new AlarmInfo(finalTime, days));
 
-                    Log.d("NIGGA", finalTime+days);
+                    // Process the alarmTime and days as needed
+                    alarmTimes.add(alarmTime);
+                    // Collecting alarm times
                 }
             }
         }
