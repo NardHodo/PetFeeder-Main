@@ -32,8 +32,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -100,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                             sendCommand("ALLALARMS:" + alarmsToSendToESP);
                             Log.d("ALARM", alarmsToSendToESP);
                             alarmsToSendToESP = "";
-                            updateUpcomingMealTime();
+                            updateUpcomingMealTime(alarmsToSend);
                         }
                     }
                 }
@@ -129,25 +134,83 @@ public class MainActivity extends AppCompatActivity {
         // Set button click listeners
         btnConnect.setOnClickListener(view -> getCurrentWifiSSID(this));
         btnCancel.setOnClickListener(view -> dispenseDialog.dismiss());
-        btnManage.setOnClickListener(view -> sendCommand("GETALARM:"));
+        btnManage.setOnClickListener(view -> {
+                Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
+                intentLauncher.launch(viewSchedule);
+                sendCommand("GETALARM:");
+        });
         btnManualWater.setOnClickListener(view -> sendCommand("red"));
         btnLights.setOnClickListener(view -> sendCommand("green"));
         btnManual.setOnClickListener(view -> sendCommand("blue"));
     }
 
-    private void updateUpcomingMealTime() {
-        if (alarmsToSend != null && !alarmsToSend.isEmpty()) {
-            for (String alarm : alarmsToSend) {
+    private void updateUpcomingMealTime(ArrayList<String> upcomingAlarm) {
+        Calendar rn = Calendar.getInstance();
+        Calendar checkAlarm = Calendar.getInstance();
+        Log.d("COCAINE", "CHECKING");
+        if (!(upcomingAlarm.size() < 0)) {
+            Log.d("COCAINE", "FIRST IF");
+            int hourCompare = 0;
+            int minuteCompare = 0;
+            int meridiemCompare = rn.get(Calendar.AM_PM);
+            String isOn = "";
+
+            rn.set(Calendar.HOUR, rn.get(Calendar.HOUR));
+            rn.set(Calendar.MINUTE, rn.get(Calendar.MINUTE));
+            rn.set(Calendar.AM_PM, rn.get(Calendar.AM_PM));
+
+            ArrayList<String> alarms = new ArrayList<>();
+
+            for (String alarm : upcomingAlarm) {
                 String[] parts = alarm.split(";");
-                if (parts.length > 3 && "1".equals(parts[3])) {
-                    String time = String.format("%02d:%02d %s", Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), parts[2].equals("0") ? "AM" : "PM");
-                    tvUpcomingMealTime.setText(time);
-                    return;
+                isOn = parts[4];
+                if(parts[4].equals("ON")) {
+                    alarms.add(parts[0] + ":" + parts[1] + ":" + parts[2]);
                 }
+            }
+            sortAlarms(alarms);
+            for(String x : alarms){
+                String[] temporaryHolder = x.split(":");
+                if(Integer.parseInt(temporaryHolder[0])>=rn.get(Calendar.HOUR)){
+                    if(Integer.parseInt(temporaryHolder[1])>=rn.get(Calendar.MINUTE)){
+                        tvUpcomingMealTime.setText(temporaryHolder[0]+ ":" + temporaryHolder[1] + " " + temporaryHolder[2]);
+                        break;
+                    }
+                }
+            }
+
+
+            if ("ON".equals(isOn)) {
+                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d %s", hourCompare, minuteCompare, meridiemCompare);
+
+                return;
             }
         } else {
             tvUpcomingMealTime.setText("No alarms yet");
         }
+    }
+
+    public static void sortAlarms(ArrayList<String> alarms) {
+        Collections.sort(alarms, new Comparator<String>() {
+            @Override
+            public int compare(String alarm1, String alarm2) {
+                Calendar calendar1 = parseAlarmTime(alarm1);
+                Calendar calendar2 = parseAlarmTime(alarm2);
+                return calendar1.compareTo(calendar2);
+            }
+        });
+    }
+
+    private static Calendar parseAlarmTime(String alarmTime) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:a");
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date date = dateFormat.parse(alarmTime);
+            calendar.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar;
     }
 
     private String findClosestAlarm(List<String> alarms) {

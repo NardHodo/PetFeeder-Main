@@ -27,6 +27,7 @@ import com.google.android.material.button.MaterialButton;
 import com.shawnlin.numberpicker.NumberPicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class Schedule_View extends AppCompatActivity {
     private NumberPicker hourPicker, minPicker, amOrPmPicker;
     private int selectedHour = 1, selectedMinute = 0, selectedMeridiem = 0;
     private List<String> days = new ArrayList<>();
-    private List<String> alarms = new ArrayList<>();
+    private ArrayList<String> alarms = new ArrayList<>();
     private List<String> alarmsDay = new ArrayList<>();
 
     private RelativeLayout scheduleParent;
@@ -62,16 +63,7 @@ public class Schedule_View extends AppCompatActivity {
         alarmScrollable = findViewById(R.id.svAlarmScrollable);
 
         findViewById(R.id.btnBackButton).setOnClickListener(v -> {
-            updateAlarmsWithDays();
-            ArrayList<String> formatizeString = new ArrayList<>();
-            if (!alarms.isEmpty()) {
-                for (int i = 0; i < alarms.size(); i++) {
-                    String temporaryHolder = alarms.get(i); //+ ";" + alarmsDay.get(i);
-                    formatizeString.add(temporaryHolder);
-                    Log.d("COCAINE", temporaryHolder + "sda");
-                }
-            }
-            setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", formatizeString));
+            setResult(Activity.RESULT_OK, new Intent().putStringArrayListExtra("alarms", alarms));
             finish();
         });
 
@@ -117,20 +109,32 @@ public class Schedule_View extends AppCompatActivity {
     }
 
     private void setupPickers() {
+        Calendar rn = Calendar.getInstance();
+
+        int hour = rn.get(Calendar.HOUR);
+        int minute = rn.get(Calendar.MINUTE);
+        int meridiem = rn.get(Calendar.AM_PM);
+
         hourPicker.setMinValue(1);
         hourPicker.setMaxValue(12);
+        hourPicker.setValue(hour);
         hourPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedHour = newVal);
 
         minPicker.setMinValue(0);
         minPicker.setMaxValue(59);
-        minPicker.setValue(0);
+        minPicker.setValue(minute);
         minPicker.setFormatter(value -> String.format("%02d", value));
         minPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedMinute = newVal);
 
         amOrPmPicker.setMinValue(0);
         amOrPmPicker.setMaxValue(timePeriods.length - 1);
+        amOrPmPicker.setValue(meridiem);
         amOrPmPicker.setDisplayedValues(timePeriods);
         amOrPmPicker.setOnValueChangedListener((picker, oldVal, newVal) -> selectedMeridiem = newVal);
+
+        selectedHour = hour;
+        selectedMinute = minute;
+        selectedMeridiem = meridiem;
     }
 
     @SuppressLint("SetTextI18n")
@@ -142,8 +146,8 @@ public class Schedule_View extends AppCompatActivity {
             }
 
             String alarmTimeString = getSelectedHour() + ":" + getSelectedMinute() + " " + timePeriods[selectedMeridiem];
-            String alarmString = getSelectedHour() + splitter + getSelectedMinute() + splitter + selectedMeridiem + splitter + "0";
-
+            String alarmString = getSelectedHour() + splitter + getSelectedMinute() + splitter + timePeriods[selectedMeridiem] + splitter + getFormattedDays(days) + splitter + "ON";
+            Log.d("COCAINE", "SETDATA: " + alarmString);
             if (alarms.contains(alarmString)) {
                 Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
                 return;
@@ -152,7 +156,7 @@ public class Schedule_View extends AppCompatActivity {
             alarms.add(alarmString);
             alarmsDay.add(getFormattedDays(days));
 
-            createAlarmCard(alarmTimeString, getFormattedDays(days), alarmString, false);
+            createAlarmCard(alarmTimeString, getFormattedDays(days), alarmString, true);
             addAlarmDialog.dismiss();
             days.clear();
         } else {
@@ -170,7 +174,7 @@ public class Schedule_View extends AppCompatActivity {
                 @SuppressLint("DefaultLocale")
                 String alarmTimeString = String.format("%02d:%02d %s", hour, minute, timePeriods[meridiem]);
                 @SuppressLint("DefaultLocale")
-                String alarmString = String.format("%02d%s%02d%s%d%s%s", hour, splitter, minute, splitter, meridiem, splitter, alarmParts[4]);
+                String alarmString = String.format("%02d%s%02d%s%d%s%s%s%s", hour, splitter, minute, splitter, meridiem, splitter, alarmParts[4], splitter, alarmParts[5]);
 
                 String formattedDays = String.join("-", daysArray);
 
@@ -200,11 +204,25 @@ public class Schedule_View extends AppCompatActivity {
 
         switchCompat.setChecked(isOn);
 
+        //CHANGES THE ARRAYLIST CONTENT WHENEVER THE USER CHANGE THE SWITCH STATE
         switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            int index = alarms.indexOf(alarmString);
+
+            String forChecking = BuildStringWithoutSwitch(alarmString);
+            int index = -1;
+
+            if(alarms.indexOf(forChecking + "ON") != -1){
+                index = alarms.indexOf(forChecking + "ON");
+            } else if (alarms.indexOf(forChecking + "OFF") != -1) {
+                index = alarms.indexOf(forChecking + "OFF");
+            }
+
             if (index != -1) {
+
                 String[] parts = alarms.get(index).split(splitter);
-                alarms.set(index, parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + (isChecked ? "1" : "0"));
+                String changeAlarms = parts[0] + splitter + parts[1] + splitter + parts[2] + splitter + parts[3] + splitter +(isChecked ? "ON" : "OFF");
+                alarms.set(index, changeAlarms);
+
+                Log.d("COCAINE", "CHANGE ALARMS: " + changeAlarms);
             }
         });
 
@@ -223,12 +241,18 @@ public class Schedule_View extends AppCompatActivity {
         yesButton.setOnClickListener(v -> {
             ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
             alarmWarning.dismiss();
-            Log.d("COCAINE", "DELETE");
-            int index = alarms.indexOf(alarmString);
+            String forChecking = BuildStringWithoutSwitch(alarmString);
+            int index = -1;
+
+            if(alarms.indexOf(forChecking + "ON") != -1){
+                index = alarms.indexOf(forChecking + "ON");
+            } else if (alarms.indexOf(forChecking + "OFF") != -1) {
+                index = alarms.indexOf(forChecking + "OFF");
+            }
             if (index != -1) {
-                Log.d("COCAINE", "DELETEINSIDE");
                 alarms.remove(index);
                 alarmsDay.remove(day);
+                REVIEWALARMS();
             }
         });
 
@@ -258,15 +282,32 @@ public class Schedule_View extends AppCompatActivity {
         }
     }
 
+    private String BuildStringWithoutSwitch(String toChange){
+        String[] temporaryStringForChecking = toChange.toString().split(";");
+        String temporary = "";
+        for (int i = 0; i < temporaryStringForChecking.length - 1;i++){
+            temporary += temporaryStringForChecking[i]+splitter;
+        }
+        return temporary;
+    }
+
+    //FOR DEBUGGING PURPOSES
+    private void REVIEWALARMS(){
+        for (String x : alarms) {
+            Log.d("COCAINE", "CHECK ALARMS: " + x);
+        }
+
+    }
+
     private String getSelectedHour() {
         String temp = String.format("%02d", selectedHour);
-        Log.d("COCAINE", temp + "CHECK FOR ERROR");
+//        Log.d("COCAINE", temp + "CHECK FOR ERROR");
         return temp;
     }
 
     private String getSelectedMinute() {
         String temp =  String.format("%02d", selectedMinute);
-        Log.d("COCAINE", temp + "CHECK FOR ERROR");
+//        Log.d("COCAINE", temp + "CHECK FOR ERROR");
         return temp;
     }
 }
