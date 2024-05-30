@@ -71,12 +71,13 @@ public class Schedule_View extends AppCompatActivity {
             updateAlarmsWithDays();
             ArrayList<String> formattedAlarms = new ArrayList<>();
             if (!alarms.isEmpty()) {
-                for (int i = 0; i < alarms.size(); i++) {
+                for (int i =0; i < alarms.size(); i++) {
                     String alarm = alarms.get(i) + ";" + alarmsDay.get(i);
                     formattedAlarms.add(alarm);
                 }
             }
             setResult(Activity.RESULT_OK, new Intent().putExtra("alarms", formattedAlarms));
+            Log.d("COCAINE",  formattedAlarms + "CHECK");
             finish();
         });
 
@@ -147,7 +148,7 @@ public class Schedule_View extends AppCompatActivity {
     //endregion
 
     @SuppressLint("SetTextI18n")
-    //This checks method checks the ESP8266 wether there is an existing alarm or not.
+    //This checks method checks the ESP8266 weather there is an existing alarm or not.
     private void addNewAlarm(boolean fromExistingData) {
         if (!fromExistingData) {
             if (days.isEmpty()) {
