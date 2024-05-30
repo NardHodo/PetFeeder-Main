@@ -143,62 +143,47 @@ public class MainActivity extends AppCompatActivity {
 
     //Updates the upcoming meal time in the dashboard
     private void updateUpcomingMealTime() {
-        // Check if there are any alarms set
         if (alarmsToSend != null && !alarmsToSend.isEmpty()) {
-            // Get the current time in milliseconds
             long currentTimeMillis = System.currentTimeMillis();
-            // Initialize the upcoming alarm time to the maximum possible value
             long upcomingAlarmTimeMillis = Long.MAX_VALUE;
-            // Initialize the string to hold the upcoming alarm time
             String upcomingAlarmTimeString = "";
 
-            // Iterate through each alarm in the list
             for (String alarm : alarmsToSend) {
-                // Split the alarm string into its components
                 String[] parts = alarm.split(";");
-                // Check if the alarm has at least 4 parts and is enabled
                 if (parts.length > 3 && "1".equals(parts[3])) {
-                    // Extract the hour and minute from the alarm
+                    // Convert alarm time to milliseconds
                     int hourOfDay = Integer.parseInt(parts[0]);
                     int minute = Integer.parseInt(parts[1]);
-                    // Create a Calendar instance representing the alarm time
                     Calendar alarmTime = Calendar.getInstance();
                     alarmTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     alarmTime.set(Calendar.MINUTE, minute);
                     alarmTime.set(Calendar.SECOND, 0);
                     alarmTime.set(Calendar.MILLISECOND, 0);
 
-                    // Convert the alarm time to milliseconds
+                    // Check if alarm time is in the future and update upcomingAlarmTimeMillis
                     long alarmTimeMillis = alarmTime.getTimeInMillis();
-                    // Check if the alarm time is in the future and earlier than the current upcoming alarm time
                     if (alarmTimeMillis > currentTimeMillis && alarmTimeMillis < upcomingAlarmTimeMillis) {
-                        // Update the upcoming alarm time and string representation if the alarm is sooner
                         upcomingAlarmTimeMillis = alarmTimeMillis;
                         upcomingAlarmTimeString = String.format(Locale.getDefault(), "%02d:%02d %s",
-                                // Format the hour to 12-hour format
                                 hourOfDay > 12 ? hourOfDay - 12 : hourOfDay,
-                                // Extract the minute
                                 minute,
-                                // Determine if it's AM or PM
                                 hourOfDay < 12 ? "AM" : "PM");
                     }
                 }
             }
 
-            // Check if an upcoming alarm time was found
             if (!upcomingAlarmTimeString.isEmpty()) {
                 // Display the upcoming alarm time
                 tvUpcomingMealTime.setText(upcomingAlarmTimeString);
             } else {
-                // No upcoming alarm found, display a message
+                // No upcoming alarm found
                 tvUpcomingMealTime.setText("No upcoming alarms");
             }
         } else {
-            // No alarms set, display a message
+            // No alarms set
             tvUpcomingMealTime.setText("No alarms set");
         }
     }
-
 
     @Override
     protected void onResume() {
