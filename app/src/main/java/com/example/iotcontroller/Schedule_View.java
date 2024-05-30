@@ -28,6 +28,7 @@ import com.google.android.material.button.MaterialButton;
 import com.shawnlin.numberpicker.NumberPicker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,6 +48,7 @@ public class Schedule_View extends AppCompatActivity {
     private final String[] timePeriods = {"AM", "PM"};
     private final String splitter = ";";
     private String alarmData = "";
+    private ArrayList<AlarmInfo> alarmValues;
 
 
 
@@ -290,5 +292,29 @@ public class Schedule_View extends AppCompatActivity {
         String temp =  String.format("%02d", selectedMinute);
         Log.d("COCAINE", temp + "CHECK FOR ERROR");
         return temp;
+    }
+
+    private void getAlarmTimes(LinearLayout parentLayout){
+
+        alarmValues = new ArrayList<>();
+
+        for (int i = 0; i< parentLayout.getChildCount(); i++){
+            View alarmItem = parentLayout.getChildAt(i);
+
+            if(alarmItem instanceof CardView){
+                CardView cardview = (CardView) alarmItem;
+                TextView alarmTime = cardview.findViewById(R.id.tvAssignedTimeCopy);
+                TextView alarmDay = cardview.findViewById(R.id.tvAssignedDayCopy);
+
+                if(alarmTime != null && alarmDay !=null){
+                    String finalTime = alarmTime.getText().toString();
+                    String dayString = alarmDay.getText().toString();
+                    List<String> days = Arrays.asList(dayString.split(","));
+                    alarmValues.add(new AlarmInfo(finalTime, days));
+
+                    Log.d(finalTime, days.toString());
+                }
+            }
+        }
     }
 }
