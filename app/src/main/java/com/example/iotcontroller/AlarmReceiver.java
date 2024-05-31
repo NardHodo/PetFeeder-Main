@@ -16,7 +16,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         String alarmTime = intent.getStringExtra("alarm_time");
         Log.d("AlarmReceiver", "Alarm triggered at: " + alarmTime);
         int index = new Random().nextInt(message.length);
-        MainActivity.RemoveText();
         NotificationHelper.showNotification(context, "Meal Time", message[index]);
 
         // Call the method to set the next alarm

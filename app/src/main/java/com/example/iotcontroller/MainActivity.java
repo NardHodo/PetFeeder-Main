@@ -246,10 +246,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void RemoveText(){
-        tvUpcomingMealTime.setText("No alarm");
-    }
-
     public static void setNextAlarm(Context context) {
         SharedPreferences preferences = context.getSharedPreferences("alarms", MODE_PRIVATE);
         ArrayList<String> alarms = new ArrayList<>();

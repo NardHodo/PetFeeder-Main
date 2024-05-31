@@ -29,10 +29,11 @@ unsigned long currentMillis, passMillis, interval = 1000;
 
 String all_command, command, dummyString = "";
 
-int arraySize = 500;
+int arraySize = 100;
 
 String str = "";
-String alarm[500], activeAlarm[500], timerst[500];
+String alarm[100], activeAlarm[100], timerst[100], tempStorage[100];
+String days[7] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 int StringCount = 0;
 
 const char* ssid = "Foodiee";
@@ -60,7 +61,7 @@ void setup() {
   digitalWrite(LIGHTS, LOW);
   digitalWrite(WATER, LOW);
 
-  initiateArray();
+  initiateArray(timerst);
 }
 
 void loop() {
@@ -108,7 +109,9 @@ void loop() {
             sendAllAlarmToApp();
           }
           if (addAlarms == 0) {
-            initiateArray();
+            initiateArray(alarm);
+            initiateArray(activeAlarm);
+            initiateArray(timerst);
             command.replace("ALLALARMS:", "");
             split("&", command, alarm);
             int index = 0;
@@ -116,19 +119,16 @@ void loop() {
               x.trim();
               if (x != NULL && x != "" && x != "0") {
                 timerst[index] = x;
-                Serial.println(x);
+                if(x.indexOf("ON") != -1){
+                  addOrChangeSchedule(x, activeAlarm);
+                }
                 index++;
               }
             }
-          }
-
-          if (schedule == 0) {
-            initiateArray();
-            command.replace("SETSCHEDULE:", "");
-            split("&", command, alarm);
-            for (int i = 0; i < StringCount; i++) {
-              if (alarm[i] != NULL && alarm[i] != "") {
-                addOrChangeSchedule(alarm[i]);
+            for(String x : activeAlarm){
+              x.trim();
+              if(x != "" && x != NULL && x != "0"){
+                Serial.println(x);
               }
             }
           }
@@ -186,17 +186,16 @@ void sendCommand() {
   all_command = command;
 }
 
-void initiateArray() {
+void initiateArray(String arr[]) {
   for (int i = 0; i < arraySize; i++) {
-    timerst[i] = "0";
-    alarm[i] = "0";
+    arr[i] = "0";
   }
 }
 
-void addOrChangeSchedule(String schedule) {
+void addOrChangeSchedule(String schedule, String arr[]) {
   for (int i = 0; i < arraySize; i++) {
-    if (timerst[i] == "0") {
-      timerst[i] = schedule;
+    if (arr[i] == "0") {
+      arr[i] = schedule;
       Serial.println("Schedule added: " + schedule);
       break;
     }
@@ -222,18 +221,31 @@ void sendAllAlarmToApp() {
 void runClock() {
   RtcDateTime now = Rtc.GetDateTime();
 
-  // printDateTime(now);
-  // if (!now.IsValid()) {
-  //   Serial.println("RTC lost confidence in the DateTime!");
-  // }
+  printDateTime(now);
+  if (!now.IsValid()) {
+    Serial.println("RTC lost confidence in the DateTime!");
+  }
 }
+
+void getTheTimeAndDays(String content){
+
+}
+
+// void checkIfThereIsActiveAlarm(const RtcDateTime& dt, String arr[]){
+//   for(String x : arr){
+
+//   }
+// }
 
 void printDateTime(const RtcDateTime& dt) {
   char datestring[20];
-
-  snprintf_P(datestring, countof(datestring), PSTR("%02u/%02u/%04u %02u:%02u:%02u"),
-             dt.Month(), dt.Day(), dt.Year(),
-             dt.Hour(), dt.Minute(), dt.Second());
+  int hourChecker = dt.Hour();
+  if(hourChecker > 12){
+    hourChecker = hourChecker - 12;
+  }
+  snprintf_P(datestring, countof(datestring), PSTR("%02u:%02u"),
+             hourChecker, dt.Minute());
+             Serial.println(datestring);
 }
 
 void rtcSetup() {
@@ -243,8 +255,8 @@ void rtcSetup() {
   printDateTime(compiled);
   Serial.println();
   if (!Rtc.IsDateTimeValid()) {
-    // Serial.println("RTC lost confidence in the DateTime!");
-    // Rtc.SetDateTime(compiled);
+    Serial.println("RTC lost confidence in the DateTime!");
+    Rtc.SetDateTime(compiled);
   }
 
   if (Rtc.GetIsWriteProtected()) {
