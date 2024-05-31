@@ -43,7 +43,7 @@ public class Schedule_View extends AppCompatActivity {
     private RelativeLayout scheduleParent;
     private LinearLayout alarmScrollable;
     private final String[] timePeriods = {"AM", "PM"};
-    private final String splitter = ";";
+    private final String splitter = ":";
     private String alarmData = "";
 
     @Override
@@ -168,7 +168,6 @@ public class Schedule_View extends AppCompatActivity {
                 int hour = Integer.parseInt(alarmParts[0]);
                 int minute = Integer.parseInt(alarmParts[1]);
                 int meridiem = alarmParts[2].equals("PM") ? 1 : 0;
-                Log.d("COCAINE",alarmParts[3] + "CHECKING");
                 String[] daysArray = alarmParts[3].split("-");
 
                 @SuppressLint("DefaultLocale")
@@ -283,7 +282,7 @@ public class Schedule_View extends AppCompatActivity {
     }
 
     private String BuildStringWithoutSwitch(String toChange){
-        String[] temporaryStringForChecking = toChange.toString().split(";");
+        String[] temporaryStringForChecking = toChange.toString().split(splitter);
         String temporary = "";
         for (int i = 0; i < temporaryStringForChecking.length - 1;i++){
             temporary += temporaryStringForChecking[i]+splitter;

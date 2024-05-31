@@ -5,15 +5,19 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -23,6 +27,7 @@ import android.net.NetworkRequest;
 import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,11 +40,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import android.Manifest;
@@ -56,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
     Dialog dispenseDialog, warningDialog, connectedDialog;
 
+    ArrayList<String> days = new ArrayList<>(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
+
     MaterialButton btnCloseConnectionInfo, btnDisconnect;
 
     ArrayList<String> alarmsToSend;
@@ -64,8 +74,21 @@ public class MainActivity extends AppCompatActivity {
 
     ActivityResultLauncher<Intent> intentLauncher;
 
+    private static final Map<String, Integer> DAY_OF_WEEK_MAP = new HashMap<>();
+
     private final OkHttpClient client = new OkHttpClient();
 
+    static {
+        DAY_OF_WEEK_MAP.put("SUN", Calendar.SUNDAY);
+        DAY_OF_WEEK_MAP.put("MON", Calendar.MONDAY);
+        DAY_OF_WEEK_MAP.put("TUE", Calendar.TUESDAY);
+        DAY_OF_WEEK_MAP.put("WED", Calendar.WEDNESDAY);
+        DAY_OF_WEEK_MAP.put("THU", Calendar.THURSDAY);
+        DAY_OF_WEEK_MAP.put("FRI", Calendar.FRIDAY);
+        DAY_OF_WEEK_MAP.put("SAT", Calendar.SATURDAY);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{
                 Manifest.permission.ACCESS_WIFI_STATE,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.USE_EXACT_ALARM,
+                Manifest.permission.SCHEDULE_EXACT_ALARM,
+                Manifest.permission.POST_NOTIFICATIONS
         }, PackageManager.PERMISSION_GRANTED);
 
         // Declare buttons and other views
@@ -98,9 +124,13 @@ public class MainActivity extends AppCompatActivity {
                             Intent data = result.getData();
                             assert data != null;
                             alarmsToSend = data.getStringArrayListExtra("alarms");
-                            for (String alarm : alarmsToSend) {
-                                Log.d("ALARMAGAIN", alarm);
-                                alarmsToSendToESP += alarm + "&";
+                            for (int i = 0; i < alarmsToSend.size(); i++) {
+                                Log.d("ALARMAGAIN", alarmsToSend.get(i));
+                                if (i == alarmsToSend.size() - 1) {
+                                    alarmsToSendToESP += alarmsToSend.get(i);
+                                } else {
+                                    alarmsToSendToESP += alarmsToSend.get(i) + "&";
+                                }
                             }
                             sendCommand("ALLALARMS:" + alarmsToSendToESP);
                             Log.d("ALARM", alarmsToSendToESP);
@@ -110,8 +140,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-
 
         // Set up network request for ESP8266 communication
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -135,125 +163,99 @@ public class MainActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(view -> getCurrentWifiSSID(this));
         btnCancel.setOnClickListener(view -> dispenseDialog.dismiss());
         btnManage.setOnClickListener(view -> {
-                Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
-                intentLauncher.launch(viewSchedule);
-                sendCommand("GETALARM:");
+            Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
+            intentLauncher.launch(viewSchedule);
+            sendCommand("GETALARM:");
         });
         btnManualWater.setOnClickListener(view -> sendCommand("red"));
         btnLights.setOnClickListener(view -> sendCommand("green"));
         btnManual.setOnClickListener(view -> sendCommand("blue"));
     }
 
+    void scheduleAlarm(Calendar calendar, String alarmTime) {
+
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("alarm_time", alarmTime);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - 30000, pendingIntent);
+    }
+
     private void updateUpcomingMealTime(ArrayList<String> upcomingAlarm) {
         Calendar rn = Calendar.getInstance();
-        Calendar checkAlarm = Calendar.getInstance();
-        Log.d("COCAINE", "CHECKING");
         if (!(upcomingAlarm.size() < 0)) {
-            Log.d("COCAINE", "FIRST IF");
-            int hourCompare = 0;
-            int minuteCompare = 0;
-            int meridiemCompare = rn.get(Calendar.AM_PM);
-            String isOn = "";
+            List<CalendarAlarm> sortedAlarms = sortAlarms(upcomingAlarm);
 
-            rn.set(Calendar.HOUR, rn.get(Calendar.HOUR));
-            rn.set(Calendar.MINUTE, rn.get(Calendar.MINUTE));
-            rn.set(Calendar.AM_PM, rn.get(Calendar.AM_PM));
-
-            ArrayList<String> alarms = new ArrayList<>();
-
-            for (String alarm : upcomingAlarm) {
-                String[] parts = alarm.split(";");
-                isOn = parts[4];
-                if(parts[4].equals("ON")) {
-                    alarms.add(parts[0] + ":" + parts[1] + ":" + parts[2]);
+            for (CalendarAlarm calendarAlarm : sortedAlarms) {
+                Calendar alarmCalendar = calendarAlarm.getCalendar();
+                if (alarmCalendar.after(rn)) {
+                    String[] timeParts = calendarAlarm.getOriginalString().split(":");
+                    tvUpcomingMealTime.setText(timeParts[0] + ":" + timeParts[1] + " " + timeParts[2]);
+                    scheduleAlarm(alarmCalendar, calendarAlarm.getOriginalString());
+                    return;
                 }
             }
-            sortAlarms(alarms);
-            for(String x : alarms){
-                String[] temporaryHolder = x.split(":");
-                if(Integer.parseInt(temporaryHolder[0])>=rn.get(Calendar.HOUR)){
-                    if(Integer.parseInt(temporaryHolder[1])>=rn.get(Calendar.MINUTE)){
-                        tvUpcomingMealTime.setText(temporaryHolder[0]+ ":" + temporaryHolder[1] + " " + temporaryHolder[2]);
-                        break;
-                    }
-                }
-            }
-
-
-            if ("ON".equals(isOn)) {
-                @SuppressLint("DefaultLocale") String time = String.format("%02d:%02d %s", hourCompare, minuteCompare, meridiemCompare);
-
-                return;
-            }
+            tvUpcomingMealTime.setText("No upcoming");
         } else {
             tvUpcomingMealTime.setText("No alarms yet");
         }
     }
 
-    public static void sortAlarms(ArrayList<String> alarms) {
-        Collections.sort(alarms, new Comparator<String>() {
-            @Override
-            public int compare(String alarm1, String alarm2) {
-                Calendar calendar1 = parseAlarmTime(alarm1);
-                Calendar calendar2 = parseAlarmTime(alarm2);
-                return calendar1.compareTo(calendar2);
-            }
-        });
-    }
-
-    private static Calendar parseAlarmTime(String alarmTime) {
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:a");
-        Calendar calendar = Calendar.getInstance();
-        try {
-            Date date = dateFormat.parse(alarmTime);
-            calendar.setTime(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
+    private void saveAlarmData(List<CalendarAlarm> alarms) {
+        SharedPreferences preferences = getSharedPreferences("alarms", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        for (int i = 0; i < alarms.size(); i++) {
+            editor.putString("alarm_" + i, alarms.get(i).getOriginalString());
         }
-        return calendar;
+        editor.apply();
     }
 
-    private String findClosestAlarm(List<String> alarms) {
-        Calendar now = Calendar.getInstance();
-        Calendar closestAlarm = null;
-        String closestAlarmString = null;
+    public static List<CalendarAlarm> sortAlarms(ArrayList<String> alarms) {
+        List<CalendarAlarm> calendarAlarms = new ArrayList<>();
 
         for (String alarm : alarms) {
-            String[] parts = alarm.split(";");
-            if (parts.length >= 4) {
-                int hour = Integer.parseInt(parts[0]);
-                int minute = Integer.parseInt(parts[1]);
-                int amOrPm = Integer.parseInt(parts[2]);
-                int isActive = Integer.parseInt(parts[3]);
+            calendarAlarms.addAll(parseAlarmDateTime(alarm));
+        }
 
-                if (isActive == 1) {
-                    if (amOrPm == 1 && hour != 12) {
-                        hour += 12; // Convert PM to 24-hour format
-                    } else if (amOrPm == 0 && hour == 12) {
-                        hour = 0; // Handle 12 AM case
-                    }
+        Collections.sort(calendarAlarms, new Comparator<CalendarAlarm>() {
+            @Override
+            public int compare(CalendarAlarm alarm1, CalendarAlarm alarm2) {
+                return alarm1.getCalendar().compareTo(alarm2.getCalendar());
+            }
+        });
 
-                    Calendar alarmTime = Calendar.getInstance();
-                    alarmTime.set(Calendar.HOUR_OF_DAY, hour);
-                    alarmTime.set(Calendar.MINUTE, minute);
-                    alarmTime.set(Calendar.SECOND, 0);
-                    alarmTime.set(Calendar.MILLISECOND, 0);
+        return calendarAlarms;
+    }
 
-                    if (alarmTime.before(now)) {
-                        alarmTime.add(Calendar.DAY_OF_MONTH, 1); // Set for the next day if time is in the past
-                    }
+    private static List<CalendarAlarm> parseAlarmDateTime(String alarmDateTime) {
+        List<CalendarAlarm> calendarAlarms = new ArrayList<>();
+        String[] parts = alarmDateTime.split(":");
+        String timePart = parts[0] + ":" + parts[1] + " " + parts[2];
+        String[] dayParts = parts[3].split("-");
 
-                    if (closestAlarm == null || alarmTime.before(closestAlarm)) {
-                        closestAlarm = alarmTime;
-                        closestAlarmString = String.format("%02d:%02d %s", (hour % 12 == 0) ? 12 : hour % 12, minute, amOrPm == 0 ? "AM" : "PM");
-                    }
-                }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+
+        for (String dayPart : dayParts) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_WEEK, DAY_OF_WEEK_MAP.get(dayPart.toUpperCase()));
+
+            try {
+                Date date = dateFormat.parse(timePart);
+                Calendar timeCalendar = Calendar.getInstance();
+                timeCalendar.setTime(date);
+
+                calendar.set(Calendar.HOUR, timeCalendar.get(Calendar.HOUR));
+                calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
+                calendar.set(Calendar.AM_PM, timeCalendar.get(Calendar.AM_PM));
+                calendarAlarms.add(new CalendarAlarm(calendar, alarmDateTime));
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         }
 
-        return closestAlarmString != null ? closestAlarmString : "No alarms yet";
+        return calendarAlarms;
     }
-
 
     private void setupDialogs() {
         dispenseDialog = new Dialog(MainActivity.this);
@@ -262,149 +264,69 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dispenseDialog.setCancelable(false);
 
-        warningDialog = new Dialog(MainActivity.this);
-        warningDialog.setContentView(R.layout.activity_warning_dialog);
-        warningDialog.setCancelable(true);
-        warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        warningDialog = new Dialog(MainActivity.this);
+//        warningDialog.setContentView(R.layout.activity_warning_dialog);
+//        warningDialog.setCancelable(true);
+//        warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        connectedDialog = new Dialog(MainActivity.this);
-        connectedDialog.setContentView(R.layout.connected_wifi_dialog);
-        connectedDialog.setCancelable(true);
-        connectedDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        connectedWifi = connectedDialog.findViewById(R.id.tvCurrentlyConnectedWifi);
-
-        btnCloseConnectionInfo = connectedDialog.findViewById(R.id.btnCloseDisconnect);
-        btnDisconnect = connectedDialog.findViewById(R.id.btnDisconnect);
-
-        btnCloseConnectionInfo.setOnClickListener(v -> connectedDialog.dismiss());
-        btnDisconnect.setOnClickListener(v -> {
-            // Implement disconnect logic if required
-            connectedDialog.dismiss();
-        });
     }
 
-    public void sendCommand(String cmd) {
-        Thread receiver = new Thread(() -> {
-            String command = "http://192.168.4.1/" + cmd;
-            Log.d("Command", command);
-            Request request = new Request.Builder().url(command).build();
-            try {
-                Response response = client.newCall(request).execute();
-                if (response.body() != null) {
-                    String myResponse = response.body().string();
-                    //TODO FIND THE BUG THAT REMOVES THE COMMA ON THE DAYS
-                    //TODO MAKE SURE THE SWITCH WORKS PROPERLY
-                    String cleanResponse = myResponse.replaceAll("<.*?>", "");
-                        cleanResponse.replace("\n", "");
-                        cleanResponse.replace("\r", "");
-                        cleanResponse.replace(" ", "");
-                        cleanResponse.replace("\t", "");
-                        cleanResponse.trim();
-                    Log.d("ResponseAgain", cleanResponse);
-                    checkESP8266Response(cleanResponse);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        receiver.start();
+    private void enableDisabledButtons(boolean status) {
+        btnManage.setEnabled(status);
+        btnLights.setEnabled(status);
+        btnManualWater.setEnabled(status);
+        btnManual.setEnabled(status);
     }
 
-    public void getCurrentWifiSSID(Context context) {
-        String ssid = "";
-        LocationManager lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        if (!gps_enabled && !network_enabled) {
-            Toast.makeText(getApplicationContext(), "Please open your GPS and Wi-Fi to connect to the internet", Toast.LENGTH_LONG).show();
-        } else {
-            WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    private void getCurrentWifiSSID(Context context) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-                ssid = wifiInfo.getSSID();
+                String ssid = wifiInfo.getSSID();
                 if (ssid.equals(WIFI_NAME)) {
-                    btnConnect.setText("Connected");
-                    Toast.makeText(getApplicationContext(), "Currently connected to " + ssid.replace("\"", ""), Toast.LENGTH_SHORT).show();
-                    sendCommand("REPORTSTATUS:");
                     enableDisabledButtons(true);
+
                 } else {
-                    Toast.makeText(getApplicationContext(), "Wifi is not supported", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Make sure you are connected to the correct WiFi", Toast.LENGTH_SHORT).show();
                 }
             }
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
     }
 
-    void checkESP8266Response(String str) {
-        String[] cont = str.split(",");
-        TextView tvLight = findViewById(R.id.tvLightStatus);
-        TextView tvFood = findViewById(R.id.tvFoodPercentage);
-        TextView tvWater = findViewById(R.id.tvWaterPercentage);
-
-        alarmContent = "";
-        for (int i = 1; i < cont.length; i++) {
-            if(cont[0].equals("") || cont[0].isEmpty())continue;
-            Log.d("ResponseParts", cont[i]);
-            if (cont[0].equals("REPORTSTATUS:")) {
-                switch (cont[i].split(":")[0]) {
-                    case "Light":
-                        String lightStatus = cont[i].split(":")[1];
-                        runOnUiThread(() -> {
-                            tvLight.setText(lightStatus.equals("0") ? "OFF" : "ON");
-                            btnLights.setText(lightStatus.equals("0") ? "Turn on" : "Turn off");
-                        });
-                        break;
-                    case "Food":
-                        String foodContent = cont[i].split(":")[1];
-                        runOnUiThread(() -> {
-                            tvFood.setText(foodContent);
-                            tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(),
-                                    foodContent.equals("EMPTY") ? R.color.red : R.color.white));
-                        });
-                        break;
-                    case "Water":
-                        String waterContent = cont[i].split(":")[1];
-                        runOnUiThread(() -> {
-                            tvWater.setText(waterContent);
-                            tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(),
-                                    waterContent.equals("EMPTY") ? R.color.red : R.color.white));
-                        });
-                        break;
+    private void sendCommand(String command) {
+        new Thread(() -> {
+            try {
+                Request request = new Request.Builder()
+                        .url("http://192.168.4.1/" + command)
+                        .build();
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful())
+                        throw new IOException("Unexpected code " + response);
                 }
-            } else if (cont[0].equals("ALARM:")) {
-                alarmContent += cont[i];
+            } catch (Exception e) {
+                Log.e("NETWORK", "Error in network request", e);
             }
-        }
-        if(cont[0].equals("ALARM:")){
-            Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
-            viewSchedule.putExtra("Alarm", alarmContent);
-            intentLauncher.launch(viewSchedule);
-        }
+        }).start();
+    }
+}
+
+class CalendarAlarm {
+    private Calendar calendar;
+    private String originalString;
+
+    public CalendarAlarm(Calendar calendar, String originalString) {
+        this.calendar = calendar;
+        this.originalString = originalString;
     }
 
-    void enableDisabledButtons(boolean enabled) {
-        btnManual.setEnabled(enabled);
-        btnLights.setEnabled(enabled);
-        btnManualWater.setEnabled(enabled);
-        btnManage.setEnabled(enabled);
-        btnAutomatic.setEnabled(enabled);
-        int color = ContextCompat.getColor(getApplicationContext(), enabled ? R.color.white : R.color.disabled_color);
-        btnManual.setTextColor(color);
-        btnLights.setTextColor(color);
-        btnManualWater.setTextColor(color);
-        btnManage.setTextColor(color);
-        btnAutomatic.setTextColor(color);
+    public Calendar getCalendar() {
+        return calendar;
+    }
+
+    public String getOriginalString() {
+        return originalString;
     }
 }
