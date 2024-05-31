@@ -4,176 +4,184 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:paddingVertical="40dp"
-    android:background="@drawable/dialog_box_background"
-    android:paddingHorizontal="15dp"
-    >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:fontFamily="@font/lexend_bold"
-        android:text="@string/alarm_header"
-        android:textFontWeight="1000"
-        android:textColor="@color/white"
-        android:textSize="20sp" />
+    android:background="@android:color/transparent">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="20dp">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <com.shawnlin.numberpicker.NumberPicker
-                android:id="@+id/hourPicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:np_dividerColor="@color/white"
-                app:np_textColor="@color/white"
-                app:np_selectedTextColor="@color/white"
-                app:np_textSize="30sp"
-                app:np_min="1"
-                app:np_max="12"/>
-            <com.shawnlin.numberpicker.NumberPicker
-                android:id="@+id/minPicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                app:np_dividerColor="@color/white"
-                app:np_textColor="@color/white"
-                app:np_selectedTextColor="@color/white"
-                app:np_textSize="30sp" />
-
-            <com.shawnlin.numberpicker.NumberPicker
-                android:id="@+id/AM_PM_Picker"
-                android:layout_width="48dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                app:np_dividerColor="@color/white"
-                app:np_max="2"
-                app:np_min="1"
-                app:np_selectedTextColor="@color/white"
-                app:np_textColor="@color/white"
-                app:np_textSize="30sp" />
-
-        </LinearLayout>
-
-
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/dialog_box_background"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="20dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/repeat"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"
-            android:textSize="20sp"
+            android:layout_gravity="center"
             android:fontFamily="@font/lexend_bold"
-            android:textColor="@color/white"/>
+            android:text="@string/alarm_header"
+            android:layout_marginTop="20dp"
+            android:textFontWeight="1000"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:padding="5dp"
-            android:gravity="center">
+            android:orientation="vertical"
+            android:layout_marginTop="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/hourPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:np_dividerColor="@color/white"
+                    app:np_textColor="@color/white"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_textSize="30sp"
+                    app:np_min="1"
+                    app:np_max="12"/>
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/minPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    app:np_dividerColor="@color/white"
+                    app:np_textColor="@color/white"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_textSize="30sp" />
+
+                <com.shawnlin.numberpicker.NumberPicker
+                    android:id="@+id/AM_PM_Picker"
+                    android:layout_width="48dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    app:np_dividerColor="@color/white"
+                    app:np_max="2"
+                    app:np_min="1"
+                    app:np_selectedTextColor="@color/white"
+                    app:np_textColor="@color/white"
+                    app:np_textSize="30sp" />
+
+            </LinearLayout>
 
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="@string/Sunday"
-                app:cornerRadius="30dp"
-                android:textSize="20sp"
-                android:id="@+id/Sunday"
-                style="@style/DayButtonBackground"/>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="@string/Monday"
-                app:cornerRadius="30dp"
-                android:id="@+id/btnMonday"
-                android:textSize="20sp"
-                style="@style/DayButtonBackground"/>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="@string/Tuesday"
-                app:cornerRadius="30dp"
-                android:id="@+id/btnTuesday"
-                android:textSize="20sp"
-                style="@style/DayButtonBackground"/>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="@string/Wednesday"
-                app:cornerRadius="30dp"
-                android:textSize="20sp"
-                android:id="@+id/btnWednesday"
-                style="@style/DayButtonBackground"/>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="60dp"
-                android:layout_height="48dp"
-                android:text="@string/Thursday"
-                app:cornerRadius="30dp"
-                android:id="@+id/btnThursday"
-                android:textSize="20sp"
-                style="@style/DayButtonBackground"/>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="@string/Friday"
-                app:cornerRadius="30dp"
-                android:id="@+id/btnFriday"
-                android:textSize="18sp"
-                style="@style/DayButtonBackground"/>
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:text="@string/Saturday"
-                app:cornerRadius="30dp"
-                android:id="@+id/btnSaturday"
-                android:textSize="20sp"
-                style="@style/DayButtonBackground"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeat"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/lexend_bold"
+                android:textColor="@color/white"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                android:padding="5dp"
+                android:gravity="center">
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Sunday"
+                    app:cornerRadius="30dp"
+                    android:textSize="20sp"
+                    android:id="@+id/Sunday"
+                    style="@style/DayButtonBackground"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Monday"
+                    app:cornerRadius="30dp"
+                    android:id="@+id/btnMonday"
+                    android:textSize="20sp"
+                    style="@style/DayButtonBackground"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Tuesday"
+                    app:cornerRadius="30dp"
+                    android:id="@+id/btnTuesday"
+                    android:textSize="20sp"
+                    style="@style/DayButtonBackground"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Wednesday"
+                    app:cornerRadius="30dp"
+                    android:textSize="20sp"
+                    android:id="@+id/btnWednesday"
+                    style="@style/DayButtonBackground"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="60dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Thursday"
+                    app:cornerRadius="30dp"
+                    android:id="@+id/btnThursday"
+                    android:textSize="20sp"
+                    style="@style/DayButtonBackground"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Friday"
+                    app:cornerRadius="30dp"
+                    android:id="@+id/btnFriday"
+                    android:textSize="18sp"
+                    style="@style/DayButtonBackground"/>
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="@string/Saturday"
+                    app:cornerRadius="30dp"
+                    android:id="@+id/btnSaturday"
+                    android:textSize="20sp"
+                    style="@style/DayButtonBackground"/>
+
+
+
+            </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:paddingHorizontal="15dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancelAlarm"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/cancel_button"
+                    android:textAllCaps="false"
+                    android:textSize="20sp"
+                    app:backgroundTint="@color/button_color"
+                    app:cornerRadius="20dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddAlarm"
+                    android:layout_width="150dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/confirm_button"
+                    android:textAllCaps="false"
+                    android:textSize="20sp"
+                    app:cornerRadius="20dp"
+                    app:backgroundTint="@color/button_color" />
+
+
+            </RelativeLayout>
 
 
         </LinearLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingHorizontal="15dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancelAlarm"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
-                android:layout_alignParentLeft="true"
-                android:text="@string/cancel_button"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                app:backgroundTint="@color/button_color"
-                app:cornerRadius="20dp" />
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddAlarm"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
-                android:layout_alignParentRight="true"
-                android:text="@string/confirm_button"
-                android:textAllCaps="false"
-                android:textSize="20sp"
-                app:cornerRadius="20dp"
-                app:backgroundTint="@color/button_color" />
-
-
-        </RelativeLayout>
 
 
     </LinearLayout>

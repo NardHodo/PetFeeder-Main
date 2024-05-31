@@ -1,5 +1,7 @@
 package com.example.iotcontroller;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 public class AlarmInfo {
@@ -19,6 +21,7 @@ public class AlarmInfo {
         return assignedDays;
     }
 
+    @NonNull
     public String toString(){
         return "Alarm: " + assignedTime + " " + assignedDays;
     }

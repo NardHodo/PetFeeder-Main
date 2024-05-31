@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,6 +104,7 @@ public class Schedule_View extends AppCompatActivity {
         addAlarmDialog.setContentView(contentView);
         addAlarmDialog.setCancelable(true);
         Objects.requireNonNull(addAlarmDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addAlarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         addAlarmDialog.show();
         initializeAddAlarmElements(contentView);
     }
@@ -181,7 +184,7 @@ public class Schedule_View extends AppCompatActivity {
             addAlarmDialog.dismiss();
             days.clear();
             AlarmInfo newAlarm = new AlarmInfo(alarmString, days);
-            Log.d("NIGGA", newAlarm.getAssignedTime() + days);
+            Log.d("NIGGA", newAlarm.toString());
 
 
         } else {
@@ -250,12 +253,14 @@ public class Schedule_View extends AppCompatActivity {
         Dialog alarmWarning = new Dialog(Schedule_View.this);
         alarmWarning.setContentView(R.layout.alarm_delete_warning);
         alarmWarning.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        alarmWarning.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alarmWarning.setCancelable(false);
 
         Button yesButton = alarmWarning.findViewById(R.id.btnConfirmAlarmDeletion);
         Button noButton = alarmWarning.findViewById(R.id.btnCancelAlarmDeletion);
 
         yesButton.setOnClickListener(v -> {
+            ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
             alarmWarning.dismiss();
             Log.d("COCAINE", "DELETE");
             int index = alarms.indexOf(alarmString);
@@ -264,7 +269,7 @@ public class Schedule_View extends AppCompatActivity {
                 alarms.remove(index);
                 alarmsDay.remove(day);
             }
-            ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
+
         });
 
         noButton.setOnClickListener(v -> alarmWarning.dismiss());
