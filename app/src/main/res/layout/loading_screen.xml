@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
     android:background="@color/mainAppColor">
+
 
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/gifImageView"
@@ -15,25 +13,18 @@
         android:layout_marginTop="156dp"
         android:layout_marginEnd="90dp"
         android:src="@drawable/loading_circle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/tvLoadingMessage"
-        android:layout_width="347dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="48dp"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/lexend"
         android:text="Runtime Loading Message"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/gifImageView"
-        app:layout_constraintHorizontal_bias="0.519"
-        app:layout_constraintStart_toStartOf="@+id/gifImageView"
-        app:layout_constraintTop_toBottomOf="@+id/gifImageView" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_below="@id/gifImageView"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp"/>
+</RelativeLayout>

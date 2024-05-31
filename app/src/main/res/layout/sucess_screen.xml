@@ -18,20 +18,21 @@
             android:contentDescription="@string/success_icon"
             android:src="@drawable/success" />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
             android:text="Sucess Dispensing Text"
             android:textColor="@color/black"
-            android:textSize="20sp" />
+            android:textAlignment="center"
+            android:textSize="22sp" />
         <com.google.android.material.button.MaterialButton
             android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            app:cornerRadius="20dp"
+            app:cornerRadius="10dp"
             android:text="@string/back_to_dashboard"/>
     </LinearLayout>
 </RelativeLayout>

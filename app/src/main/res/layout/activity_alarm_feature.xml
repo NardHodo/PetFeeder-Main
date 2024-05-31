@@ -165,7 +165,7 @@
                     android:textAllCaps="false"
                     android:textSize="20sp"
                     app:backgroundTint="@color/button_color"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="10dp" />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnAddAlarm"
                     android:layout_width="150dp"
@@ -174,7 +174,7 @@
                     android:text="@string/confirm_button"
                     android:textAllCaps="false"
                     android:textSize="20sp"
-                    app:cornerRadius="20dp"
+                    app:cornerRadius="10dp"
                     app:backgroundTint="@color/button_color" />
 
 

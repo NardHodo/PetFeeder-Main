@@ -204,12 +204,6 @@ public class MainActivity extends AppCompatActivity {
         warningDialog.setCancelable(true);
         warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        connectedDialog = new Dialog(MainActivity.this);
-        connectedDialog.setContentView(R.layout.connected_wifi_dialog);
-        connectedDialog.setCancelable(true);
-        connectedDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        connectedWifi = connectedDialog.findViewById(R.id.tvCurrentlyConnectedWifi);
-
         btnCloseConnectionInfo = connectedDialog.findViewById(R.id.btnCloseDisconnect);
         btnDisconnect = connectedDialog.findViewById(R.id.btnDisconnect);
 

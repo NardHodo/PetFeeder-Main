@@ -21,6 +21,7 @@
         android:text="@string/condition"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"
+        android:textFontWeight="900"
         />
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine1"
@@ -210,7 +211,8 @@
         android:text="@string/schedule"
         android:fontFamily="@font/lexend_bold"
         android:textColor="@color/card_view_color"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textFontWeight="900"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine2"
@@ -223,7 +225,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_marginTop="10dp"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="10dp"
@@ -239,7 +241,7 @@
                 android:fontFamily="@font/lexend"
                 android:text="@string/upcoming"
                 android:textColor="@color/card_view_color"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginHorizontal="5dp"/>
@@ -251,7 +253,7 @@
                 android:fontFamily="@font/lexend"
                 android:text="00:00"
                 android:textColor="@color/card_view_color"
-                android:textSize="13sp"
+                android:textSize="15sp"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/textView5"/>
             <com.google.android.material.button.MaterialButton
@@ -260,6 +262,7 @@
                 android:layout_height="60dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginHorizontal="10dp"
+                android:layout_centerVertical="true"
                 android:text="@string/manage_button"
                 />
 
@@ -276,7 +279,8 @@
         android:text="ACTION"
         android:fontFamily="@font/lexend_bold"
         android:textColor="@color/card_view_color"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:textFontWeight="900"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine3"
         android:layout_width="match_parent"
@@ -287,14 +291,15 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="10dp"
+        android:paddingHorizontal="5dp"
         android:layout_marginTop="5dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLights"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_width="170dp"
+            android:layout_height="67dp"
             android:text="@string/open_lights"
+            android:textSize="17sp"
             android:textAllCaps="false"
             android:textAlignment="viewStart"
             android:drawableRight="@drawable/flashlight"
@@ -302,10 +307,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnManual"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_width="170dp"
+            android:layout_height="67dp"
             android:text="@string/dispense"
             android:textAllCaps="false"
+            android:textSize="17sp"
             android:textAlignment="viewStart"
             android:layout_below="@id/btnLights"
             android:drawableEnd="@drawable/dispense_food_button"
@@ -313,21 +319,24 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnManualWater"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_width="170dp"
+            android:layout_height="67dp"
             android:layout_alignParentEnd="true"
             android:drawableEnd="@drawable/wet"
             android:text="@string/drink"
+            android:textSize="17sp"
             android:textAlignment="viewStart"
             android:textAllCaps="false"
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAutomatic"
-            android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_width="170dp"
+            android:layout_height="67dp"
             android:text="@string/automatic"
+            android:textSize="17sp"
             android:textAllCaps="false"
+            android:textAlignment="viewStart"
             android:drawableEnd="@drawable/back_in_time"
             android:layout_below="@id/btnManualWater"
             android:layout_alignParentEnd="true"
