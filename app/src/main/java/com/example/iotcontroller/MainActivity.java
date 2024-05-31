@@ -1,15 +1,6 @@
 package com.example.iotcontroller;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -36,6 +27,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.button.MaterialButton;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,9 +53,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import android.Manifest;
-
-import com.google.android.material.button.MaterialButton;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -70,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> alarmsToSend;
 
-    TextView connectedWifi, tvUpcomingMealTime;
+    TextView connectedWifi;
+    static TextView tvUpcomingMealTime;
 
     ActivityResultLauncher<Intent> intentLauncher;
 
@@ -124,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent data = result.getData();
                             assert data != null;
                             alarmsToSend = data.getStringArrayListExtra("alarms");
+                            alarmsToSendToESP += "ALLALARMS:";
                             for (int i = 0; i < alarmsToSend.size(); i++) {
                                 Log.d("ALARMAGAIN", alarmsToSend.get(i));
                                 if (i == alarmsToSend.size() - 1) {
@@ -132,14 +134,20 @@ public class MainActivity extends AppCompatActivity {
                                     alarmsToSendToESP += alarmsToSend.get(i) + "&";
                                 }
                             }
-                            sendCommand("ALLALARMS:" + alarmsToSendToESP);
-                            Log.d("ALARM", alarmsToSendToESP);
+
+                            sendCommand(alarmsToSendToESP);
+                            Log.d("COCAINE", "CHECK SENDING DATA TO ESP: " + alarmsToSendToESP);
                             alarmsToSendToESP = "";
-                            updateUpcomingMealTime(alarmsToSend);
+
+                            saveAlarmData(alarmsToSend);
+                            ArrayList<String> formattedString = GetActiveAlarm(alarmsToSend);
+                            updateUpcomingMealTime(formattedString);
                         }
                     }
                 }
         );
+
+
 
         // Set up network request for ESP8266 communication
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -163,8 +171,6 @@ public class MainActivity extends AppCompatActivity {
         btnConnect.setOnClickListener(view -> getCurrentWifiSSID(this));
         btnCancel.setOnClickListener(view -> dispenseDialog.dismiss());
         btnManage.setOnClickListener(view -> {
-            Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
-            intentLauncher.launch(viewSchedule);
             sendCommand("GETALARM:");
         });
         btnManualWater.setOnClickListener(view -> sendCommand("red"));
@@ -172,41 +178,128 @@ public class MainActivity extends AppCompatActivity {
         btnManual.setOnClickListener(view -> sendCommand("blue"));
     }
 
-    void scheduleAlarm(Calendar calendar, String alarmTime) {
+    void checkESP8266Response(String str){
+        String[] cont = str.split(",");
+        TextView tvLight = findViewById(R.id.tvLightStatus);
+        TextView tvFood = findViewById(R.id.tvFoodPercentage);
+        TextView tvWater = findViewById(R.id.tvWaterPercentage);
+        Log.d("CONTS", cont[0]);
+        for(int i = 1;i < cont.length;i++){
+            if(cont[0].equals("REPORTSTATUS:")) {
+                switch (cont[i].split(":")[0]) {
+                    case "Light":
+                        if (cont[i].split(":")[1].equals("0")) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvLight.setText("OFF");
+                                    btnLights.setText("Turn on");
+                                }
+                            });
 
-        Intent intent = new Intent(this, AlarmReceiver.class);
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tvLight.setText("ON");
+                                    btnLights.setText("Turn off");
+                                }
+                            });
+                        }
+                        break;
+                    case "Food":
+                        String foodContent = cont[i].split(":")[1];
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvFood.setText(foodContent);
+                                if (foodContent.equals("LOW")) {
+                                    tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                                } else {
+                                    tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                                }
+                            }
+                        });
+
+                        break;
+                    case "Water":
+                        String waterContent = cont[i].split(":")[1];
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvWater.setText(waterContent);
+                                if (waterContent.equals("LOW")) {
+                                    tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                                } else {
+                                    tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                                }
+                            }
+                        });
+                        break;
+                }
+            }else if(cont[0].equals("ALARM:")){
+                alarmContent = cont[1];
+                Intent viewSchedule = new Intent(MainActivity.this, Schedule_View.class);
+                viewSchedule.putExtra("Alarm", alarmContent);
+                intentLauncher.launch(viewSchedule);
+            }
+        }
+    }
+
+    public static void RemoveText(){
+        tvUpcomingMealTime.setText("No alarm");
+    }
+
+    public static void setNextAlarm(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("alarms", MODE_PRIVATE);
+        ArrayList<String> alarms = new ArrayList<>();
+        for (int i = 0; ; i++) {
+            String alarm = preferences.getString("alarm_" + i, null);
+            if (alarm == null) break;
+            alarms.add(alarm);
+        }
+        List<CalendarAlarm> sortedAlarms = sortAlarms(alarms);
+        Calendar rn = Calendar.getInstance();
+        for (CalendarAlarm calendarAlarm : sortedAlarms) {
+            Calendar alarmCalendar = calendarAlarm.getCalendar();
+            if (alarmCalendar.after(rn)) {
+                scheduleAlarm(context, alarmCalendar, calendarAlarm.getOriginalString());
+                return;
+            }
+        }
+    }
+
+    public static void scheduleAlarm(Context context, Calendar calendar, String alarmTime) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("alarm_time", alarmTime);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() - 30000, pendingIntent);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     private void updateUpcomingMealTime(ArrayList<String> upcomingAlarm) {
         Calendar rn = Calendar.getInstance();
-        if (!(upcomingAlarm.size() < 0)) {
-            List<CalendarAlarm> sortedAlarms = sortAlarms(upcomingAlarm);
+        List<CalendarAlarm> sortedAlarms = sortAlarms(upcomingAlarm);
+        for (CalendarAlarm calendarAlarm : sortedAlarms) {
+            Calendar alarmCalendar = calendarAlarm.getCalendar();
 
-            for (CalendarAlarm calendarAlarm : sortedAlarms) {
-                Calendar alarmCalendar = calendarAlarm.getCalendar();
-                if (alarmCalendar.after(rn)) {
-                    String[] timeParts = calendarAlarm.getOriginalString().split(":");
-                    tvUpcomingMealTime.setText(timeParts[0] + ":" + timeParts[1] + " " + timeParts[2]);
-                    scheduleAlarm(alarmCalendar, calendarAlarm.getOriginalString());
-                    return;
-                }
+            if (alarmCalendar.after(rn)) {
+                String[] timeParts = calendarAlarm.getOriginalString().split(":");
+                tvUpcomingMealTime.setText(timeParts[0] + ":" + timeParts[1] + " " + timeParts[2]);
+                scheduleAlarm(this, alarmCalendar, calendarAlarm.getOriginalString());
+                return;
             }
-            tvUpcomingMealTime.setText("No upcoming");
-        } else {
-            tvUpcomingMealTime.setText("No alarms yet");
         }
+        tvUpcomingMealTime.setText("No upcoming");
     }
 
-    private void saveAlarmData(List<CalendarAlarm> alarms) {
+    private void saveAlarmData(ArrayList<String> alarms) {
         SharedPreferences preferences = getSharedPreferences("alarms", MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         for (int i = 0; i < alarms.size(); i++) {
-            editor.putString("alarm_" + i, alarms.get(i).getOriginalString());
+            editor.putString("alarm_" + i, alarms.get(i));
+            Log.d("COCAINE", "ORIGINAL STRING: " + alarms.get(i));
         }
         editor.apply();
     }
@@ -215,7 +308,10 @@ public class MainActivity extends AppCompatActivity {
         List<CalendarAlarm> calendarAlarms = new ArrayList<>();
 
         for (String alarm : alarms) {
-            calendarAlarms.addAll(parseAlarmDateTime(alarm));
+            String[] stringChecker = alarm.split(":");
+            if(stringChecker[4].equals("ON")) {
+                calendarAlarms.addAll(parseAlarmDateTime(alarm));
+            }
         }
 
         Collections.sort(calendarAlarms, new Comparator<CalendarAlarm>() {
@@ -303,6 +399,17 @@ public class MainActivity extends AppCompatActivity {
                         .url("http://192.168.4.1/" + command)
                         .build();
                 try (Response response = client.newCall(request).execute()) {
+                    String myResponse = response.body().string();
+                    final String cleanResponse; // remove HTML tags
+                    cleanResponse = myResponse.replaceAll("<.*?>", "");
+                    cleanResponse.replace("\n", ""); // remove all new line characters
+                    cleanResponse.replace("\r", ""); // remove all carriage characters
+                    cleanResponse.replace(" ", ""); // removes all space characters
+                    cleanResponse.replace("\t", ""); // removes all tab characters
+                    cleanResponse.trim();
+                    Log.d("COCAINE", "ESP RESPONSE: " + cleanResponse);
+
+                    checkESP8266Response(cleanResponse);
                     if (!response.isSuccessful())
                         throw new IOException("Unexpected code " + response);
                 }
@@ -310,6 +417,18 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("NETWORK", "Error in network request", e);
             }
         }).start();
+    }
+
+    private static ArrayList<String> GetActiveAlarm(ArrayList<String> alarm){
+        ArrayList<String> returnStringValue = new ArrayList<String>();
+        for (String x : alarm) {
+            String[] splitAlarm = x.split(":");
+            if(splitAlarm[4].equals("ON")){
+                returnStringValue.add(x);
+                Log.d("COCAINE", "CHECK ARRAYLIST CONTENT: " + x);
+            }
+        }
+        return returnStringValue;
     }
 }
 

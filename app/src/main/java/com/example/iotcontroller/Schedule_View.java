@@ -64,6 +64,10 @@ public class Schedule_View extends AppCompatActivity {
 
         findViewById(R.id.btnBackButton).setOnClickListener(v -> {
             setResult(Activity.RESULT_OK, new Intent().putStringArrayListExtra("alarms", alarms));
+            for(String x : alarms){
+                Log.d("COCAINE", "FINISHED RESULT: " + x);
+            }
+
             finish();
         });
 
@@ -147,11 +151,17 @@ public class Schedule_View extends AppCompatActivity {
 
             String alarmTimeString = getSelectedHour() + ":" + getSelectedMinute() + " " + timePeriods[selectedMeridiem];
             String alarmString = getSelectedHour() + splitter + getSelectedMinute() + splitter + timePeriods[selectedMeridiem] + splitter + getFormattedDays(days) + splitter + "ON";
+            String compareTimeString = getSelectedHour() + splitter + getSelectedMinute() + splitter + timePeriods[selectedMeridiem];
             Log.d("COCAINE", "SETDATA: " + alarmString);
-            if (alarms.contains(alarmString)) {
-                Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
-                return;
+            for(String x : alarms){
+                String[] temporaryCompare = x.split(":");
+                String formattedTemporaryCompare = temporaryCompare[0] + ":" + temporaryCompare[1] + ":" +temporaryCompare[2];
+                if(compareTimeString.equals(formattedTemporaryCompare)){
+                    Toast.makeText(Schedule_View.this, "Alarm already exists", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
+
 
             alarms.add(alarmString);
             alarmsDay.add(getFormattedDays(days));
@@ -160,34 +170,33 @@ public class Schedule_View extends AppCompatActivity {
             addAlarmDialog.dismiss();
             days.clear();
         } else {
-            String[] alarmsFromData = alarmData.split(">");
+            String[] alarmsFromData = alarmData.split("&");
             for (String alarmDetail : alarmsFromData) {
                 String[] alarmParts = alarmDetail.split(":");
                 if (alarmParts.length < 2) continue;
 
                 int hour = Integer.parseInt(alarmParts[0]);
                 int minute = Integer.parseInt(alarmParts[1]);
-                int meridiem = alarmParts[2].equals("PM") ? 1 : 0;
+                String meridiem = alarmParts[2];
                 String[] daysArray = alarmParts[3].split("-");
 
                 @SuppressLint("DefaultLocale")
-                String alarmTimeString = String.format("%02d:%02d %s", hour, minute, timePeriods[meridiem]);
+                String alarmTimeString = String.format("%02d:%02d %s", hour, minute, meridiem);
                 @SuppressLint("DefaultLocale")
-                String alarmString = String.format("%02d%s%02d%s%d%s%s%s%s", hour, splitter, minute, splitter, meridiem, splitter, alarmParts[4], splitter, alarmParts[5]);
+                String alarmString = String.format("%02d%s%02d%s%s%s%s%s%s", hour, splitter, minute, splitter, meridiem, splitter, alarmParts[3], splitter, alarmParts[4]);
 
                 String formattedDays = String.join("-", daysArray);
 
                 if (!alarms.contains(alarmString)) {
-                    alarms.add(alarmString);
-                    alarmsDay.add(formattedDays);
-                    createAlarmCard(alarmTimeString, formattedDays, alarmString, alarmParts[4] == "0");
+                    alarms.add(alarmString.trim());
+                    createAlarmCard(alarmTimeString, formattedDays, alarmString, alarmParts[4].trim().equals("ON"));
                 }
             }
         }
     }
 
     private void createAlarmCard(String time, String day, String alarmString, boolean isOn) {
-        View cardViewLayout = LayoutInflater.from(this).inflate(R.layout.cardview_copy, null);
+        @SuppressLint("InflateParams") View cardViewLayout = LayoutInflater.from(this).inflate(R.layout.cardview_copy, null);
 
         TextView duplicateTime = cardViewLayout.findViewById(R.id.tvAssignedTimeCopy);
         TextView duplicateDay = cardViewLayout.findViewById(R.id.tvAssignedDayCopy);
@@ -207,11 +216,13 @@ public class Schedule_View extends AppCompatActivity {
         switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
             String forChecking = BuildStringWithoutSwitch(alarmString);
+            Log.d("COCAINE", "CHECK ALARMSTRING FOR DUPLICATE: "+ forChecking);
+            Log.d("COCAINE", "CHECK FOR DUPLICATE: "+ alarmString);
             int index = -1;
-
-            if(alarms.indexOf(forChecking + "ON") != -1){
+            forChecking = forChecking.trim();
+            if(alarms.contains(forChecking + "ON")){
                 index = alarms.indexOf(forChecking + "ON");
-            } else if (alarms.indexOf(forChecking + "OFF") != -1) {
+            } else if (alarms.contains(forChecking + "OFF")) {
                 index = alarms.indexOf(forChecking + "OFF");
             }
 
@@ -241,11 +252,13 @@ public class Schedule_View extends AppCompatActivity {
             ((ViewManager) cardViewLayout.getParent()).removeView(cardViewLayout);
             alarmWarning.dismiss();
             String forChecking = BuildStringWithoutSwitch(alarmString);
+            forChecking = forChecking.trim();
+            Log.d("COCAINE", "CHECK DELETE STRING: " + forChecking);
             int index = -1;
 
-            if(alarms.indexOf(forChecking + "ON") != -1){
+            if(alarms.contains(forChecking + "ON")){
                 index = alarms.indexOf(forChecking + "ON");
-            } else if (alarms.indexOf(forChecking + "OFF") != -1) {
+            } else if (alarms.contains(forChecking + "OFF")) {
                 index = alarms.indexOf(forChecking + "OFF");
             }
             if (index != -1) {
