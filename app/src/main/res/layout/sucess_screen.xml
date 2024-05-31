@@ -23,15 +23,17 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
-            android:text="Sucess Dispensing Text"
+            android:text="Dispense success! Time to eat!"
             android:textColor="@color/black"
             android:textSize="20sp" />
+
         <com.google.android.material.button.MaterialButton
-            android:layout_marginTop="15dp"
+            android:id="@+id/btnSuccess"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
-            app:cornerRadius="20dp"
-            android:text="@string/back_to_dashboard"/>
+            android:layout_marginTop="15dp"
+            android:text="@string/back_to_dashboard"
+            app:cornerRadius="20dp" />
     </LinearLayout>
 </RelativeLayout>

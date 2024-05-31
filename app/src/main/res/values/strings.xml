@@ -20,7 +20,7 @@
     <!-- Button Labels -->
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
-    <string name="back_to_dashboard">Back to Dashboard</string>
+    <string name="back_to_dashboard">Back to Main</string>
     <string name="open_lights">Open Lights</string>
     <string name="drink">Drink</string>
     <string name="automatic">Automatic</string>

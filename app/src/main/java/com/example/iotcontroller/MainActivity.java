@@ -4,13 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -26,13 +26,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Handler;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -177,15 +177,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnDispenseConfirm.setOnClickListener(view ->{
+            int delay = 0;
             if(food){
                 food = false;
                 sendCommand("food");
+                delay = 5500;
             }else if(water){
                 water = false;
                 sendCommand("water");
+                delay = 2500;
             }
             dispenseDialog.dismiss();
+            showLoadingScreen(delay);
         });
+
         btnCancel.setOnClickListener(view -> {
             if(food){
                 food = false;
@@ -215,6 +220,8 @@ public class MainActivity extends AppCompatActivity {
             water = false;
         });
     }
+
+
 
     void checkESP8266Response(String str){
         String[] cont = str.split(",");
@@ -336,6 +343,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         tvUpcomingMealTime.setText("No upcoming");
+    }
+
+    private void showLoadingScreen(int delayMillis) {
+        Intent intent = new Intent(this, LoadingScreen.class);
+        intent.putExtra("DELAY", delayMillis);
+        startActivity(intent);
     }
 
     private void saveAlarmData(ArrayList<String> alarms) {

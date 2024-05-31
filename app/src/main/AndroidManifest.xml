@@ -32,6 +32,9 @@
         <activity
             android:name=".Dispense_Loading_Activity"
             android:exported="false" />
+        <activity android:name=".LoadingScreen"/>
+        <activity android:name=".SuccessScreen"/>
+
         <activity
             android:name=".LoadingActivity_Food"
             android:exported="false" />
