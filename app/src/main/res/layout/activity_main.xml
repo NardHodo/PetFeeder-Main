@@ -349,10 +349,10 @@
             app:cornerRadius="10dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAutomatic"
+            android:id="@+id/btnRefill"
             android:layout_width="150dp"
             android:layout_height="60dp"
-            android:text="@string/automatic"
+            android:text="Refill"
             android:textAllCaps="false"
             android:drawableEnd="@drawable/back_in_time"
             android:layout_below="@id/btnManualWater"

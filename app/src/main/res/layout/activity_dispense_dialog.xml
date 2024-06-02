@@ -53,11 +53,12 @@
                 android:layout_alignParentStart="true"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDispenseConfirm"
                 android:layout_width="120dp"
                 android:layout_height="60dp"
                 android:layout_alignParentEnd="true"
-                app:cornerRadius="15dp"
-                android:text="@string/confirm_button"/>
+                android:text="@string/confirm_button"
+                app:cornerRadius="15dp" />
         </RelativeLayout>
     </LinearLayout>
 

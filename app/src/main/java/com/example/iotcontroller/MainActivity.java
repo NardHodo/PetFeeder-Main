@@ -32,6 +32,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -59,9 +60,9 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    final String WIFI_NAME = "\"Foodiee\"";
+    final String[] WIFI_NAME = {"\"Foodiee\"", "\"Foodie\""};
     String alarmContent = "", alarmsToSendToESP = "";
-    Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnAutomatic;
+    Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnRefill, btnDispenseConfirm;
     Dialog dispenseDialog, warningDialog, connectedDialog;
 
     ArrayList<String> days = new ArrayList<>(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     static TextView tvUpcomingMealTime;
 
     ActivityResultLauncher<Intent> intentLauncher;
+
+    boolean water = false, food = false;
 
     private static final Map<String, Integer> DAY_OF_WEEK_MAP = new HashMap<>();
 
@@ -112,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         btnManualWater = findViewById(R.id.btnManualWater);
         btnManage = findViewById(R.id.btnManage);
         btnConnect = findViewById(R.id.btnConnect);
-        btnAutomatic = findViewById(R.id.btnAutomatic);
+        btnRefill = findViewById(R.id.btnRefill);
         tvUpcomingMealTime = findViewById(R.id.tvUpcomingMealTime);
         enableDisabledButtons(false);
 
@@ -168,14 +171,49 @@ public class MainActivity extends AppCompatActivity {
         setupDialogs();
 
         // Set button click listeners
-        btnConnect.setOnClickListener(view -> getCurrentWifiSSID(this));
-        btnCancel.setOnClickListener(view -> dispenseDialog.dismiss());
+        btnConnect.setOnClickListener(view -> {
+            sendCommand("REPORTSTATUS:");
+            getCurrentWifiSSID(this);
+        });
+
+        btnDispenseConfirm.setOnClickListener(view ->{
+            if(food){
+                food = false;
+                sendCommand("food");
+            }else if(water){
+                water = false;
+                sendCommand("water");
+            }
+            dispenseDialog.dismiss();
+        });
+        btnCancel.setOnClickListener(view -> {
+            if(food){
+                food = false;
+            }else if(water){
+                water = false;
+            }
+            dispenseDialog.dismiss();
+        });
+
+        btnRefill.setOnClickListener(view -> {
+            sendCommand("refill");
+        });
+
         btnManage.setOnClickListener(view -> {
+            getCurrentWifiSSID(this);
             sendCommand("GETALARM:");
         });
-        btnManualWater.setOnClickListener(view -> sendCommand("red"));
-        btnLights.setOnClickListener(view -> sendCommand("green"));
-        btnManual.setOnClickListener(view -> sendCommand("blue"));
+        btnManualWater.setOnClickListener(view -> {
+            dispenseDialog.show();
+            water = true;
+            food = false;
+        });
+        btnLights.setOnClickListener(view -> sendCommand("light"));
+        btnManual.setOnClickListener(view -> {
+            dispenseDialog.show();
+            food = true;
+            water = false;
+        });
     }
 
     void checkESP8266Response(String str){
@@ -251,7 +289,12 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> alarms = new ArrayList<>();
         for (int i = 0; ; i++) {
             String alarm = preferences.getString("alarm_" + i, null);
-            if (alarm == null) break;
+            if (alarm == null) {
+                if(tvUpcomingMealTime != null) {
+                    tvUpcomingMealTime.setText("No upcoming");
+                }
+                break;
+            }
             alarms.add(alarm);
         }
         List<CalendarAlarm> sortedAlarms = sortAlarms(alarms);
@@ -268,6 +311,10 @@ public class MainActivity extends AppCompatActivity {
     public static void scheduleAlarm(Context context, Calendar calendar, String alarmTime) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("alarm_time", alarmTime);
+        if(tvUpcomingMealTime != null){
+            String[] tempContent = alarmTime.split(":");
+            tvUpcomingMealTime.setText(tempContent[0] + ":" + tempContent[1] + " " + tempContent[2]);
+        }
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -281,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
             Calendar alarmCalendar = calendarAlarm.getCalendar();
 
             if (alarmCalendar.after(rn)) {
+
                 String[] timeParts = calendarAlarm.getOriginalString().split(":");
                 tvUpcomingMealTime.setText(timeParts[0] + ":" + timeParts[1] + " " + timeParts[2]);
                 scheduleAlarm(this, alarmCalendar, calendarAlarm.getOriginalString());
@@ -353,6 +401,7 @@ public class MainActivity extends AppCompatActivity {
         dispenseDialog = new Dialog(MainActivity.this);
         dispenseDialog.setContentView(R.layout.activity_dispense_dialog);
         btnCancel = dispenseDialog.findViewById(R.id.btnCancelDispense);
+        btnDispenseConfirm = dispenseDialog.findViewById(R.id.btnDispenseConfirm);
         Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dispenseDialog.setCancelable(false);
 
@@ -368,24 +417,58 @@ public class MainActivity extends AppCompatActivity {
         btnLights.setEnabled(status);
         btnManualWater.setEnabled(status);
         btnManual.setEnabled(status);
+        btnRefill.setEnabled(status);
     }
 
-    private void getCurrentWifiSSID(Context context) {
+//    private void getCurrentWifiSSID(Context context, @Nullable String no) {
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+//            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+//            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+//            if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
+//                String ssid = wifiInfo.getSSID();
+//                boolean notConnected = false;
+//                for(String x : WIFI_NAME) {
+//                    if (ssid.equals(x)) {
+//                        enableDisabledButtons(true);
+//                        notConnected = true;
+//                        break;
+//                    }
+//                }
+//                if(!notConnected){
+//                    Toast.makeText(this, "Make sure you are connected to the correct WiFi", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        } else {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+//        }
+//    }
+//
+    private boolean getCurrentWifiSSID(Context context) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
                 String ssid = wifiInfo.getSSID();
-                if (ssid.equals(WIFI_NAME)) {
-                    enableDisabledButtons(true);
-
-                } else {
-                    Toast.makeText(this, "Make sure you are connected to the correct WiFi", Toast.LENGTH_SHORT).show();
+                boolean notConnected = false;
+                for(String x : WIFI_NAME) {
+                    if (ssid.equals(x)) {
+                        enableDisabledButtons(true);
+                        notConnected = true;
+                        break;
+                    }
                 }
+                if(!notConnected){
+                    Toast.makeText(this, "Make sure you are connected to the correct WiFi", Toast.LENGTH_SHORT).show();
+                    enableDisabledButtons(false);
+
+                    return false;
+                }
+                return true;
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
+        return false;
     }
 
     private void sendCommand(String command) {

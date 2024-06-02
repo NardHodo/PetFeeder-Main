@@ -313,6 +313,9 @@ public class Schedule_View extends AppCompatActivity {
 
     private String getSelectedHour() {
         String temp = String.format("%02d", selectedHour);
+        if(temp.equals("00")){
+            temp = "12";
+        }
 //        Log.d("COCAINE", temp + "CHECK FOR ERROR");
         return temp;
     }
