@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     final String[] WIFI_NAME = {"\"Foodiee\"", "\"Foodie\""};
     String alarmContent = "", alarmsToSendToESP = "";
-    Button btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnRefill, btnDispenseConfirm;
+    Button  btnWarningConfirm, btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnRefill, btnDispenseConfirm;
     Dialog dispenseDialog, warningDialog, connectedDialog;
 
     ArrayList<String> days = new ArrayList<>(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
@@ -71,12 +72,12 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> alarmsToSend;
 
-    TextView connectedWifi;
+    TextView connectedWifi, FoodLevel, WaterLevel, LightPower;
     static TextView tvUpcomingMealTime;
 
     ActivityResultLauncher<Intent> intentLauncher;
 
-    boolean water = false, food = false;
+    boolean water = false, food = false, refill = false ;
 
     private static final Map<String, Integer> DAY_OF_WEEK_MAP = new HashMap<>();
 
@@ -118,6 +119,10 @@ public class MainActivity extends AppCompatActivity {
         btnRefill = findViewById(R.id.btnRefill);
         tvUpcomingMealTime = findViewById(R.id.tvUpcomingMealTime);
         enableDisabledButtons(false);
+
+        FoodLevel = findViewById(R.id.tvFoodPercentage);
+        WaterLevel = findViewById(R.id.tvWaterPercentage);
+        LightPower = findViewById(R.id.tvLightStatus);
 
         intentLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -181,27 +186,44 @@ public class MainActivity extends AppCompatActivity {
             if(food){
                 food = false;
                 sendCommand("food");
-                delay = 5500;
+                dispenseDialog.dismiss();
+                showLoadingScreen(delay);
             }else if(water){
                 water = false;
                 sendCommand("water");
-                delay = 2500;
+                dispenseDialog.dismiss();
+                showLoadingScreen(delay);
+            } else if (refill) {
+                refill = false;
+                sendCommand("refill");
+                delay = 15000;
+                dispenseDialog.dismiss();
+                showLoadingScreen(delay);
+                sendCommand("REPORTSTATUS:");
             }
-            dispenseDialog.dismiss();
-            showLoadingScreen(delay);
         });
+
+        btnWarningConfirm.setOnClickListener(view -> warningDialog.dismiss());
 
         btnCancel.setOnClickListener(view -> {
             if(food){
                 food = false;
             }else if(water){
                 water = false;
+            } else if (refill) {
+                refill = false;
             }
             dispenseDialog.dismiss();
         });
 
         btnRefill.setOnClickListener(view -> {
-            sendCommand("refill");
+            if (!WaterLevel.getText().toString().trim().equals("GOOD")){
+                dispenseDialog.show();
+                refill = true;
+                food = false;
+                water = false;;
+            }else
+                Toast.makeText(this, "Bread", Toast.LENGTH_SHORT).show();
         });
 
         btnManage.setOnClickListener(view -> {
@@ -209,21 +231,30 @@ public class MainActivity extends AppCompatActivity {
             sendCommand("GETALARM:");
         });
         btnManualWater.setOnClickListener(view -> {
-            dispenseDialog.show();
-            water = true;
-            food = false;
+            if (!WaterLevel.getText().toString().trim().equals("EMPTY")){
+                dispenseDialog.show();
+                water = true;
+                food = false;
+                refill = false;
+            }else
+                warningDialog.show();
         });
         btnLights.setOnClickListener(view -> sendCommand("light"));
         btnManual.setOnClickListener(view -> {
-            dispenseDialog.show();
-            food = true;
-            water = false;
+            if (!FoodLevel.getText().toString().trim().equals("EMPTY")){
+                dispenseDialog.show();
+                food = true;
+                water = false;
+                refill = false;
+            }else
+                warningDialog.show();
         });
     }
 
 
 
     void checkESP8266Response(String str){
+        boolean bold = false;
         String[] cont = str.split(",");
         TextView tvLight = findViewById(R.id.tvLightStatus);
         TextView tvFood = findViewById(R.id.tvFoodPercentage);
@@ -231,6 +262,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d("CONTS", cont[0]);
         for(int i = 1;i < cont.length;i++){
             if(cont[0].equals("REPORTSTATUS:")) {
+                if (!bold){
+                    bold = true;
+                    // Send broadcast to notify that loading is complete
+                    Intent intent = new Intent("com.example.iotcontroller.LOADING_COMPLETE");
+                    Log.d("COCAINE", "Genshin Could Never");
+                    sendBroadcast(intent);
+                }
                 switch (cont[i].split(":")[0]) {
                     case "Light":
                         if (cont[i].split(":")[1].equals("0")) {
@@ -239,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     tvLight.setText("OFF");
                                     btnLights.setText("Turn on");
+                                    LightPower.setTextColor(Color.RED);;
                                 }
                             });
 
@@ -248,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     tvLight.setText("ON");
                                     btnLights.setText("Turn off");
+                                    LightPower.setTextColor(Color.GREEN);
                                 }
                             });
                         }
@@ -258,10 +298,10 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 tvFood.setText(foodContent);
-                                if (foodContent.equals("LOW")) {
+                                if (foodContent.equals("EMPTY")) {
                                     tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                                } else {
-                                    tvFood.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                                } else if (foodContent.equals("GOOD")) {
+                                    tvFood.setTextColor(Color.GREEN);
                                 }
                             }
                         });
@@ -273,10 +313,10 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 tvWater.setText(waterContent);
-                                if (waterContent.equals("LOW")) {
+                                if (waterContent.trim().equals("EMPTY")) {
                                     tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                                } else {
-                                    tvWater.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.white));
+                                } else if (waterContent.trim().equals("GOOD")) {
+                                    tvWater.setTextColor(Color.GREEN);
                                 }
                             }
                         });
@@ -288,7 +328,9 @@ public class MainActivity extends AppCompatActivity {
                 viewSchedule.putExtra("Alarm", alarmContent);
                 intentLauncher.launch(viewSchedule);
             }
+
         }
+
     }
 
     public static void setNextAlarm(Context context) {
@@ -418,10 +460,11 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dispenseDialog.setCancelable(false);
 
-//        warningDialog = new Dialog(MainActivity.this);
-//        warningDialog.setContentView(R.layout.activity_warning_dialog);
-//        warningDialog.setCancelable(true);
-//        warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        warningDialog = new Dialog(MainActivity.this);
+        warningDialog.setContentView(R.layout.activity_warning_dialog);
+        warningDialog.setCancelable(false);
+        warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        btnWarningConfirm = warningDialog.findViewById(R.id.btnWarningConfirm);
 
     }
 
@@ -467,13 +510,15 @@ public class MainActivity extends AppCompatActivity {
                     if (ssid.equals(x)) {
                         enableDisabledButtons(true);
                         notConnected = true;
+                        btnConnect.setText("Connected");
                         break;
                     }
+
                 }
                 if(!notConnected){
                     Toast.makeText(this, "Make sure you are connected to the correct WiFi", Toast.LENGTH_SHORT).show();
                     enableDisabledButtons(false);
-
+                    btnConnect.setText("Connect");
                     return false;
                 }
                 return true;
