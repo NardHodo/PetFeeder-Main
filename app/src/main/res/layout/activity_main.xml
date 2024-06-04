@@ -5,13 +5,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/mainAppColor"
-    android:paddingHorizontal="20dp">
-
+    android:paddingHorizontal="15dp">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/the_real_mascot"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"/>
     <TextView
         android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="10dp"
         android:fontFamily="@font/lexend_bold"
         android:text="@string/condition"
         android:textColor="@color/card_view_color"
@@ -20,7 +25,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine1"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
@@ -32,7 +37,7 @@
         android:layout_marginTop="10dp"
         app:cardBackgroundColor="@color/card_view_color"
         android:elevation="10dp"
-        app:cardCornerRadius="20dp">
+        app:cardCornerRadius="10dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -48,33 +53,38 @@
                     android:layout_marginBottom="5dp"
                     android:fontFamily="@font/lexend"
                     android:padding="15dp"
+                    android:layout_centerVertical="true"
                     android:text="FEEDER STATUS"
                     android:textColor="@color/white"
                     android:textSize="17sp"/>
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnConnect"
                     android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="3dp"
-                    android:fontFamily="@font/lexend"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginHorizontal="20dp"
                     android:text="@string/connect_button"
-                    android:textSize="10sp"
-                    android:layout_alignParentEnd="true"/>
+                    android:textSize="15sp"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/connect_button"
+                    app:cornerRadius="20dp"
+                    app:elevation="10dp"
+                    />
             </RelativeLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="10dp"
+                android:layout_marginHorizontal="10dp"
+                android:padding="5dp"
+                android:gravity="center_horizontal"
                 android:layout_below="@+id/conditionCardViewHeader">
-
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
                     <ImageView
                         android:id="@+id/imageView1"
                         android:layout_width="69dp"
@@ -91,34 +101,32 @@
                         android:fontFamily="@font/lexend"
                         android:text="Food Level"
                         android:textColor="@color/white"
-                        android:textSize="15sp"
-                        android:layout_below="@+id/imageView1"
-                        android:layout_centerHorizontal="true"/>
+                        android:textSize="15sp" />
                     <TextView
                         android:id="@+id/tvFoodPercentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:fontFamily="@font/lexend"
-                        android:text="GOOD"
+                        android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/empty"
                         android:textSize="15sp"
                         android:layout_below="@+id/tvFoodLevel"
                         android:layout_centerHorizontal="true"/>
-                </RelativeLayout>
+                </LinearLayout>
                 <View
                     android:layout_width="20dp"
                     android:layout_height="match_parent"/>
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
                     <ImageView
                         android:id="@+id/imageView2"
                         android:layout_width="69dp"
                         android:layout_height="62dp"
-                        android:layout_alignParentTop="true"
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
@@ -131,6 +139,7 @@
                         android:text="Water Level"
                         android:textColor="@color/white"
                         android:textSize="15sp"
+                        android:layout_marginTop="0.5dp"
                         android:layout_below="@+id/imageView2"
                         android:layout_centerHorizontal="true"/>
                     <TextView
@@ -139,29 +148,32 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:fontFamily="@font/lexend"
-                        android:text="GOOD"
+                        android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/empty"
                         android:textSize="15sp"
                         android:layout_below="@+id/tvWaterLevel"
                         android:layout_centerHorizontal="true"/>
-                </RelativeLayout>
+                </LinearLayout>
                 <View
                     android:layout_width="20dp"
                     android:layout_height="match_parent"/>
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
                     <ImageView
                         android:id="@+id/imageView3"
                         android:layout_width="69dp"
                         android:layout_height="62dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_centerInParent="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="false"
                         android:layout_marginStart="10dp"
+                        android:layout_marginTop="-1dp"
                         android:layout_marginEnd="10dp"
                         android:src="@drawable/bulb" />
+
                     <TextView
                         android:id="@+id/tvLightsLabel"
                         android:layout_width="wrap_content"
@@ -178,13 +190,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:fontFamily="@font/lexend"
-                        android:text="ON"
+                        android:text="Status"
                         android:textAlignment="center"
-                        android:textColor="@color/white"
+                        android:textColor="@color/empty"
                         android:textSize="15sp"
                         android:layout_below="@+id/tvLightsLabel"
                         android:layout_centerHorizontal="true"/>
-                </RelativeLayout>
+
+                </LinearLayout>
+               
             </LinearLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -197,13 +211,15 @@
         android:fontFamily="@font/lexend_bold"
         android:textColor="@color/card_view_color"
         android:textSize="20sp"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/card_view_color"
-        app:cardCornerRadius="3dp"/>
+        app:cardCornerRadius="3dp" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
@@ -290,83 +306,59 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/dividerLine3"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="3dp"
         android:layout_marginTop="8dp"
         app:cardBackgroundColor="@color/card_view_color"
         app:cardCornerRadius="3dp"/>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="5dp">
+        android:paddingHorizontal="10dp"
+        android:layout_marginTop="5dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLights"
             android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/main_button_drawable"
-            android:fontFamily="@font/lexend"
+            android:layout_height="60dp"
             android:text="@string/open_lights"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textAlignment="viewStart"
+            android:drawableRight="@drawable/flashlight"
+            app:cornerRadius="10dp" />
 
-        <Button
-            android:id="@+id/btnManualWater"
-            android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/main_button_drawable"
-            android:fontFamily="@font/lexend"
-            android:text="@string/drink"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textIsSelectable="true"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btnLights"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnManual"
             android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="27dp"
-            android:background="@drawable/main_button_drawable"
+            android:layout_height="60dp"
             android:text="@string/dispense"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnLights"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnLights" />
+            android:textAlignment="viewStart"
+            android:layout_below="@id/btnLights"
+            android:drawableEnd="@drawable/dispense_food_button"
+            app:cornerRadius="10dp"/>
 
-        <Button
-            android:id="@+id/btnAutomatic"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnManualWater"
             android:layout_width="150dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/main_button_drawable"
-            android:text="@string/automatic"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:drawableEnd="@drawable/wet"
+            android:text="@string/drink"
+            android:textAlignment="viewStart"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="@+id/btnManualWater"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/btnManualWater"
-            app:layout_constraintTop_toBottomOf="@+id/btnManualWater" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:cornerRadius="10dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRefill"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:text="Refill"
+            android:textAllCaps="false"
+            android:drawableEnd="@drawable/back_in_time"
+            android:layout_below="@id/btnManualWater"
+            android:layout_alignParentEnd="true"
+            app:cornerRadius="10dp"/>
+    </RelativeLayout>
 
 
 </LinearLayout>

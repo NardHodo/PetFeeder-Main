@@ -37,7 +37,7 @@
             android:fontFamily="@font/lexend"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnConfirmRefill"
+            android:id="@+id/btnWarningConfirm"
             android:layout_width="120dp"
             android:layout_height="60dp"
             android:layout_gravity="center_horizontal"
