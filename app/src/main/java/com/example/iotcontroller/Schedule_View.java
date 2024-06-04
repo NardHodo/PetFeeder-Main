@@ -276,7 +276,7 @@ public class Schedule_View extends AppCompatActivity {
     private void toggleDaySelection(String day, MaterialButton dayButton) {
         if (days.contains(day)) {
             days.remove(day);
-            dayButton.setBackgroundColor(getResources().getColor(R.color.button_color));
+            dayButton.setBackgroundColor(getResources().getColor(R.color.card_view_color));
         } else {
             days.add(day);
             dayButton.setBackgroundColor(getResources().getColor(R.color.teal_200));
@@ -324,5 +324,14 @@ public class Schedule_View extends AppCompatActivity {
         String temp =  String.format("%02d", selectedMinute);
 //        Log.d("COCAINE", temp + "CHECK FOR ERROR");
         return temp;
+    }
+    @Override
+    public void onBackPressed(){
+        setResult(Activity.RESULT_OK, new Intent().putStringArrayListExtra("alarms", alarms));
+        for(String x : alarms){
+            Log.d("COCAINE", "FINISHED RESULT: " + x);
+        }
+
+        finish();
     }
 }

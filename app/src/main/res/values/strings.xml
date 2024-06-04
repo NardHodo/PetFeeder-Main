@@ -21,18 +21,19 @@
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
     <string name="back_to_dashboard">Back to Main</string>
-    <string name="open_lights">Open Lights</string>
+    <string name="open_lights">Turn On</string>
     <string name="drink">Drink</string>
     <string name="automatic">Automatic</string>
     <string name="disconnect">Disconnect</string>
     <string name="close">Close</string>
+    <string name="refill">Refill</string>
 
     <!-- Layout Labels-->
     <string name="schedule_header">Manage Schedule</string>
     <string name="add_alarm_description">Add an Alarm</string>
     <string name="splash_screen_description">Foodie</string>
     <string name="condition">CONDITION</string>
-    <string name="schedule">SCHEDULE</string>
+    <string name="schedule">UPCOMING SCHEDULE</string>
     <string name="warning_icon">Low Food/Water Warning</string>
     <string name="connection_message">Currently Connected To:</string>
     <string name="wifi_icon">Wifi Icon</string>
@@ -42,7 +43,7 @@
     <string name="alarm_editor_header">Alarm Settings</string>
 
     <!-- Cardview Elements-->
-    <string name="upcoming">Upcoming Meal Schedule:</string>
+    <string name="upcoming">Upcoming Schedule:</string>
     <string name="repeat">Repeat</string>
 
     <!-- AM and PM -->

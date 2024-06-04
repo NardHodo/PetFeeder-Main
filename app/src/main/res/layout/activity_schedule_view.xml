@@ -40,6 +40,18 @@
             android:textColor="@color/card_view_color"
             android:textSize="20sp"
             android:layout_toEndOf="@id/scheduleIcon"/>
+
+        <ImageButton
+            android:id="@+id/btnAddAlarm"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|center"
+            android:contentDescription="@string/add_alarm_description"
+            android:src="@drawable/add_alarm"
+            android:background="@null"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginHorizontal="20dp"/>
     </RelativeLayout>
     <ScrollView
         android:layout_width="match_parent"
@@ -56,25 +68,4 @@
         </LinearLayout>
 
     </ScrollView>
-    <ImageButton
-        android:id="@+id/btnAddAlarm"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:contentDescription="@string/add_alarm_description"
-        android:src="@drawable/add_schedule"
-        android:background="@null"
-        android:minHeight="0dp"
-        android:minWidth="0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        />
-
-
-
-
-
-
 </RelativeLayout>
