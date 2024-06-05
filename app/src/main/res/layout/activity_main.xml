@@ -242,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="8dp"
                 android:fontFamily="@font/lexend"
-                android:text="00:00"
+                android:text="No Upcoming"
                 android:textColor="@color/card_view_color"
                 android:textSize="20sp"
                 android:textAlignment="center"
