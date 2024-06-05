@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -63,16 +64,13 @@ public class MainActivity extends AppCompatActivity {
 
     final String[] WIFI_NAME = {"\"Foodiee\"", "\"Foodie\""};
     String alarmContent = "", alarmsToSendToESP = "";
-    Button  btnWarningConfirm, btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnRefill, btnDispenseConfirm;
-    Dialog dispenseDialog, warningDialog, connectedDialog;
-
-    ArrayList<String> days = new ArrayList<>(Arrays.asList("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"));
-
-    MaterialButton btnCloseConnectionInfo, btnDisconnect;
+    Button  btnWarningConfirm, btnLights, btnManual, btnManualWater, btnManage, btnCancel, btnConnect, btnRefill, btnDispenseConfirm,
+            btnWaterCancel, btnWaterConfirm, btnRefillCancel, btnRefillConfirm;
+    Dialog foodDispenseDialog, warningDialog, waterDispenseDialog, refillDispenseDialog;
 
     ArrayList<String> alarmsToSend;
 
-    TextView connectedWifi, FoodLevel, WaterLevel, LightPower;
+    TextView FoodLevel, WaterLevel, LightPower;
     static TextView tvUpcomingMealTime;
 
     ActivityResultLauncher<Intent> intentLauncher;
@@ -142,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
                                     alarmsToSendToESP += alarmsToSend.get(i) + "&";
                                 }
                             }
-
+                            SharedPreferences preferences = MainActivity.this.getSharedPreferences("alarms", MODE_PRIVATE);
+                            preferences.edit().clear().apply();
                             sendCommand(alarmsToSendToESP);
                             Log.d("COCAINE", "CHECK SENDING DATA TO ESP: " + alarmsToSendToESP);
                             alarmsToSendToESP = "";
@@ -186,44 +185,67 @@ public class MainActivity extends AppCompatActivity {
             if(food){
                 food = false;
                 sendCommand("food");
-                dispenseDialog.dismiss();
+                delay = 5000;
+                foodDispenseDialog.dismiss();
                 showLoadingScreen(delay);
-            }else if(water){
-                water = false;
-                sendCommand("water");
-                dispenseDialog.dismiss();
-                showLoadingScreen(delay);
-            } else if (refill) {
-                refill = false;
-                sendCommand("refill");
-                delay = 15000;
-                dispenseDialog.dismiss();
-                showLoadingScreen(delay);
-                sendCommand("REPORTSTATUS:");
+            }
+        });
+
+        btnWaterConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int delay = 0;
+                if(water){
+                    water = false;
+                    sendCommand("water");
+                    delay = 5000;
+                    waterDispenseDialog.dismiss();
+                    showLoadingScreen(delay);
+                }
             }
         });
 
         btnWarningConfirm.setOnClickListener(view -> warningDialog.dismiss());
 
         btnCancel.setOnClickListener(view -> {
-            if(food){
+            if(food) {
                 food = false;
-            }else if(water){
-                water = false;
-            } else if (refill) {
-                refill = false;
             }
-            dispenseDialog.dismiss();
+            foodDispenseDialog.dismiss();
         });
+        btnWaterCancel.setOnClickListener(view -> {
+            if(water){
+                water = false;
+            }
+            waterDispenseDialog.dismiss();
+                });
+
 
         btnRefill.setOnClickListener(view -> {
             if (!WaterLevel.getText().toString().trim().equals("GOOD")){
-                dispenseDialog.show();
+                refillDispenseDialog.show();
                 refill = true;
                 food = false;
                 water = false;;
             }else
                 Toast.makeText(this, "Bread", Toast.LENGTH_SHORT).show();
+        });
+        btnRefillConfirm.setOnClickListener(view -> {
+            int delay = 0;
+            if (refill){
+                refill = false;
+                sendCommand("refill");
+                delay = 15000;
+                refillDispenseDialog.dismiss();
+                showLoadingScreen(delay);
+                sendCommand("REPORTSTATUS:");
+            }
+        });
+        btnRefillCancel.setOnClickListener(view -> {
+            if(refill){
+               refill = false;
+            }
+            refillDispenseDialog.dismiss();
         });
 
         btnManage.setOnClickListener(view -> {
@@ -232,23 +254,35 @@ public class MainActivity extends AppCompatActivity {
         });
         btnManualWater.setOnClickListener(view -> {
             if (!WaterLevel.getText().toString().trim().equals("EMPTY")){
-                dispenseDialog.show();
+                waterDispenseDialog.show();
                 water = true;
                 food = false;
                 refill = false;
             }else
                 warningDialog.show();
         });
+
         btnLights.setOnClickListener(view -> sendCommand("light"));
         btnManual.setOnClickListener(view -> {
             if (!FoodLevel.getText().toString().trim().equals("EMPTY")){
-                dispenseDialog.show();
+                foodDispenseDialog.show();
                 food = true;
                 water = false;
                 refill = false;
             }else
                 warningDialog.show();
         });
+
+        Handler handler = new Handler();
+
+        Runnable getData = new Runnable(){
+            public void run(){
+                handler.postDelayed(this, 1000);
+                sendCommand("REPORTSTATUS:");
+            }
+        };
+
+        handler.postDelayed(getData, 1000);
     }
 
 
@@ -262,13 +296,13 @@ public class MainActivity extends AppCompatActivity {
         Log.d("CONTS", cont[0]);
         for(int i = 1;i < cont.length;i++){
             if(cont[0].equals("REPORTSTATUS:")) {
-                if (!bold){
-                    bold = true;
-                    // Send broadcast to notify that loading is complete
-                    Intent intent = new Intent("com.example.iotcontroller.LOADING_COMPLETE");
-                    Log.d("COCAINE", "Genshin Could Never");
-                    sendBroadcast(intent);
-                }
+//                if (!bold){
+//                    bold = true;
+//                    // Send broadcast to notify that loading is complete
+//                    Intent intent = new Intent("com.example.iotcontroller.LOADING_COMPLETE");
+//                    Log.d("COCAINE", "Genshin Could Never");
+//                    sendBroadcast(intent);
+//                }
                 switch (cont[i].split(":")[0]) {
                     case "Light":
                         if (cont[i].split(":")[1].equals("0")) {
@@ -453,17 +487,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDialogs() {
-        dispenseDialog = new Dialog(MainActivity.this);
-        dispenseDialog.setContentView(R.layout.activity_dispense_dialog);
-        btnCancel = dispenseDialog.findViewById(R.id.btnCancelDispense);
-        btnDispenseConfirm = dispenseDialog.findViewById(R.id.btnDispenseConfirm);
-        Objects.requireNonNull(dispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dispenseDialog.setCancelable(false);
+        foodDispenseDialog = new Dialog(MainActivity.this);
+        foodDispenseDialog.setContentView(R.layout.activity_dispense_dialog);
+        btnCancel =  foodDispenseDialog.findViewById(R.id.btnCancelDispense);
+        btnDispenseConfirm =  foodDispenseDialog.findViewById(R.id.btnDispenseConfirm);
+        Objects.requireNonNull( foodDispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        foodDispenseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        foodDispenseDialog.setCancelable(false);
+
+        waterDispenseDialog = new Dialog(MainActivity.this);
+        waterDispenseDialog.setContentView(R.layout.dispense_water_dialog);
+        btnWaterCancel = waterDispenseDialog.findViewById(R.id.btnCancelDispense);
+        btnWaterConfirm = waterDispenseDialog.findViewById(R.id.btnDispenseConfirm);
+        Objects.requireNonNull( waterDispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        waterDispenseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        waterDispenseDialog.setCancelable(false);
+
+        refillDispenseDialog = new Dialog(MainActivity.this);
+        refillDispenseDialog.setContentView(R.layout.refill_dialog);
+        btnRefillCancel = refillDispenseDialog.findViewById(R.id.btnCancelDispense);
+        btnRefillConfirm = refillDispenseDialog.findViewById(R.id.btnDispenseConfirm);
+        Objects.requireNonNull( refillDispenseDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        refillDispenseDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        refillDispenseDialog.setCancelable(false);
+
 
         warningDialog = new Dialog(MainActivity.this);
         warningDialog.setContentView(R.layout.activity_warning_dialog);
         warningDialog.setCancelable(false);
         warningDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        warningDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         btnWarningConfirm = warningDialog.findViewById(R.id.btnWarningConfirm);
 
     }
@@ -476,29 +529,6 @@ public class MainActivity extends AppCompatActivity {
         btnRefill.setEnabled(status);
     }
 
-//    private void getCurrentWifiSSID(Context context, @Nullable String no) {
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-//            WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-//            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-//            if (wifiInfo.getSupplicantState() == SupplicantState.COMPLETED) {
-//                String ssid = wifiInfo.getSSID();
-//                boolean notConnected = false;
-//                for(String x : WIFI_NAME) {
-//                    if (ssid.equals(x)) {
-//                        enableDisabledButtons(true);
-//                        notConnected = true;
-//                        break;
-//                    }
-//                }
-//                if(!notConnected){
-//                    Toast.makeText(this, "Make sure you are connected to the correct WiFi", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        } else {
-//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-//        }
-//    }
-//
     private boolean getCurrentWifiSSID(Context context) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);

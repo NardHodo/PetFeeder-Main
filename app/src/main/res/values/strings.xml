@@ -4,7 +4,7 @@
     <string name="connect_button">Connect</string>
     <string name="manage_button">Manage</string>
     <string name="dispense">Dispense Food</string>
-    <string name="dispenseWarningMessage">Are you sure you want to manually dispense food or water for your pet?</string>
+    <string name="dispenseWarningMessage">Are you sure you want to manually dispense food for your pet?</string>
     <string name="lowLevelWarningMessage">Food or Water Level is low. Make sure to fill up the Feeder First before Dispensing.</string>
     <string name="delete_alarm_warning">Delete This Alarm?</string>
 

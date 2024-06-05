@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:layout_marginHorizontal="20dp">
 
     <RelativeLayout
         android:id="@+id/containerFirstHalf"
@@ -20,7 +21,7 @@
     </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="150dp"
         android:layout_below="@id/containerFirstHalf"
         android:background="@drawable/lower_dispense_dialog_box"
         android:orientation="vertical">
@@ -31,10 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="20dp"
-            android:text="@string/dispenseWarningMessage"
+            android:text="Dispense Food For Your Pet?"
+            android:layout_gravity="center"
             android:textColor="@color/black"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:fontFamily="@font/lexend"/>
 
         <RelativeLayout

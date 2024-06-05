@@ -23,7 +23,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="15dp"
-            android:text="Dispense success! Time to eat!"
+            android:text="Success!!"
             android:textColor="@color/black"
             android:textSize="20sp" />
 
@@ -34,6 +34,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:text="@string/back_to_dashboard"
-            app:cornerRadius="20dp" />
+            app:cornerRadius="10dp" />
     </LinearLayout>
 </RelativeLayout>

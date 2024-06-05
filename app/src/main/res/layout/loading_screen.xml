@@ -33,7 +33,7 @@
             android:layout_marginLeft="95dp"
             android:fontFamily="@font/lexend"
             android:gravity="center"
-            android:text="Luding Luding Luding!"
+            android:text="Please Wait A Moment!"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="20sp" />

@@ -9,6 +9,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,6 +83,7 @@ public class Schedule_View extends AppCompatActivity {
         addAlarmDialog.setContentView(contentView);
         addAlarmDialog.setCancelable(true);
         Objects.requireNonNull(addAlarmDialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        addAlarmDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         addAlarmDialog.show();
         initializeAddAlarmElements(contentView);
     }
@@ -243,6 +246,7 @@ public class Schedule_View extends AppCompatActivity {
         Dialog alarmWarning = new Dialog(Schedule_View.this);
         alarmWarning.setContentView(R.layout.alarm_delete_warning);
         alarmWarning.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        alarmWarning.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alarmWarning.setCancelable(false);
 
         Button yesButton = alarmWarning.findViewById(R.id.btnConfirmAlarmDeletion);
